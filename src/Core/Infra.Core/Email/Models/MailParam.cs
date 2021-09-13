@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Infra.Core.Models.Email
+namespace Infra.Core.Email.Models
 {
     public class MailParam
     {

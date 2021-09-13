@@ -2,7 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
-using Infra.Core.Interfaces.FileAccess;
+using Infra.Core.FileAccess.Abstractions;
 
 namespace Infra.FileAccess.Physical
 {

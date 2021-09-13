@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Infra.Core.Models.Email;
+using Infra.Core.Email.Models;
 
-namespace Infra.Core.Interfaces.Email
+namespace Infra.Core.Email.Abstractions
 {
     public interface IMail
     {

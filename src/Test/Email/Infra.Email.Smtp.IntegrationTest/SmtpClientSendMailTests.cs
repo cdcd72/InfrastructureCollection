@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using Infra.Core.Models.Email;
+using Infra.Core.Email.Models;
 using Infra.Email.Smtp.Exceptions;
 using Infra.Email.Smtp.Models;
 using Microsoft.Extensions.Logging;

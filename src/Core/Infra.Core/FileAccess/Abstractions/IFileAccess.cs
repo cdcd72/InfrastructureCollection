@@ -2,7 +2,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infra.Core.Interfaces.FileAccess
+namespace Infra.Core.FileAccess.Abstractions
 {
     public interface IFileAccess
     {

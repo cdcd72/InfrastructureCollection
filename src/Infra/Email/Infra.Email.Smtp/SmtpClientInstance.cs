@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Infra.Core.Interfaces.Email;
-using Infra.Core.Models.Email;
+using Infra.Core.Email.Abstractions;
+using Infra.Core.Email.Models;
 using Infra.Email.Smtp.Exceptions;
 using Infra.Email.Smtp.Models;
 using MailKit.Net.Smtp;
