@@ -12,6 +12,14 @@ namespace Infra.Core.EventBus
         private readonly List<Type> _eventTypes;
         private readonly Dictionary<string, List<SubscriptionInfo>> _handlers;
 
+        #region Properties
+
+        public bool IsEmpty => !_handlers.Keys.Any();
+
+        public event EventHandler<string> OnEventRemoved;
+
+        #endregion
+
         #region Constructor
 
         public InMemoryEventBusSubscriptionsManager()
@@ -21,10 +29,6 @@ namespace Infra.Core.EventBus
         }
 
         #endregion
-
-        public bool IsEmpty => !_handlers.Keys.Any();
-
-        public event EventHandler<string> OnEventRemoved;
 
         public void AddSubscription<TIntegrationEvent, TIntegrationEventHandler>()
             where TIntegrationEvent : IntegrationEvent

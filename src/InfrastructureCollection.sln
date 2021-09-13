@@ -32,6 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8E9B901F-3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Core.IntegrationTest", "Test\Core\Infra.Core.IntegrationTest\Infra.Core.IntegrationTest.csproj", "{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{D7F59DC9-595C-425A-AA36-F66ACA8D5F91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.EventBus.RabbitMQ", "Infra\EventBus\Infra.EventBus.RabbitMQ\Infra.EventBus.RabbitMQ.csproj", "{76723B3A-DE62-4900-9F1B-FD575B9E21E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +62,10 @@ Global
 		{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +80,8 @@ Global
 		{5E14A820-9AAD-4476-9049-320AE8F31064} = {9D90D3AB-7259-4BC3-BE00-FEF0D215E0D1}
 		{8E9B901F-3760-476C-87A0-5B3DE74F35BF} = {9D90D3AB-7259-4BC3-BE00-FEF0D215E0D1}
 		{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2} = {8E9B901F-3760-476C-87A0-5B3DE74F35BF}
+		{D7F59DC9-595C-425A-AA36-F66ACA8D5F91} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
+		{76723B3A-DE62-4900-9F1B-FD575B9E21E6} = {D7F59DC9-595C-425A-AA36-F66ACA8D5F91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
