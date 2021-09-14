@@ -1,4 +1,5 @@
 using System;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,15 +10,17 @@ using Infra.Core.EventBus.Events;
 using Infra.Core.EventBus.Extensions;
 using Infra.EventBus.RabbitMQ.Abstractions;
 using Microsoft.Extensions.Logging;
+using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace Infra.EventBus.RabbitMQ
 {
     public class RabbitMQBus : IEventBus, IDisposable
     {
-        const string BROKER_NAME = "event_bus";
-        const string AUTOFAC_SCOPE_NAME = "event_bus";
+        private const string BROKER_NAME = "event_bus";
+        private const string AUTOFAC_SCOPE_NAME = "event_bus";
 
         private readonly IRabbitMQPersistentConnection _persistentConnection;
         private readonly ILogger<RabbitMQBus> _logger;
@@ -51,7 +54,46 @@ namespace Infra.EventBus.RabbitMQ
 
         #endregion
 
-        public void Publish(IntegrationEvent integrationEvent) => throw new NotImplementedException();
+        public void Publish(IntegrationEvent integrationEvent)
+        {
+            if (!_persistentConnection.IsConnected)
+                _persistentConnection.TryConnect();
+
+            var policy = Policy.Handle<SocketException>()
+                .Or<BrokerUnreachableException>()
+                .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
+                    => _logger.LogWarning(ex, "Could not publish event: {EventId} after {Timeout}s. ({ExceptionMessage})", integrationEvent.Id, $"{time.TotalSeconds:n1}", ex.Message));
+
+            var eventName = integrationEvent.GetType().Name;
+
+            _logger.LogTrace("Creating RabbitMQ channel to publish event: {EventId}. ({EventName})", integrationEvent.Id, eventName);
+
+            using var channel = _persistentConnection.CreateModel();
+
+            _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}.", integrationEvent.Id);
+
+            channel.ExchangeDeclare(exchange: BROKER_NAME, type: "direct");
+
+            var body = JsonSerializer.SerializeToUtf8Bytes(integrationEvent, integrationEvent.GetType(), new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            policy.Execute(() =>
+            {
+                var properties = channel.CreateBasicProperties();
+                properties.DeliveryMode = 2; // persistent
+
+                _logger.LogTrace("Publishing event to RabbitMQ: {EventId}.", integrationEvent.Id);
+
+                channel.BasicPublish(
+                    exchange: BROKER_NAME,
+                    routingKey: eventName,
+                    mandatory: true,
+                    basicProperties: properties,
+                    body: body);
+            });
+        }
 
         public void Subscribe<TIntegrationEvent, TIntegrationEventHandler>()
             where TIntegrationEvent : IntegrationEvent
@@ -68,7 +110,16 @@ namespace Infra.EventBus.RabbitMQ
             StartBasicConsume();
         }
 
-        public void SubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler => throw new NotImplementedException();
+        public void SubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
+        {
+            _logger.LogInformation("Subscribing to dynamic event {EventName} with {EventHandler}.", eventName, typeof(TDynamicIntegrationEventHandler).GetGenericTypeName());
+
+            DoInternalSubscription(eventName);
+
+            _subsManager.AddDynamicSubscription<TDynamicIntegrationEventHandler>(eventName);
+
+            StartBasicConsume();
+        }
 
         public void Unsubscribe<TIntegrationEvent, TIntegrationEventHandler>()
             where TIntegrationEvent : IntegrationEvent
@@ -81,7 +132,12 @@ namespace Infra.EventBus.RabbitMQ
             _subsManager.RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>();
         }
 
-        public void UnsubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler => throw new NotImplementedException();
+        public void UnsubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
+        {
+            _logger.LogInformation("Unsubscribing from dynamic event {EventName}.", eventName);
+
+            _subsManager.RemoveDynamicSubscription<TDynamicIntegrationEventHandler>(eventName);
+        }
 
         #region Private Method
 
@@ -92,7 +148,8 @@ namespace Infra.EventBus.RabbitMQ
 
             using var channel = _persistentConnection.CreateModel();
 
-            channel.QueueUnbind(queue: _queueName,
+            channel.QueueUnbind(
+                queue: _queueName,
                 exchange: BROKER_NAME,
                 routingKey: eventName);
 
@@ -213,7 +270,6 @@ namespace Infra.EventBus.RabbitMQ
                         using dynamic eventData = JsonDocument.Parse(message);
 
                         await Task.Yield();
-
                         await handler.HandleAsync(eventData);
                     }
                     else
@@ -257,7 +313,10 @@ namespace Infra.EventBus.RabbitMQ
 
             if (disposing)
             {
-                // TODO: managed dispose
+                if (_consumerChannel != null)
+                    _consumerChannel.Dispose();
+
+                _subsManager.Clear();
             }
 
             _disposed = true;
