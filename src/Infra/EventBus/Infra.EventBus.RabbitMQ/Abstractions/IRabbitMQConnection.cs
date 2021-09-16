@@ -3,11 +3,11 @@ using RabbitMQ.Client;
 
 namespace Infra.EventBus.RabbitMQ.Abstractions
 {
-    public interface IRabbitMQPersistentConnection : IDisposable
+    public interface IRabbitMQConnection : IDisposable
     {
         bool IsConnected { get; }
 
-        IModel CreateModel();
+        IModel CreateChannel();
 
         bool TryConnect();
     }

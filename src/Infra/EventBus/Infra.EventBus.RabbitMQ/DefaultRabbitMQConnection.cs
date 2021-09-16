@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using Infra.EventBus.RabbitMQ.Abstractions;
+using Infra.EventBus.RabbitMQ.Common;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polly;
 using RabbitMQ.Client;
@@ -10,11 +12,11 @@ using RabbitMQ.Client.Exceptions;
 
 namespace Infra.EventBus.RabbitMQ
 {
-    public class DefaultRabbitMQPersistentConnection : IRabbitMQPersistentConnection
+    public class DefaultRabbitMQConnection : IRabbitMQConnection
     {
+        private readonly ILogger<DefaultRabbitMQConnection> _logger;
+        private readonly Env _env;
         private readonly IConnectionFactory _connectionFactory;
-        private readonly ILogger<DefaultRabbitMQPersistentConnection> _logger;
-        private readonly int _retryCount;
         private readonly object _syncRoot = new();
 
         private IConnection _connection;
@@ -28,19 +30,16 @@ namespace Infra.EventBus.RabbitMQ
 
         #region Constructor
 
-        public DefaultRabbitMQPersistentConnection(
-            IConnectionFactory connectionFactory,
-            ILogger<DefaultRabbitMQPersistentConnection> logger,
-            int retryCount = 5)
+        public DefaultRabbitMQConnection(ILogger<DefaultRabbitMQConnection> logger, IConfiguration config)
         {
-            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _retryCount = retryCount;
+            _env = new Env(config);
+            _connectionFactory = GetConnectionFactory(_env);
         }
 
         #endregion
 
-        public IModel CreateModel()
+        public IModel CreateChannel()
         {
             if (!IsConnected)
                 throw new InvalidOperationException("No RabbitMQ connections are available to perform this action.");
@@ -56,7 +55,7 @@ namespace Infra.EventBus.RabbitMQ
             {
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
-                    .WaitAndRetry(_retryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
+                    .WaitAndRetry(_env.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
                         => _logger.LogWarning(ex, "RabbitMQ client could not connect after {TimeOut}s. ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message));
 
                 policy.Execute(() => _connection = _connectionFactory.CreateConnection());
@@ -81,6 +80,24 @@ namespace Infra.EventBus.RabbitMQ
         }
 
         #region Private Method
+
+        private static IConnectionFactory GetConnectionFactory(Env env)
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = env.Host,
+                Port = env.Port,
+                DispatchConsumersAsync = true
+            };
+
+            if (!string.IsNullOrEmpty(env.UserName))
+                factory.UserName = env.UserName;
+
+            if (!string.IsNullOrEmpty(env.Password))
+                factory.Password = env.Password;
+
+            return factory;
+        }
 
         private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
         {
@@ -116,7 +133,7 @@ namespace Infra.EventBus.RabbitMQ
 
         #region Dispose
 
-        ~DefaultRabbitMQPersistentConnection() => Dispose(false);
+        ~DefaultRabbitMQConnection() => Dispose(false);
 
         public void Dispose()
         {
