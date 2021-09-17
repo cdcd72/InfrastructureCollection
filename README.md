@@ -11,9 +11,14 @@ The practice may not be the best, but I hope to get better and better!
 > All infrastructure are base on **[Infra.Core](src/Core/Infra.Core)**.
 
 - Email
-  - [Infra.Email.Smtp](src/Infra/Email/Infra.Email.Smtp)（with [MailKit](https://github.com/jstedfast/MailKit)）
+  - [Infra.Email.Smtp](src/Infra/Email/Infra.Email.Smtp)
+    - Implement with [MailKit](https://github.com/jstedfast/MailKit)
 - FileAccess
   - [Infra.FileAccess.Physical](src/Infra/FileAccess/Infra.FileAccess.Physical)
+- EventBus
+  - [Infra.EventBus.RabbitMQ](src/Infra/EventBus/Infra.EventBus.RabbitMQ)
+    - Implement with [Autofac](https://github.com/autofac/Autofac) - Prevent memory leak and better to control object life time.
+    - Implement with [Polly](https://github.com/App-vNext/Polly) - Retry mechanism.
 - ...（Keep it up.）
 
 ## Contribute & Bug report
