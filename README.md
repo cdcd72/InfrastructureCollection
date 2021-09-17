@@ -16,10 +16,14 @@ The practice may not be the best, but I hope to get better and better!
 - FileAccess
   - [Infra.FileAccess.Physical](src/Infra/FileAccess/Infra.FileAccess.Physical)
 - EventBus
-  - [Infra.EventBus.RabbitMQ](src/Infra/EventBus/Infra.EventBus.RabbitMQ)
+  - [Infra.EventBus.RabbitMQ](src/Infra/EventBus/Infra.EventBus.RabbitMQ) :point_right: [Demo](https://github.com/cdcd72/EventBus.RabbitMQ.Demo)
     - Implement with [Autofac](https://github.com/autofac/Autofac) - Prevent memory leak and better to control object life time.
     - Implement with [Polly](https://github.com/App-vNext/Polly) - Retry mechanism.
 - ...（Keep it up.）
+
+## Referenced github repository
+
+- [eShopOnContainers](https://github.com/dotnet-architecture/eShopOnContainers)
 
 ## Contribute & Bug report
 
