@@ -21,9 +21,9 @@ namespace Infra.EventBus.RabbitMQ
 {
     public class RabbitMQBus : IEventBus, IDisposable
     {
-        private const string RABBITMQ_EXCHANGE_NAME = "event_bus";
+        private const string RABBITMQ_EXCHANGE_NAME = "event.bus";
         private const string RABBITMQ_TYPE = "direct";
-        private const string AUTOFAC_SCOPE_NAME = "event_bus";
+        private const string AUTOFAC_SCOPE_NAME = "event.bus";
 
         private readonly ILogger<RabbitMQBus> _logger;
         private readonly IRabbitMQConnection _connection;
