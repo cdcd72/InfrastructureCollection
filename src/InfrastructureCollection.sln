@@ -30,11 +30,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Email", "Email", "{5E14A820
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8E9B901F-3760-476C-87A0-5B3DE74F35BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Core.IntegrationTest", "Test\Core\Infra.Core.IntegrationTest\Infra.Core.IntegrationTest.csproj", "{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Core.IntegrationTest", "Test\Core\Infra.Core.IntegrationTest\Infra.Core.IntegrationTest.csproj", "{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventBus", "EventBus", "{D7F59DC9-595C-425A-AA36-F66ACA8D5F91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.EventBus.RabbitMQ", "Infra\EventBus\Infra.EventBus.RabbitMQ\Infra.EventBus.RabbitMQ.csproj", "{76723B3A-DE62-4900-9F1B-FD575B9E21E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.EventBus.RabbitMQ", "Infra\EventBus\Infra.EventBus.RabbitMQ\Infra.EventBus.RabbitMQ.csproj", "{76723B3A-DE62-4900-9F1B-FD575B9E21E6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.FileAccess.Grpc", "Infra\FileAccess\Infra.FileAccess.Grpc\Infra.FileAccess.Grpc.csproj", "{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{4124DA71-0ECC-4D94-80A4-9B004FB78FEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "File", "File", "{31F725B3-1FB5-4C48-8F0B-478185D32C93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcFileServer", "Server\File\GrpcFileServer\GrpcFileServer.csproj", "{DC4D7010-BB1B-46C1-9612-2611092DF5B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +74,14 @@ Global
 		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76723B3A-DE62-4900-9F1B-FD575B9E21E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +98,9 @@ Global
 		{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2} = {8E9B901F-3760-476C-87A0-5B3DE74F35BF}
 		{D7F59DC9-595C-425A-AA36-F66ACA8D5F91} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
 		{76723B3A-DE62-4900-9F1B-FD575B9E21E6} = {D7F59DC9-595C-425A-AA36-F66ACA8D5F91}
+		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
+		{31F725B3-1FB5-4C48-8F0B-478185D32C93} = {4124DA71-0ECC-4D94-80A4-9B004FB78FEA}
+		{DC4D7010-BB1B-46C1-9612-2611092DF5B2} = {31F725B3-1FB5-4C48-8F0B-478185D32C93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
