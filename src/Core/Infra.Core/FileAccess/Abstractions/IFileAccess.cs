@@ -1,6 +1,9 @@
+using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Infra.Core.FileAccess.Models;
 
 namespace Infra.Core.FileAccess.Abstractions
 {
@@ -68,17 +71,19 @@ namespace Infra.Core.FileAccess.Abstractions
 
         #region Async Method
 
-        Task SaveFileAsync(string filePath, string content);
+        Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-        Task SaveFileAsync(string filePath, string content, Encoding encoding);
+        Task SaveFileAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-        Task SaveFileAsync(string filePath, byte[] bytes);
+        Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-        Task<string> ReadTextFileAsync(string filePath);
+        Task SaveFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-        Task<string> ReadTextFileAsync(string filePath, Encoding encoding);
+        Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-        Task<byte[]> ReadFileAsync(string filePath);
+        Task<string> ReadTextFileAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+        Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
         #endregion
     }

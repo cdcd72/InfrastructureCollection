@@ -1,8 +1,11 @@
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Models;
 
 namespace Infra.FileAccess.Physical
 {
@@ -102,29 +105,32 @@ namespace Infra.FileAccess.Physical
 
         #region Async Method
 
-        public async Task SaveFileAsync(string filePath, string content)
-            => await SaveFileAsync(filePath, content, Encoding.UTF8);
+        public async Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await SaveFileAsync(filePath, content, Encoding.UTF8, progressCallBack, cancellationToken);
 
-        public async Task SaveFileAsync(string filePath, string content, Encoding encoding)
-            => await SaveFileAsync(filePath, encoding.GetBytes(content));
+        public async Task SaveFileAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await SaveFileAsync(filePath, encoding.GetBytes(content), progressCallBack, cancellationToken);
 
-        public async Task SaveFileAsync(string filePath, byte[] bytes)
-            => await File.WriteAllBytesAsync(filePath, bytes);
+        public async Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await File.WriteAllBytesAsync(filePath, bytes, cancellationToken);
 
-        public async Task<string> ReadTextFileAsync(string filePath)
-            => await ReadTextFileAsync(filePath, Encoding.UTF8);
+        public Task SaveFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotImplementedException();
 
-        public async Task<string> ReadTextFileAsync(string filePath, Encoding encoding)
+        public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
+
+        public async Task<string> ReadTextFileAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
-            var fileBytes = await ReadFileAsync(filePath);
+            var fileBytes = await ReadFileAsync(filePath, progressCallBack, cancellationToken);
 
             using var stream = new StreamReader(new MemoryStream(fileBytes), encoding);
 
             return await stream.ReadToEndAsync();
         }
 
-        public async Task<byte[]> ReadFileAsync(string filePath)
-            => await File.ReadAllBytesAsync(filePath);
+        public async Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await File.ReadAllBytesAsync(filePath, cancellationToken);
 
         #endregion
     }
