@@ -81,9 +81,7 @@ namespace Infra.FileAccess.Physical
         {
             var fileBytes = ReadFile(filePath);
 
-            using var stream = new StreamReader(new MemoryStream(fileBytes), encoding);
-
-            return stream.ReadToEnd();
+            return encoding.GetString(fileBytes);
         }
 
         public byte[] ReadFile(string filePath)
@@ -114,9 +112,6 @@ namespace Infra.FileAccess.Physical
         public async Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await File.WriteAllBytesAsync(filePath, bytes, cancellationToken);
 
-        public Task SaveFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => throw new NotImplementedException();
-
         public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
 
@@ -124,9 +119,7 @@ namespace Infra.FileAccess.Physical
         {
             var fileBytes = await ReadFileAsync(filePath, progressCallBack, cancellationToken);
 
-            using var stream = new StreamReader(new MemoryStream(fileBytes), encoding);
-
-            return await stream.ReadToEndAsync();
+            return encoding.GetString(fileBytes);
         }
 
         public async Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)

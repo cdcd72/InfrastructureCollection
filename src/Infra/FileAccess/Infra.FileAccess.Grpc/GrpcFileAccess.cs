@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using Infra.Core.FileAccess.Models;
 using Infra.FileAccess.Grpc.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IO;
 
 namespace Infra.FileAccess.Grpc
 {
@@ -18,6 +20,7 @@ namespace Infra.FileAccess.Grpc
     {
         private readonly ILogger<GrpcFileAccess> _logger;
         private readonly Env _env;
+        private readonly RecyclableMemoryStreamManager _msManager;
 
         #region Constructor
 
@@ -27,6 +30,7 @@ namespace Infra.FileAccess.Grpc
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _env = new Env(config);
+            _msManager = GetRecyclableMemoryStreamManager();
         }
 
         #endregion
@@ -93,21 +97,21 @@ namespace Infra.FileAccess.Grpc
 
         #region Async Method
 
-        public Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        public async Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await SaveFileAsync(filePath, content, Encoding.UTF8, progressCallBack, cancellationToken);
 
-        public Task SaveFileAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        public async Task SaveFileAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await SaveFileAsync(filePath, encoding.GetBytes(content), progressCallBack, cancellationToken);
 
-        public Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
-
-        public async Task SaveFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public async Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
-            FileStream fs = null;
             var mark = $"{Guid.NewGuid()}";
             var startTime = DateTime.Now;
-            var chunkSize = _env.ChunkSize;
-            var buffer = new byte[chunkSize];
+            var buffer = new byte[_env.ChunkSize];
+            var memory = new Memory<byte>(buffer);
             var (channel, client) = GetClient();
             var progressInfo = new ProgressInfo();
+            using var ms = _msManager.GetStream(bytes) as RecyclableMemoryStream;
 
             try
             {
@@ -118,9 +122,6 @@ namespace Infra.FileAccess.Grpc
                     Filename = Path.GetFileName(filePath),
                     Mark = mark
                 };
-
-                fs = new FileStream(
-                    filePath, FileMode.Open, System.IO.FileAccess.Read, FileShare.Read, chunkSize, useAsync: true);
 
                 var readTimes = 0;
                 var uploadedSize = 0;
@@ -141,7 +142,7 @@ namespace Infra.FileAccess.Grpc
                         break;
                     }
 
-                    var readSize = fs.Read(buffer, 0, buffer.Length);
+                    var readSize = await ms.ReadAsync(memory, cancellationToken);
 
                     // Transfer file chunk to server.
                     if (readSize > 0)
@@ -151,7 +152,7 @@ namespace Infra.FileAccess.Grpc
                         await call.RequestStream.WriteAsync(request);
 
                         uploadedSize += readSize;
-                        progressInfo.Message = $"File【{filePath}】current upload progress【{uploadedSize}/{fs.Length}】bytes.";
+                        progressInfo.Message = $"File【{filePath}】current upload progress【{uploadedSize}/{ms.Length}】bytes.";
                         progressCallBack?.Invoke(progressInfo);
                     }
                     // Transfer is completed.
@@ -193,26 +194,29 @@ namespace Infra.FileAccess.Grpc
             }
             finally
             {
-                fs?.Close();
-                fs?.Dispose();
-
                 // Shutdown the channel.
                 await channel?.ShutdownAsync();
             }
         }
 
-        public Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
 
-        public Task<string> ReadTextFileAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        public async Task<string> ReadTextFileAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var fileBytes = await ReadFileAsync(filePath, progressCallBack, cancellationToken);
+
+            return encoding.GetString(fileBytes);
+        }
 
         public async Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
-            using var ms = new MemoryStream();
             var mark = $"{Guid.NewGuid()}";
             var startTime = DateTime.Now;
             var (channel, client) = GetClient();
             var progressInfo = new ProgressInfo();
             var fileName = Path.GetFileName(filePath);
+            using var ms = _msManager.GetStream() as RecyclableMemoryStream;
 
             try
             {
@@ -288,7 +292,7 @@ namespace Infra.FileAccess.Grpc
                     }
                 }
 
-                return progressInfo.IsCompleted ? ms.ToArray() : null;
+                return progressInfo.IsCompleted ? ms.GetReadOnlySequence().ToArray() : null;
             }
             catch (Exception ex)
             {
@@ -312,6 +316,29 @@ namespace Infra.FileAccess.Grpc
             var client = new FileTransfer.FileTransferClient(channel);
             return (channel, client);
         }
+
+        private RecyclableMemoryStreamManager GetRecyclableMemoryStreamManager()
+        {
+            var blockSize = 1024;
+            var largeBufferMultiple = 1024 * 1024; // 1 MB
+            var maximumBufferSize = 16 * largeBufferMultiple; // 16 MB
+            var maximumFreeSmallPoolBytes = 100 * blockSize;
+            var maximumFreeLargePoolBytes = maximumBufferSize * 4;
+            var recyclableMemoryStreamManager =
+                new RecyclableMemoryStreamManager(blockSize, largeBufferMultiple, maximumBufferSize)
+                {
+                    AggressiveBufferReturn = true,
+                    GenerateCallStacks = false,
+                    MaximumFreeSmallPoolBytes = maximumFreeSmallPoolBytes,
+                    MaximumFreeLargePoolBytes = maximumFreeLargePoolBytes,
+                    ThrowExceptionOnToArray = true
+                };
+            recyclableMemoryStreamManager.StreamDisposed += RecyclableMemoryStreamManager_StreamDisposed;
+            return recyclableMemoryStreamManager;
+        }
+
+        private void RecyclableMemoryStreamManager_StreamDisposed(object sender, RecyclableMemoryStreamManager.StreamDisposedEventArgs e)
+            => _logger.LogDebug("File memory stream disposed.");
 
         #endregion
     }

@@ -37,6 +37,9 @@ namespace GrpcFileServer.Services
             var uploadDirectoryPath = Path.Combine(_env.DirectoryRoot);
             var savePath = string.Empty;
 
+            if (!_fileAccess.DirectoryExists(uploadDirectoryPath))
+                _fileAccess.CreateDirectory(uploadDirectoryPath);
+
             try
             {
                 while (await requestStream.MoveNext())
