@@ -7,6 +7,7 @@ package infra.file.v1;
 service FileTransfer {
   rpc Upload (stream UploadRequest) returns (stream UploadResponse);
   rpc Download (DownloadRequest) returns (stream DownloadResponse);
+  rpc IsExist (IsExistRequest) returns (IsExistResponse);
 }
 
 message UploadRequest {
@@ -31,4 +32,14 @@ message DownloadResponse {
   int32 block = 2;
   bytes content = 3;
   string mark = 4;
+}
+
+message IsExistRequest {
+  string filename = 1;
+  string mark = 2;
+}
+
+message IsExistResponse {
+  bool status = 1;
+  string mark = 2;
 }

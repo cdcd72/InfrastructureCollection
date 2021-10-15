@@ -97,6 +97,57 @@ namespace Infra.FileAccess.Grpc
 
         #region Async Method
 
+        public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetFileClient();
+            var progressInfo = new ProgressInfo();
+            var fileName = filePath;
+
+            try
+            {
+                var request = new IsExistRequest()
+                {
+                    Filename = fileName,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently check file【{fileName}】exist...";
+                progressCallBack?.Invoke(progressInfo);
+
+                var call = await client.IsExistAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Check file【{fileName}】exist completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.FileName = fileName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Check file【{fileName}】exist canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+
+                return call.Status;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Check file【{fileName}】exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
         public async Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await SaveFileAsync(filePath, content, Encoding.UTF8, progressCallBack, cancellationToken);
 
@@ -109,17 +160,18 @@ namespace Infra.FileAccess.Grpc
             var startTime = DateTime.Now;
             var buffer = new byte[_env.ChunkSize];
             var memory = new Memory<byte>(buffer);
-            var (channel, client) = GetClient();
+            var (channel, client) = GetFileClient();
             var progressInfo = new ProgressInfo();
+            var fileName = filePath;
             using var ms = _msManager.GetStream(bytes) as RecyclableMemoryStream;
 
             try
             {
-                using var call = client.Upload(default);
+                using var call = client.Upload(cancellationToken: cancellationToken);
 
                 var request = new UploadRequest()
                 {
-                    Filename = Path.GetFileName(filePath),
+                    Filename = fileName,
                     Mark = mark
                 };
 
@@ -136,7 +188,7 @@ namespace Infra.FileAccess.Grpc
                         await call.RequestStream.WriteAsync(request);
 
                         progressInfo.IsCompleted = false;
-                        progressInfo.Message = $"File【{filePath}】upload canceled. SpentTime:{DateTime.Now - startTime}";
+                        progressInfo.Message = $"File【{fileName}】upload canceled. SpentTime:{DateTime.Now - startTime}";
                         _logger.LogInformation(progressInfo.Message);
                         progressCallBack?.Invoke(progressInfo);
                         break;
@@ -152,7 +204,7 @@ namespace Infra.FileAccess.Grpc
                         await call.RequestStream.WriteAsync(request);
 
                         uploadedSize += readSize;
-                        progressInfo.Message = $"File【{filePath}】current upload progress【{uploadedSize}/{ms.Length}】bytes.";
+                        progressInfo.Message = $"File【{fileName}】current upload progress【{uploadedSize}/{ms.Length}】bytes.";
                         progressCallBack?.Invoke(progressInfo);
                     }
                     // Transfer is completed.
@@ -168,8 +220,8 @@ namespace Infra.FileAccess.Grpc
                         if (call.ResponseStream.Current != null && call.ResponseStream.Current.Mark == mark)
                         {
                             progressInfo.IsCompleted = true;
-                            progressInfo.Message = $"File【{filePath}】upload completed. SpentTime:{DateTime.Now - startTime}";
-                            progressInfo.FilePath = filePath;
+                            progressInfo.Message = $"File【{fileName}】upload completed. SpentTime:{DateTime.Now - startTime}";
+                            progressInfo.FileName = fileName;
                             _logger.LogInformation(progressInfo.Message);
                             progressCallBack?.Invoke(progressInfo);
                         }
@@ -189,7 +241,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"File【{filePath}】upload unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.LogError($"File【{fileName}】upload unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -213,9 +265,9 @@ namespace Infra.FileAccess.Grpc
         {
             var mark = $"{Guid.NewGuid()}";
             var startTime = DateTime.Now;
-            var (channel, client) = GetClient();
+            var (channel, client) = GetFileClient();
             var progressInfo = new ProgressInfo();
-            var fileName = Path.GetFileName(filePath);
+            var fileName = filePath;
             using var ms = _msManager.GetStream() as RecyclableMemoryStream;
 
             try
@@ -226,7 +278,7 @@ namespace Infra.FileAccess.Grpc
                     Mark = mark
                 };
 
-                using var call = client.Download(request, default);
+                using var call = client.Download(request, cancellationToken: cancellationToken);
 
                 var fileContents = new List<DownloadResponse>();
                 var reaponseStream = call.ResponseStream;
@@ -310,12 +362,15 @@ namespace Infra.FileAccess.Grpc
 
         #region Private Method
 
-        private (GrpcChannel, FileTransfer.FileTransferClient) GetClient()
+        private (GrpcChannel, FileTransfer.FileTransferClient) GetFileClient()
         {
-            var channel = GrpcChannel.ForAddress(_env.ServerAddress);
+            var channel = GetGrpcChannel();
             var client = new FileTransfer.FileTransferClient(channel);
             return (channel, client);
         }
+
+        private GrpcChannel GetGrpcChannel()
+            => GrpcChannel.ForAddress(_env.ServerAddress);
 
         private RecyclableMemoryStreamManager GetRecyclableMemoryStreamManager()
         {

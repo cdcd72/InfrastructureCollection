@@ -35,6 +35,8 @@ namespace GrpcFileServer.Services
             var startTime = DateTime.Now;
             var mark = string.Empty;
             var uploadDirectoryPath = Path.Combine(_env.DirectoryRoot);
+            var uploadSubDirectoryPath = string.Empty;
+            var fileName = string.Empty;
             var savePath = string.Empty;
 
             if (!_fileAccess.DirectoryExists(uploadDirectoryPath))
@@ -102,9 +104,19 @@ namespace GrpcFileServer.Services
                         // save path is empty means file probably coming.
                         if (string.IsNullOrEmpty(savePath))
                         {
-                            savePath = Path.Combine(uploadDirectoryPath, reply.Filename);
+                            // reply.Filename value may be:
+                            // 1. 123.txt
+                            // 2. Data\\123.txt
+                            uploadSubDirectoryPath =
+                                Path.Combine(uploadDirectoryPath, Path.GetDirectoryName(reply.Filename));
+                            fileName = Path.GetFileName(reply.Filename);
+
+                            if (!_fileAccess.DirectoryExists(uploadSubDirectoryPath))
+                                _fileAccess.CreateDirectory(uploadSubDirectoryPath);
+
+                            savePath = Path.Combine(uploadSubDirectoryPath, fileName);
                             fs = new FileStream(savePath, FileMode.Create, FileAccess.ReadWrite);
-                            _logger.LogInformation($"【{mark}】Currently upload file to {savePath}, DateTime:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                            _logger.LogInformation($"【{mark}】Currently upload file to {savePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
                         }
 
                         // Add current file chunk to list.
@@ -142,18 +154,17 @@ namespace GrpcFileServer.Services
             var chunkSize = _env.ChunkSize;
             var buffer = new byte[chunkSize];
             var downloadDirectoryPath = Path.Combine(_env.DirectoryRoot);
+            var fileName = request.Filename;
+            var filePath = Path.Combine(downloadDirectoryPath, fileName);
+            var reply = new DownloadResponse
+            {
+                Filename = fileName,
+                Mark = mark
+            };
 
             try
             {
-                var fileName = request.Filename;
-                var filePath = Path.Combine(downloadDirectoryPath, fileName);
-                var reply = new DownloadResponse
-                {
-                    Filename = fileName,
-                    Mark = mark
-                };
-
-                _logger.LogInformation($"【{mark}】Currently download file from {filePath}, DateTime:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                _logger.LogInformation($"【{mark}】Currently download file from {filePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
                 if (_fileAccess.FileExists(filePath))
                 {
@@ -220,6 +231,34 @@ namespace GrpcFileServer.Services
             {
                 fs?.Dispose();
             }
+        }
+
+        public override async Task<IsExistResponse> IsExist(IsExistRequest request, ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var checkDirectoryPath = Path.Combine(_env.DirectoryRoot);
+            var fileName = request.Filename;
+            var filePath = Path.Combine(checkDirectoryPath, fileName);
+            var reply = new IsExistResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently check file {filePath} exist, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                reply.Status = _fileAccess.FileExists(filePath);
+
+                _logger.LogInformation($"【{mark}】Check file exist completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Check file exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
         }
     }
 }

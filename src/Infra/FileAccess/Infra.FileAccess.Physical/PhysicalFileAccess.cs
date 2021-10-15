@@ -103,6 +103,9 @@ namespace Infra.FileAccess.Physical
 
         #region Async Method
 
+        public Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public async Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await SaveFileAsync(filePath, content, Encoding.UTF8, progressCallBack, cancellationToken);
 
