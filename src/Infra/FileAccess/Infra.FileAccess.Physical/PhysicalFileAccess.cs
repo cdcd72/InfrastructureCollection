@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
+using Infra.Core.FileAccess.Validators;
 
 namespace Infra.FileAccess.Physical
 {
@@ -16,48 +17,48 @@ namespace Infra.FileAccess.Physical
         #region Directory
 
         public void CreateDirectory(string directoryPath)
-            => Directory.CreateDirectory(directoryPath);
+            => Directory.CreateDirectory(GetVerifiedPath(directoryPath));
 
         public bool DirectoryExists(string directoryPath)
-            => Directory.Exists(directoryPath);
+            => Directory.Exists(GetVerifiedPath(directoryPath));
 
         public string[] GetFiles(string directoryPath)
-            => Directory.GetFiles(directoryPath);
+            => Directory.GetFiles(GetVerifiedPath(directoryPath));
 
         public string[] GetFiles(string directoryPath, string searchPattern)
-            => Directory.GetFiles(directoryPath, searchPattern);
+            => Directory.GetFiles(GetVerifiedPath(directoryPath), searchPattern);
 
         public string[] GetFiles(string directoryPath, string searchPattern, SearchOption searchOption)
-            => Directory.GetFiles(directoryPath, searchPattern, searchOption);
+            => Directory.GetFiles(GetVerifiedPath(directoryPath), searchPattern, searchOption);
 
         public void DeleteDirectory(string directoryPath)
             => DeleteDirectory(directoryPath, true);
 
         public void DeleteDirectory(string directoryPath, bool recursive)
-            => Directory.Delete(directoryPath, recursive);
+            => Directory.Delete(GetVerifiedPath(directoryPath), recursive);
 
         public string[] GetSubDirectories(string directoryPath)
-            => Directory.GetDirectories(directoryPath);
+            => Directory.GetDirectories(GetVerifiedPath(directoryPath));
 
         public string[] GetSubDirectories(string directoryPath, string searchPattern)
-            => Directory.GetDirectories(directoryPath, searchPattern);
+            => Directory.GetDirectories(GetVerifiedPath(directoryPath), searchPattern);
 
         public string[] GetSubDirectories(string directoryPath, string searchPattern, SearchOption searchOption)
-            => Directory.GetDirectories(directoryPath, searchPattern, searchOption);
+            => Directory.GetDirectories(GetVerifiedPath(directoryPath), searchPattern, searchOption);
 
         public void DirectoryCompress(string directoryPath, string zipFilePath)
-            => ZipFile.CreateFromDirectory(directoryPath, zipFilePath, CompressionLevel.Optimal, false);
+            => ZipFile.CreateFromDirectory(GetVerifiedPath(directoryPath), GetVerifiedPath(zipFilePath), CompressionLevel.Optimal, false);
 
         public string GetParentPath(string directoryPath)
-            => Directory.GetParent(directoryPath).FullName;
+            => Directory.GetParent(GetVerifiedPath(directoryPath)).FullName;
 
         public string GetCurrentDirectoryName(string directoryPath)
-            => new DirectoryInfo(directoryPath).Name;
+            => new DirectoryInfo(GetVerifiedPath(directoryPath)).Name;
 
         #endregion
 
         public bool FileExists(string filePath)
-            => File.Exists(filePath);
+            => File.Exists(GetVerifiedPath(filePath));
 
         public void SaveFile(string filePath, string content)
             => SaveFile(filePath, content, Encoding.UTF8);
@@ -66,13 +67,13 @@ namespace Infra.FileAccess.Physical
             => SaveFile(filePath, encoding.GetBytes(content));
 
         public void SaveFile(string filePath, byte[] bytes)
-            => File.WriteAllBytes(filePath, bytes);
+            => File.WriteAllBytes(GetVerifiedPath(filePath), bytes);
 
         public void DeleteFile(string filePath)
-            => File.Delete(filePath);
+            => File.Delete(GetVerifiedPath(filePath));
 
         public long GetFileSize(string filePath)
-            => new FileInfo(filePath).Length;
+            => new FileInfo(GetVerifiedPath(filePath)).Length;
 
         public string ReadTextFile(string filePath)
             => ReadTextFile(filePath, Encoding.UTF8);
@@ -85,19 +86,19 @@ namespace Infra.FileAccess.Physical
         }
 
         public byte[] ReadFile(string filePath)
-            => File.ReadAllBytes(filePath);
+            => File.ReadAllBytes(GetVerifiedPath(filePath));
 
         public void MoveFile(string sourceFilePath, string destFilePath)
             => MoveFile(sourceFilePath, destFilePath, true);
 
         public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite)
-            => File.Move(sourceFilePath, destFilePath, overwrite);
+            => File.Move(GetVerifiedPath(sourceFilePath), GetVerifiedPath(destFilePath), overwrite);
 
         public void CopyFile(string sourceFilePath, string destFilePath)
             => CopyFile(sourceFilePath, destFilePath, true);
 
         public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite)
-            => File.Copy(sourceFilePath, destFilePath, overwrite);
+            => File.Copy(GetVerifiedPath(sourceFilePath), GetVerifiedPath(destFilePath), overwrite);
 
         #endregion
 
@@ -113,7 +114,7 @@ namespace Infra.FileAccess.Physical
             => await SaveFileAsync(filePath, encoding.GetBytes(content), progressCallBack, cancellationToken);
 
         public async Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await File.WriteAllBytesAsync(filePath, bytes, cancellationToken);
+            => await File.WriteAllBytesAsync(GetVerifiedPath(filePath), bytes, cancellationToken);
 
         public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
@@ -126,7 +127,14 @@ namespace Infra.FileAccess.Physical
         }
 
         public async Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await File.ReadAllBytesAsync(filePath, cancellationToken);
+            => await File.ReadAllBytesAsync(GetVerifiedPath(filePath), cancellationToken);
+
+        #endregion
+
+        #region Private Method
+
+        private static string GetVerifiedPath(string path)
+            => !PathValidator.IsValidPath(path) ? PathValidator.GetValidPath(path) : path;
 
         #endregion
     }
