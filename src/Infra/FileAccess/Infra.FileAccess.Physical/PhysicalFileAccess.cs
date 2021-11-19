@@ -12,6 +12,10 @@ namespace Infra.FileAccess.Physical
 {
     public class PhysicalFileAccess : IFileAccess
     {
+        private readonly PathValidator _pathValidator;
+
+        public PhysicalFileAccess(params string[] rootPaths) => _pathValidator = new PathValidator(rootPaths);
+
         #region Sync Method
 
         #region Directory
@@ -133,8 +137,7 @@ namespace Infra.FileAccess.Physical
 
         #region Private Method
 
-        private static string GetVerifiedPath(string path)
-            => !PathValidator.IsValidPath(path) ? PathValidator.GetValidPath(path) : path;
+        private string GetVerifiedPath(string path) => _pathValidator.GetValidPath(path);
 
         #endregion
     }
