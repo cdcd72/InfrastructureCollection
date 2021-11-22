@@ -14,7 +14,13 @@ namespace Infra.FileAccess.Physical
     {
         private readonly PathValidator _pathValidator;
 
-        public PhysicalFileAccess(params string[] rootPaths) => _pathValidator = new PathValidator(rootPaths);
+        public PhysicalFileAccess(params string[] rootPaths)
+        {
+            if (rootPaths is null || (rootPaths is not null && rootPaths.Length == 0))
+                throw new ArgumentNullException(nameof(rootPaths));
+
+            _pathValidator = new PathValidator(rootPaths);
+        }
 
         #region Sync Method
 
