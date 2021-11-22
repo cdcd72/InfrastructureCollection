@@ -46,7 +46,7 @@ namespace Infra.Core.FileAccess.Validators
                 throw new IOException($"Try to access error path! {path}");
 
             if (!new Uri(path).IsUnc)
-                path = NON_UNC_PATTERN + path;
+                path = $"{NON_UNC_PATTERN}{path}";
 
             return path;
         }
