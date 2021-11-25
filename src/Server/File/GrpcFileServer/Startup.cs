@@ -4,6 +4,7 @@ using Infra.FileAccess.Physical;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog.Web;
@@ -12,11 +13,16 @@ namespace GrpcFileServer
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration) => Configuration = configuration;
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(builder => builder.AddNLog("Nlog.config"));
 
-            services.AddSingleton<IFileAccess, PhysicalFileAccess>();
+            services.AddSingleton<IFileAccess>(
+                new PhysicalFileAccess(Configuration.GetValue<string>("Grpc:File:DirectoryRoot")));
 
             services.AddGrpc();
         }
