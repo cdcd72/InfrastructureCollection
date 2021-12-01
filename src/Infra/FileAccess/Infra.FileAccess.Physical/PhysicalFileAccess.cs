@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Infra.FileAccess.Physical
 
         public PhysicalFileAccess(params string[] rootPaths)
         {
-            if (rootPaths is null || (rootPaths is not null && rootPaths.Length == 0))
+            if (rootPaths is null || (rootPaths is not null && (rootPaths.Length is 0 || rootPaths.Any(path => path is null or ""))))
                 throw new ArgumentNullException(nameof(rootPaths));
 
             _pathValidator = new PathValidator(rootPaths);
