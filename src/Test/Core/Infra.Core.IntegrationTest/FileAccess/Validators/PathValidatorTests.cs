@@ -12,7 +12,7 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
 
         public PathValidatorTests() =>
             _folderPath = Path.Combine(
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"TestData\Files");
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "TestData", "Files");
 
         [Test]
         public void IsValidPath()

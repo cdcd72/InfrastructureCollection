@@ -13,6 +13,11 @@ namespace Infra.Core.FileAccess.Validators
         private readonly string[] _violationPathPatterns =
             new string[] { $"..{Path.AltDirectorySeparatorChar}", $"..{Path.DirectorySeparatorChar}" };
 
+        /// <summary>
+        /// None Unc Pattern
+        /// </summary>
+        public static string NonUncPattern => NON_UNC_PATTERN;
+
         public PathValidator(params string[] rootPaths) => _rootPaths = rootPaths;
 
         public bool IsValidPath(string path)

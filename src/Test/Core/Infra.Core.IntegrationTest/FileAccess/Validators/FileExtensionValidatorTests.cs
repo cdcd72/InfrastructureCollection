@@ -12,7 +12,7 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
         public FileExtensionValidatorTests() =>
             _folderPath =
                 Path.Combine(
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"TestData\Files");
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "TestData", "Files");
 
         [Test]
         public void Should_True_Validate_JPG() => Assert.IsTrue(IsValidFileExtensionByBytes("1.jpg"));

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Core", "Core\Infra.Core\Infra.Core.csproj", "{E4C94A46-85F3-45E8-88A9-4FF274FB500E}"
 EndProject
@@ -44,6 +44,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "File", "File", "{31F725B3-1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrpcFileServer", "Server\File\GrpcFileServer\GrpcFileServer.csproj", "{DC4D7010-BB1B-46C1-9612-2611092DF5B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileAccess", "FileAccess", "{D60FC046-4051-449D-AA8F-609062CB4116}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Physical.IntegrationTest", "Test\FileAccess\Infra.FileAccess.Physical.IntegrationTest\Infra.FileAccess.Physical.IntegrationTest.csproj", "{5F9A4BA7-FC8D-4C0E-A113-118B684E14C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +86,10 @@ Global
 		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC4D7010-BB1B-46C1-9612-2611092DF5B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F9A4BA7-FC8D-4C0E-A113-118B684E14C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F9A4BA7-FC8D-4C0E-A113-118B684E14C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F9A4BA7-FC8D-4C0E-A113-118B684E14C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F9A4BA7-FC8D-4C0E-A113-118B684E14C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,6 +109,8 @@ Global
 		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
 		{31F725B3-1FB5-4C48-8F0B-478185D32C93} = {4124DA71-0ECC-4D94-80A4-9B004FB78FEA}
 		{DC4D7010-BB1B-46C1-9612-2611092DF5B2} = {31F725B3-1FB5-4C48-8F0B-478185D32C93}
+		{D60FC046-4051-449D-AA8F-609062CB4116} = {9D90D3AB-7259-4BC3-BE00-FEF0D215E0D1}
+		{5F9A4BA7-FC8D-4C0E-A113-118B684E14C0} = {D60FC046-4051-449D-AA8F-609062CB4116}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
