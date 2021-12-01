@@ -61,7 +61,7 @@ namespace Infra.FileAccess.Physical
             => ZipFile.CreateFromDirectory(GetVerifiedPath(directoryPath), GetVerifiedPath(zipFilePath), CompressionLevel.Optimal, false);
 
         public string GetParentPath(string directoryPath)
-            => Directory.GetParent(GetVerifiedPath(directoryPath)).FullName;
+            => Directory.GetParent(GetVerifiedPath(directoryPath).Replace(PathValidator.NonUncPattern, string.Empty)).FullName;
 
         public string GetCurrentDirectoryName(string directoryPath)
             => new DirectoryInfo(GetVerifiedPath(directoryPath)).Name;

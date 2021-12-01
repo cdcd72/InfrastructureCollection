@@ -276,7 +276,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 Host = Host
             };
 
-            var filePath = Path.Combine(CurrentDirectory, "TestData", "test.jpg");
+            var filePath = Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg");
             var fileName = Path.GetFileName(filePath);
             var fileBytes = await File.ReadAllBytesAsync(filePath);
 
