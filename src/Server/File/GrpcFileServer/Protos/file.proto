@@ -9,6 +9,7 @@ service FileTransfer {
   rpc Download (DownloadRequest) returns (stream DownloadResponse);
   rpc IsExist (IsExistRequest) returns (IsExistResponse);
   rpc Delete (DeleteRequest) returns (DeleteResponse);
+  rpc GetSize (GetSizeRequest) returns (GetSizeResponse);
 }
 
 message UploadRequest {
@@ -51,5 +52,15 @@ message DeleteRequest {
 }
 
 message DeleteResponse {
+  string mark = 1;
+}
+
+message GetSizeRequest {
+  string filename = 1;
+  string mark = 2;
+}
+
+message GetSizeResponse {
+  int64 size = 1;
   string mark = 2;
 }

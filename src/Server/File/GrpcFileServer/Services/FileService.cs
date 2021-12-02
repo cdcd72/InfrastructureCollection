@@ -289,5 +289,34 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<GetSizeResponse> GetSize(
+            GetSizeRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var fileName = request.Filename;
+            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
+            var reply = new GetSizeResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently get file {filePath} size, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                reply.Size = _fileAccess.GetFileSize(filePath);
+
+                _logger.LogInformation($"【{mark}】Get file size completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Get file size unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

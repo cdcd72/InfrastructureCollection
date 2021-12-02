@@ -306,6 +306,22 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.AreEqual("資料種類", await _fileAccess.ReadTextFileAsync(filePath, encoding));
         }
 
+        [Test]
+        public void DeleteFileAsyncNotSupported()
+        {
+            var filePath = Path.Combine(_filesPath, "test.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteFileAsync(filePath));
+        }
+
+        [Test]
+        public void GetFileSizeAsyncNotSupported()
+        {
+            var filePath = Path.Combine(_filesPath, "test.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFileSizeAsync(filePath));
+        }
+
         #endregion
 
         [TearDown]

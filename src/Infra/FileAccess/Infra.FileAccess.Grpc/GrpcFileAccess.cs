@@ -301,6 +301,57 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public async Task<long> GetFileSizeAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetFileClient();
+            var progressInfo = new ProgressInfo();
+            var fileName = filePath;
+
+            try
+            {
+                var request = new GetSizeRequest()
+                {
+                    Filename = fileName,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently get file【{fileName}】size...";
+                progressCallBack?.Invoke(progressInfo);
+
+                var call = await client.GetSizeAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Get file【{fileName}】size completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.FileName = fileName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Get file【{fileName}】size canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+
+                return call.Size;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Get file【{fileName}】size unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
         public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
 
