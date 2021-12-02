@@ -10,6 +10,7 @@ service FileTransfer {
   rpc IsExist (IsExistRequest) returns (IsExistResponse);
   rpc Delete (DeleteRequest) returns (DeleteResponse);
   rpc GetSize (GetSizeRequest) returns (GetSizeResponse);
+  rpc Move (MoveRequest) returns (MoveResponse);
 }
 
 message UploadRequest {
@@ -63,4 +64,15 @@ message GetSizeRequest {
 message GetSizeResponse {
   int64 size = 1;
   string mark = 2;
+}
+
+message MoveRequest {
+  string source_filename = 1;
+  string destination_filename = 2;
+  bool overwrite = 3;
+  string mark = 4;
+}
+
+message MoveResponse {
+  string mark = 1;
 }

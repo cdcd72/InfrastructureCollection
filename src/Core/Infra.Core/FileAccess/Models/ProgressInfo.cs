@@ -6,8 +6,6 @@ namespace Infra.Core.FileAccess.Models
 
         public string Message { get; set; }
 
-        public string FilePath { get; set; }
-
         public string FileName { get; set; }
     }
 }

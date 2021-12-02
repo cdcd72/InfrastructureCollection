@@ -238,8 +238,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var fileName = request.Filename;
-            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
+            var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
             var reply = new IsExistResponse
             {
                 Mark = mark
@@ -267,8 +266,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var fileName = request.Filename;
-            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
+            var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
             var reply = new DeleteResponse
             {
                 Mark = mark
@@ -296,8 +294,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var fileName = request.Filename;
-            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
+            var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
             var reply = new GetSizeResponse
             {
                 Mark = mark
@@ -314,6 +311,36 @@ namespace GrpcFileServer.Services
             catch (Exception ex)
             {
                 _logger.LogError($"【{mark}】Get file size unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
+
+        public override async Task<MoveResponse> Move(
+            MoveRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var rootDirectoryPath = _env.DirectoryRoot;
+            var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFilename);
+            var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFilename);
+            var reply = new MoveResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently move file from {sourceFilePath} to {destinationFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                _fileAccess.MoveFile(sourceFilePath, destinationFilePath, request.Overwrite);
+
+                _logger.LogInformation($"【{mark}】Move file completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Move file unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;

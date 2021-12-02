@@ -86,13 +86,9 @@ namespace Infra.FileAccess.Grpc
 
         public byte[] ReadFile(string filePath) => throw new NotImplementedException();
 
-        public void MoveFile(string sourceFilePath, string destFilePath) => throw new NotImplementedException();
+        public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotImplementedException();
 
-        public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite) => throw new NotImplementedException();
-
-        public void CopyFile(string sourceFilePath, string destFilePath) => throw new NotImplementedException();
-
-        public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite) => throw new NotImplementedException();
+        public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotImplementedException();
 
         #endregion
 
@@ -450,6 +446,58 @@ namespace Infra.FileAccess.Grpc
             catch (Exception ex)
             {
                 _logger.LogError($"File【{fileName}】download unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
+        public async Task MoveFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetFileClient();
+            var progressInfo = new ProgressInfo();
+            var sourceFileName = sourceFilePath;
+            var destinationFilename = destFilePath;
+
+            try
+            {
+                var request = new MoveRequest()
+                {
+                    SourceFilename = sourceFileName,
+                    DestinationFilename = destinationFilename,
+                    Overwrite = overwrite,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently move file from【{sourceFileName}】to【{destinationFilename}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                await client.MoveAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFilename}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.FileName = destinationFilename;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFilename}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Move file from【{sourceFileName}】to【{destinationFilename}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally

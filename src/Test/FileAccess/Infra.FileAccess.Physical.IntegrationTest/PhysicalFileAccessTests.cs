@@ -290,6 +290,22 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         }
 
         [Test]
+        public void DeleteFileAsyncNotSupported()
+        {
+            var filePath = Path.Combine(_filesPath, "test.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteFileAsync(filePath));
+        }
+
+        [Test]
+        public void GetFileSizeAsyncNotSupported()
+        {
+            var filePath = Path.Combine(_filesPath, "test.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFileSizeAsync(filePath));
+        }
+
+        [Test]
         public async Task ReadUtf8FileSuccessAsync()
         {
             var filePath = Path.Combine(_filesPath, "utf8.txt");
@@ -307,19 +323,12 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         }
 
         [Test]
-        public void DeleteFileAsyncNotSupported()
+        public void MoveFileAsyncNotSupported()
         {
-            var filePath = Path.Combine(_filesPath, "test.txt");
+            var sourceFilePath = Path.Combine(_filesPath, "test.txt");
+            var destFilePath = Path.Combine(_filesPath, "Move", "test.txt");
 
-            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteFileAsync(filePath));
-        }
-
-        [Test]
-        public void GetFileSizeAsyncNotSupported()
-        {
-            var filePath = Path.Combine(_filesPath, "test.txt");
-
-            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFileSizeAsync(filePath));
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.MoveFileAsync(sourceFilePath, destFilePath));
         }
 
         #endregion

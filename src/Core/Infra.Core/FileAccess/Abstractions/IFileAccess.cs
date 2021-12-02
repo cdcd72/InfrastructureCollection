@@ -59,13 +59,9 @@ namespace Infra.Core.FileAccess.Abstractions
 
         byte[] ReadFile(string filePath);
 
-        void MoveFile(string sourceFilePath, string destFilePath);
+        void MoveFile(string sourceFilePath, string destFilePath, bool overwrite = true);
 
-        void MoveFile(string sourceFilePath, string destFilePath, bool overwrite);
-
-        void CopyFile(string sourceFilePath, string destFilePath);
-
-        void CopyFile(string sourceFilePath, string destFilePath, bool overwrite);
+        void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true);
 
         #endregion
 
@@ -88,6 +84,8 @@ namespace Infra.Core.FileAccess.Abstractions
         Task<string> ReadTextFileAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
         Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+        Task MoveFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
         #endregion
     }

@@ -99,16 +99,10 @@ namespace Infra.FileAccess.Physical
         public byte[] ReadFile(string filePath)
             => File.ReadAllBytes(GetVerifiedPath(filePath));
 
-        public void MoveFile(string sourceFilePath, string destFilePath)
-            => MoveFile(sourceFilePath, destFilePath, true);
-
-        public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite)
+        public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite = true)
             => File.Move(GetVerifiedPath(sourceFilePath), GetVerifiedPath(destFilePath), overwrite);
 
-        public void CopyFile(string sourceFilePath, string destFilePath)
-            => CopyFile(sourceFilePath, destFilePath, true);
-
-        public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite)
+        public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true)
             => File.Copy(GetVerifiedPath(sourceFilePath), GetVerifiedPath(destFilePath), overwrite);
 
         #endregion
@@ -145,6 +139,9 @@ namespace Infra.FileAccess.Physical
 
         public async Task<byte[]> ReadFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await File.ReadAllBytesAsync(GetVerifiedPath(filePath), cancellationToken);
+
+        public Task MoveFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
 
         #endregion
 
