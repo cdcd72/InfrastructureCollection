@@ -345,5 +345,35 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<CopyResponse> Copy(
+            CopyRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var rootDirectoryPath = _env.DirectoryRoot;
+            var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFilename);
+            var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFilename);
+            var reply = new CopyResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently copy file from {sourceFilePath} to {destinationFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                _fileAccess.CopyFile(sourceFilePath, destinationFilePath, request.Overwrite);
+
+                _logger.LogInformation($"【{mark}】Copy file completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Copy file unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

@@ -87,6 +87,8 @@ namespace Infra.Core.FileAccess.Abstractions
 
         Task MoveFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
+        Task CopyFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
         #endregion
     }
 }

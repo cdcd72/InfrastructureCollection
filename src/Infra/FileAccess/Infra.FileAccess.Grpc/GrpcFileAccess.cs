@@ -507,6 +507,58 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public async Task CopyFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetFileClient();
+            var progressInfo = new ProgressInfo();
+            var sourceFileName = sourceFilePath;
+            var destinationFilename = destFilePath;
+
+            try
+            {
+                var request = new CopyRequest()
+                {
+                    SourceFilename = sourceFileName,
+                    DestinationFilename = destinationFilename,
+                    Overwrite = overwrite,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently copy file from【{sourceFileName}】to【{destinationFilename}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                await client.CopyAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFilename}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.FileName = destinationFilename;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFilename}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Copy file from【{sourceFileName}】to【{destinationFilename}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
         #endregion
 
         #region Private Method

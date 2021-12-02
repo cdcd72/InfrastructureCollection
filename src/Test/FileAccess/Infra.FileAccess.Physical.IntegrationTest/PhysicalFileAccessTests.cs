@@ -331,6 +331,15 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.MoveFileAsync(sourceFilePath, destFilePath));
         }
 
+        [Test]
+        public void CopyFileAsyncNotSupported()
+        {
+            var sourceFilePath = Path.Combine(_filesPath, "test.txt");
+            var destFilePath = Path.Combine(_filesPath, "Copy", "test.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.CopyFileAsync(sourceFilePath, destFilePath));
+        }
+
         #endregion
 
         [TearDown]

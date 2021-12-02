@@ -11,6 +11,7 @@ service FileTransfer {
   rpc Delete (DeleteRequest) returns (DeleteResponse);
   rpc GetSize (GetSizeRequest) returns (GetSizeResponse);
   rpc Move (MoveRequest) returns (MoveResponse);
+  rpc Copy (CopyRequest) returns (CopyResponse);
 }
 
 message UploadRequest {
@@ -74,5 +75,16 @@ message MoveRequest {
 }
 
 message MoveResponse {
+  string mark = 1;
+}
+
+message CopyRequest {
+  string source_filename = 1;
+  string destination_filename = 2;
+  bool overwrite = 3;
+  string mark = 4;
+}
+
+message CopyResponse {
   string mark = 1;
 }
