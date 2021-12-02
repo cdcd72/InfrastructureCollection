@@ -24,12 +24,12 @@ namespace GrpcFileServer.Services
             _fileAccess = fileAccess;
         }
 
-        public override async Task Upload(
-            IAsyncStreamReader<UploadRequest> requestStream,
-            IServerStreamWriter<UploadResponse> responseStream,
+        public override async Task UploadFile(
+            IAsyncStreamReader<UploadFileRequest> requestStream,
+            IServerStreamWriter<UploadFileResponse> responseStream,
             ServerCallContext context)
         {
-            var fileContents = new List<UploadRequest>();
+            var fileContents = new List<UploadFileRequest>();
 
             FileStream fs = null;
             var startTime = DateTime.Now;
@@ -93,7 +93,7 @@ namespace GrpcFileServer.Services
                         #endregion
 
                         // Tell client file transfer completed.
-                        await responseStream.WriteAsync(new UploadResponse
+                        await responseStream.WriteAsync(new UploadFileResponse
                         {
                             Filename = reply.Filename,
                             Mark = mark
@@ -141,9 +141,9 @@ namespace GrpcFileServer.Services
             }
         }
 
-        public override async Task Download(
-            DownloadRequest request,
-            IServerStreamWriter<DownloadResponse> responseStream,
+        public override async Task DownloadFile(
+            DownloadFileRequest request,
+            IServerStreamWriter<DownloadFileResponse> responseStream,
             ServerCallContext context)
         {
             var successFileNames = new List<string>();
@@ -155,7 +155,7 @@ namespace GrpcFileServer.Services
             var buffer = new byte[chunkSize];
             var fileName = request.Filename;
             var filePath = Path.Combine(_env.DirectoryRoot, fileName);
-            var reply = new DownloadResponse
+            var reply = new DownloadFileResponse
             {
                 Filename = fileName,
                 Mark = mark
@@ -211,7 +211,7 @@ namespace GrpcFileServer.Services
                 if (!context.CancellationToken.IsCancellationRequested)
                 {
                     // Tell client file transfer completed.
-                    await responseStream.WriteAsync(new DownloadResponse
+                    await responseStream.WriteAsync(new DownloadFileResponse
                     {
                         Filename = string.Empty,
                         Block = -2, // -2 means all file chunk transfer completed.
@@ -232,14 +232,14 @@ namespace GrpcFileServer.Services
             }
         }
 
-        public override async Task<IsExistResponse> IsExist(
-            IsExistRequest request,
+        public override async Task<IsExistFileResponse> IsExistFile(
+            IsExistFileRequest request,
             ServerCallContext context)
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
             var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
-            var reply = new IsExistResponse
+            var reply = new IsExistFileResponse
             {
                 Mark = mark
             };
@@ -260,14 +260,14 @@ namespace GrpcFileServer.Services
             return reply;
         }
 
-        public override async Task<DeleteResponse> Delete(
-            DeleteRequest request,
+        public override async Task<DeleteFileResponse> DeleteFile(
+            DeleteFileRequest request,
             ServerCallContext context)
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
             var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
-            var reply = new DeleteResponse
+            var reply = new DeleteFileResponse
             {
                 Mark = mark
             };
@@ -288,14 +288,14 @@ namespace GrpcFileServer.Services
             return reply;
         }
 
-        public override async Task<GetSizeResponse> GetSize(
-            GetSizeRequest request,
+        public override async Task<GetFileSizeResponse> GetFileSize(
+            GetFileSizeRequest request,
             ServerCallContext context)
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
             var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
-            var reply = new GetSizeResponse
+            var reply = new GetFileSizeResponse
             {
                 Mark = mark
             };
@@ -316,8 +316,8 @@ namespace GrpcFileServer.Services
             return reply;
         }
 
-        public override async Task<MoveResponse> Move(
-            MoveRequest request,
+        public override async Task<MoveFileResponse> MoveFile(
+            MoveFileRequest request,
             ServerCallContext context)
         {
             var startTime = DateTime.Now;
@@ -325,7 +325,7 @@ namespace GrpcFileServer.Services
             var rootDirectoryPath = _env.DirectoryRoot;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFilename);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFilename);
-            var reply = new MoveResponse
+            var reply = new MoveFileResponse
             {
                 Mark = mark
             };
@@ -346,8 +346,8 @@ namespace GrpcFileServer.Services
             return reply;
         }
 
-        public override async Task<CopyResponse> Copy(
-            CopyRequest request,
+        public override async Task<CopyFileResponse> CopyFile(
+            CopyFileRequest request,
             ServerCallContext context)
         {
             var startTime = DateTime.Now;
@@ -355,7 +355,7 @@ namespace GrpcFileServer.Services
             var rootDirectoryPath = _env.DirectoryRoot;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFilename);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFilename);
-            var reply = new CopyResponse
+            var reply = new CopyFileResponse
             {
                 Mark = mark
             };

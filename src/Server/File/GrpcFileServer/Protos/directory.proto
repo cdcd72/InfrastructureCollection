@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcFileServer";
+
+package infra.directory.v1;
+
+service DirectoryTransfer {
+  rpc CreateDirectory (CreateDirectoryRequest) returns (CreateDirectoryResponse);
+}
+
+message CreateDirectoryRequest {
+  string directoryname = 1;
+  string mark = 2;
+}
+
+message CreateDirectoryResponse {
+  string mark = 1;
+}

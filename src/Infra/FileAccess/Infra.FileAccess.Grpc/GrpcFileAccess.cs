@@ -106,7 +106,7 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new CreateRequest()
+                var request = new CreateDirectoryRequest()
                 {
                     Directoryname = directoryName,
                     Mark = mark
@@ -115,7 +115,7 @@ namespace Infra.FileAccess.Grpc
                 progressInfo.Message = $"Currently create directory【{directoryName}】...";
                 progressCallBack?.Invoke(progressInfo);
 
-                await client.CreateAsync(request, cancellationToken: cancellationToken);
+                await client.CreateDirectoryAsync(request, cancellationToken: cancellationToken);
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
@@ -157,7 +157,7 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new IsExistRequest()
+                var request = new IsExistFileRequest()
                 {
                     Filename = fileName,
                     Mark = mark
@@ -166,7 +166,7 @@ namespace Infra.FileAccess.Grpc
                 progressInfo.Message = $"Currently check file【{fileName}】exist...";
                 progressCallBack?.Invoke(progressInfo);
 
-                var call = await client.IsExistAsync(request, cancellationToken: cancellationToken);
+                var call = await client.IsExistFileAsync(request, cancellationToken: cancellationToken);
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
@@ -217,9 +217,9 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                using var call = client.Upload(cancellationToken: cancellationToken);
+                using var call = client.UploadFile(cancellationToken: cancellationToken);
 
-                var request = new UploadRequest()
+                var request = new UploadFileRequest()
                 {
                     Filename = fileName,
                     Mark = mark
@@ -282,7 +282,7 @@ namespace Infra.FileAccess.Grpc
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
-                    await call.RequestStream.WriteAsync(new UploadRequest
+                    await call.RequestStream.WriteAsync(new UploadFileRequest
                     {
                         Block = -2, // -2 means all file chunk transfer completed.
                         Mark = mark
@@ -311,7 +311,7 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new DeleteRequest()
+                var request = new DeleteFileRequest()
                 {
                     Filename = fileName,
                     Mark = mark
@@ -320,7 +320,7 @@ namespace Infra.FileAccess.Grpc
                 progressInfo.Message = $"Currently delete file【{fileName}】...";
                 progressCallBack?.Invoke(progressInfo);
 
-                await client.DeleteAsync(request, cancellationToken: cancellationToken);
+                await client.DeleteFileAsync(request, cancellationToken: cancellationToken);
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
@@ -360,7 +360,7 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new GetSizeRequest()
+                var request = new GetFileSizeRequest()
                 {
                     Filename = fileName,
                     Mark = mark
@@ -369,7 +369,7 @@ namespace Infra.FileAccess.Grpc
                 progressInfo.Message = $"Currently get file【{fileName}】size...";
                 progressCallBack?.Invoke(progressInfo);
 
-                var call = await client.GetSizeAsync(request, cancellationToken: cancellationToken);
+                var call = await client.GetFileSizeAsync(request, cancellationToken: cancellationToken);
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
@@ -422,15 +422,15 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new DownloadRequest()
+                var request = new DownloadFileRequest()
                 {
                     Filename = fileName,
                     Mark = mark
                 };
 
-                using var call = client.Download(request, cancellationToken: cancellationToken);
+                using var call = client.DownloadFile(request, cancellationToken: cancellationToken);
 
-                var fileContents = new List<DownloadResponse>();
+                var fileContents = new List<DownloadFileResponse>();
                 var reaponseStream = call.ResponseStream;
 
                 while (await reaponseStream.MoveNext(cancellationToken))
@@ -519,7 +519,7 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new MoveRequest()
+                var request = new MoveFileRequest()
                 {
                     SourceFilename = sourceFileName,
                     DestinationFilename = destinationFilename,
@@ -530,7 +530,7 @@ namespace Infra.FileAccess.Grpc
                 progressInfo.Message = $"Currently move file from【{sourceFileName}】to【{destinationFilename}】...";
                 progressCallBack?.Invoke(progressInfo);
 
-                await client.MoveAsync(request, cancellationToken: cancellationToken);
+                await client.MoveFileAsync(request, cancellationToken: cancellationToken);
 
                 if (!cancellationToken.IsCancellationRequested)
                 {
@@ -571,7 +571,7 @@ namespace Infra.FileAccess.Grpc
 
             try
             {
-                var request = new CopyRequest()
+                var request = new CopyFileRequest()
                 {
                     SourceFilename = sourceFileName,
                     DestinationFilename = destinationFilename,
@@ -582,7 +582,7 @@ namespace Infra.FileAccess.Grpc
                 progressInfo.Message = $"Currently copy file from【{sourceFileName}】to【{destinationFilename}】...";
                 progressCallBack?.Invoke(progressInfo);
 
-                await client.CopyAsync(request, cancellationToken: cancellationToken);
+                await client.CopyFileAsync(request, cancellationToken: cancellationToken);
 
                 if (!cancellationToken.IsCancellationRequested)
                 {

@@ -5,86 +5,86 @@ option csharp_namespace = "GrpcFileServer";
 package infra.file.v1;
 
 service FileTransfer {
-  rpc Upload (stream UploadRequest) returns (stream UploadResponse);
-  rpc Download (DownloadRequest) returns (stream DownloadResponse);
-  rpc IsExist (IsExistRequest) returns (IsExistResponse);
-  rpc Delete (DeleteRequest) returns (DeleteResponse);
-  rpc GetSize (GetSizeRequest) returns (GetSizeResponse);
-  rpc Move (MoveRequest) returns (MoveResponse);
-  rpc Copy (CopyRequest) returns (CopyResponse);
+  rpc UploadFile (stream UploadFileRequest) returns (stream UploadFileResponse);
+  rpc DownloadFile (DownloadFileRequest) returns (stream DownloadFileResponse);
+  rpc IsExistFile (IsExistFileRequest) returns (IsExistFileResponse);
+  rpc DeleteFile (DeleteFileRequest) returns (DeleteFileResponse);
+  rpc GetFileSize (GetFileSizeRequest) returns (GetFileSizeResponse);
+  rpc MoveFile (MoveFileRequest) returns (MoveFileResponse);
+  rpc CopyFile (CopyFileRequest) returns (CopyFileResponse);
 }
 
-message UploadRequest {
+message UploadFileRequest {
   string filename = 1;
   int32 block = 2;
   bytes content = 3;
   string mark = 4;
 }
 
-message UploadResponse {
+message UploadFileResponse {
   string filename = 1;
   string mark = 2;
 }
 
-message DownloadRequest {
+message DownloadFileRequest {
   string filename = 1;
   string mark = 2;
 }
 
-message DownloadResponse {
+message DownloadFileResponse {
   string filename = 1;
   int32 block = 2;
   bytes content = 3;
   string mark = 4;
 }
 
-message IsExistRequest {
+message IsExistFileRequest {
   string filename = 1;
   string mark = 2;
 }
 
-message IsExistResponse {
+message IsExistFileResponse {
   bool status = 1;
   string mark = 2;
 }
 
-message DeleteRequest {
+message DeleteFileRequest {
   string filename = 1;
   string mark = 2;
 }
 
-message DeleteResponse {
+message DeleteFileResponse {
   string mark = 1;
 }
 
-message GetSizeRequest {
+message GetFileSizeRequest {
   string filename = 1;
   string mark = 2;
 }
 
-message GetSizeResponse {
+message GetFileSizeResponse {
   int64 size = 1;
   string mark = 2;
 }
 
-message MoveRequest {
+message MoveFileRequest {
   string source_filename = 1;
   string destination_filename = 2;
   bool overwrite = 3;
   string mark = 4;
 }
 
-message MoveResponse {
+message MoveFileResponse {
   string mark = 1;
 }
 
-message CopyRequest {
+message CopyFileRequest {
   string source_filename = 1;
   string destination_filename = 2;
   bool overwrite = 3;
   string mark = 4;
 }
 
-message CopyResponse {
+message CopyFileResponse {
   string mark = 1;
 }
