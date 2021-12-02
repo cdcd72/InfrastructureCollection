@@ -6,6 +6,7 @@ package infra.directory.v1;
 
 service DirectoryTransfer {
   rpc CreateDirectory (CreateDirectoryRequest) returns (CreateDirectoryResponse);
+  rpc IsExistDirectory (IsExistDirectoryRequest) returns (IsExistDirectoryResponse);
 }
 
 message CreateDirectoryRequest {
@@ -15,4 +16,14 @@ message CreateDirectoryRequest {
 
 message CreateDirectoryResponse {
   string mark = 1;
+}
+
+message IsExistDirectoryRequest {
+  string directoryname = 1;
+  string mark = 2;
+}
+
+message IsExistDirectoryResponse {
+  bool status = 1;
+  string mark = 2;
 }

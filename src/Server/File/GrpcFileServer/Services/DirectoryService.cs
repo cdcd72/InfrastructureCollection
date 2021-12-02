@@ -49,5 +49,33 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<IsExistDirectoryResponse> IsExistDirectory(
+            IsExistDirectoryRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.Directoryname);
+            var reply = new IsExistDirectoryResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently check directory {directoryPath} exist, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                reply.Status = _fileAccess.DirectoryExists(directoryPath);
+
+                _logger.LogInformation($"【{mark}】Check directory exist completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Check directory exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

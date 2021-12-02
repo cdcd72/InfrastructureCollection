@@ -260,6 +260,14 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.CreateDirectoryAsync(directoryPath));
         }
 
+        [Test]
+        public void JudegeDirectoryExistsSuccessAsync()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DirectoryExistsAsync(directoryPath));
+        }
+
         #endregion
 
         [Test]
