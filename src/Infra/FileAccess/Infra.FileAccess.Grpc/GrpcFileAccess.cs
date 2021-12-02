@@ -108,7 +108,7 @@ namespace Infra.FileAccess.Grpc
             {
                 var request = new CreateDirectoryRequest()
                 {
-                    Directoryname = directoryName,
+                    DirectoryName = directoryName,
                     Mark = mark
                 };
 
@@ -157,7 +157,7 @@ namespace Infra.FileAccess.Grpc
             {
                 var request = new IsExistDirectoryRequest()
                 {
-                    Directoryname = directoryName,
+                    DirectoryName = directoryName,
                     Mark = mark
                 };
 
@@ -210,7 +210,7 @@ namespace Infra.FileAccess.Grpc
             {
                 var request = new IsExistFileRequest()
                 {
-                    Filename = fileName,
+                    FileName = fileName,
                     Mark = mark
                 };
 
@@ -272,7 +272,7 @@ namespace Infra.FileAccess.Grpc
 
                 var request = new UploadFileRequest()
                 {
-                    Filename = fileName,
+                    FileName = fileName,
                     Mark = mark
                 };
 
@@ -364,7 +364,7 @@ namespace Infra.FileAccess.Grpc
             {
                 var request = new DeleteFileRequest()
                 {
-                    Filename = fileName,
+                    FileName = fileName,
                     Mark = mark
                 };
 
@@ -413,7 +413,7 @@ namespace Infra.FileAccess.Grpc
             {
                 var request = new GetFileSizeRequest()
                 {
-                    Filename = fileName,
+                    FileName = fileName,
                     Mark = mark
                 };
 
@@ -475,7 +475,7 @@ namespace Infra.FileAccess.Grpc
             {
                 var request = new DownloadFileRequest()
                 {
-                    Filename = fileName,
+                    FileName = fileName,
                     Mark = mark
                 };
 
@@ -566,19 +566,19 @@ namespace Infra.FileAccess.Grpc
             var (channel, client) = GetFileClient();
             var progressInfo = new ProgressInfo();
             var sourceFileName = sourceFilePath;
-            var destinationFilename = destFilePath;
+            var destinationFileName = destFilePath;
 
             try
             {
                 var request = new MoveFileRequest()
                 {
-                    SourceFilename = sourceFileName,
-                    DestinationFilename = destinationFilename,
+                    SourceFileName = sourceFileName,
+                    DestinationFileName = destinationFileName,
                     Overwrite = overwrite,
                     Mark = mark
                 };
 
-                progressInfo.Message = $"Currently move file from【{sourceFileName}】to【{destinationFilename}】...";
+                progressInfo.Message = $"Currently move file from【{sourceFileName}】to【{destinationFileName}】...";
                 progressCallBack?.Invoke(progressInfo);
 
                 await client.MoveFileAsync(request, cancellationToken: cancellationToken);
@@ -586,22 +586,22 @@ namespace Infra.FileAccess.Grpc
                 if (!cancellationToken.IsCancellationRequested)
                 {
                     progressInfo.IsCompleted = true;
-                    progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFilename}】completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.Result = destinationFilename;
+                    progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFileName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = destinationFileName;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
-                    progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFilename}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFileName}】canceled. SpentTime:{DateTime.Now - startTime}";
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Move file from【{sourceFileName}】to【{destinationFilename}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.LogError($"Move file from【{sourceFileName}】to【{destinationFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -618,19 +618,19 @@ namespace Infra.FileAccess.Grpc
             var (channel, client) = GetFileClient();
             var progressInfo = new ProgressInfo();
             var sourceFileName = sourceFilePath;
-            var destinationFilename = destFilePath;
+            var destinationFileName = destFilePath;
 
             try
             {
                 var request = new CopyFileRequest()
                 {
-                    SourceFilename = sourceFileName,
-                    DestinationFilename = destinationFilename,
+                    SourceFileName = sourceFileName,
+                    DestinationFileName = destinationFileName,
                     Overwrite = overwrite,
                     Mark = mark
                 };
 
-                progressInfo.Message = $"Currently copy file from【{sourceFileName}】to【{destinationFilename}】...";
+                progressInfo.Message = $"Currently copy file from【{sourceFileName}】to【{destinationFileName}】...";
                 progressCallBack?.Invoke(progressInfo);
 
                 await client.CopyFileAsync(request, cancellationToken: cancellationToken);
@@ -638,22 +638,22 @@ namespace Infra.FileAccess.Grpc
                 if (!cancellationToken.IsCancellationRequested)
                 {
                     progressInfo.IsCompleted = true;
-                    progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFilename}】completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.Result = destinationFilename;
+                    progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFileName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = destinationFileName;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
-                    progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFilename}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFileName}】canceled. SpentTime:{DateTime.Now - startTime}";
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Copy file from【{sourceFileName}】to【{destinationFilename}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.LogError($"Copy file from【{sourceFileName}】to【{destinationFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally

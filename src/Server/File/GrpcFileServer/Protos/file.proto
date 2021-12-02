@@ -15,31 +15,31 @@ service FileTransfer {
 }
 
 message UploadFileRequest {
-  string filename = 1;
+  string file_name = 1;
   int32 block = 2;
   bytes content = 3;
   string mark = 4;
 }
 
 message UploadFileResponse {
-  string filename = 1;
+  string file_name = 1;
   string mark = 2;
 }
 
 message DownloadFileRequest {
-  string filename = 1;
+  string file_name = 1;
   string mark = 2;
 }
 
 message DownloadFileResponse {
-  string filename = 1;
+  string file_name = 1;
   int32 block = 2;
   bytes content = 3;
   string mark = 4;
 }
 
 message IsExistFileRequest {
-  string filename = 1;
+  string file_name = 1;
   string mark = 2;
 }
 
@@ -49,7 +49,7 @@ message IsExistFileResponse {
 }
 
 message DeleteFileRequest {
-  string filename = 1;
+  string file_name = 1;
   string mark = 2;
 }
 
@@ -58,7 +58,7 @@ message DeleteFileResponse {
 }
 
 message GetFileSizeRequest {
-  string filename = 1;
+  string file_name = 1;
   string mark = 2;
 }
 
@@ -68,8 +68,8 @@ message GetFileSizeResponse {
 }
 
 message MoveFileRequest {
-  string source_filename = 1;
-  string destination_filename = 2;
+  string source_file_name = 1;
+  string destination_file_name = 2;
   bool overwrite = 3;
   string mark = 4;
 }
@@ -79,8 +79,8 @@ message MoveFileResponse {
 }
 
 message CopyFileRequest {
-  string source_filename = 1;
-  string destination_filename = 2;
+  string source_file_name = 1;
+  string destination_file_name = 2;
   bool overwrite = 3;
   string mark = 4;
 }

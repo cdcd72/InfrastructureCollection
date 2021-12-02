@@ -59,7 +59,7 @@ namespace GrpcFileServer.Services
                     // file transfer canceled. (Block = -1)
                     else if (reply.Block == -1)
                     {
-                        _logger.LogInformation($"【{mark}】File【{reply.Filename}】upload canceled!");
+                        _logger.LogInformation($"【{mark}】File【{reply.FileName}】upload canceled!");
 
                         #region Clean file and reset variable
 
@@ -95,7 +95,7 @@ namespace GrpcFileServer.Services
                         // Tell client file transfer completed.
                         await responseStream.WriteAsync(new UploadFileResponse
                         {
-                            Filename = reply.Filename,
+                            FileName = reply.FileName,
                             Mark = mark
                         });
                     }
@@ -104,12 +104,12 @@ namespace GrpcFileServer.Services
                         // save path is empty means file probably coming.
                         if (string.IsNullOrEmpty(savePath))
                         {
-                            // reply.Filename value may be:
+                            // reply.FileName value may be:
                             // 1. 123.txt
                             // 2. Data\\123.txt
                             subDirectoryPath =
-                                Path.Combine(rootDirectoryPath, Path.GetDirectoryName(reply.Filename));
-                            fileName = Path.GetFileName(reply.Filename);
+                                Path.Combine(rootDirectoryPath, Path.GetDirectoryName(reply.FileName));
+                            fileName = Path.GetFileName(reply.FileName);
 
                             if (!_fileAccess.DirectoryExists(subDirectoryPath))
                                 _fileAccess.CreateDirectory(subDirectoryPath);
@@ -153,11 +153,11 @@ namespace GrpcFileServer.Services
             var mark = request.Mark;
             var chunkSize = _env.ChunkSize;
             var buffer = new byte[chunkSize];
-            var fileName = request.Filename;
+            var fileName = request.FileName;
             var filePath = Path.Combine(_env.DirectoryRoot, fileName);
             var reply = new DownloadFileResponse
             {
-                Filename = fileName,
+                FileName = fileName,
                 Mark = mark
             };
 
@@ -213,7 +213,7 @@ namespace GrpcFileServer.Services
                     // Tell client file transfer completed.
                     await responseStream.WriteAsync(new DownloadFileResponse
                     {
-                        Filename = string.Empty,
+                        FileName = string.Empty,
                         Block = -2, // -2 means all file chunk transfer completed.
                         Content = Google.Protobuf.ByteString.Empty,
                         Mark = mark
@@ -238,7 +238,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
+            var filePath = Path.Combine(_env.DirectoryRoot, request.FileName);
             var reply = new IsExistFileResponse
             {
                 Mark = mark
@@ -266,7 +266,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
+            var filePath = Path.Combine(_env.DirectoryRoot, request.FileName);
             var reply = new DeleteFileResponse
             {
                 Mark = mark
@@ -294,7 +294,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.DirectoryRoot, request.Filename);
+            var filePath = Path.Combine(_env.DirectoryRoot, request.FileName);
             var reply = new GetFileSizeResponse
             {
                 Mark = mark
@@ -323,8 +323,8 @@ namespace GrpcFileServer.Services
             var startTime = DateTime.Now;
             var mark = request.Mark;
             var rootDirectoryPath = _env.DirectoryRoot;
-            var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFilename);
-            var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFilename);
+            var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
+            var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new MoveFileResponse
             {
                 Mark = mark
@@ -353,8 +353,8 @@ namespace GrpcFileServer.Services
             var startTime = DateTime.Now;
             var mark = request.Mark;
             var rootDirectoryPath = _env.DirectoryRoot;
-            var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFilename);
-            var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFilename);
+            var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
+            var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new CopyFileResponse
             {
                 Mark = mark

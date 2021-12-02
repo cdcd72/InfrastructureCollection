@@ -28,7 +28,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.Directoryname);
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
             var reply = new CreateDirectoryResponse
             {
                 Mark = mark
@@ -56,7 +56,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.Directoryname);
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
             var reply = new IsExistDirectoryResponse
             {
                 Mark = mark

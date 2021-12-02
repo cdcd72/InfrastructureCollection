@@ -10,7 +10,7 @@ service DirectoryTransfer {
 }
 
 message CreateDirectoryRequest {
-  string directoryname = 1;
+  string directory_name = 1;
   string mark = 2;
 }
 
@@ -19,7 +19,7 @@ message CreateDirectoryResponse {
 }
 
 message IsExistDirectoryRequest {
-  string directoryname = 1;
+  string directory_name = 1;
   string mark = 2;
 }
 
