@@ -250,6 +250,18 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
         #region Async
 
+        #region Directory
+
+        [Test]
+        public void CreateDirectorySuccessAsync()
+        {
+            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.CreateDirectoryAsync(directoryPath));
+        }
+
+        #endregion
+
         [Test]
         public void FileExistsAsyncNotSupported()
         {

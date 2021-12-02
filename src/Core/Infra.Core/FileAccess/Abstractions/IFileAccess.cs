@@ -67,6 +67,12 @@ namespace Infra.Core.FileAccess.Abstractions
 
         #region Async Method
 
+        #region Directory
+
+        Task CreateDirectoryAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+        #endregion
+
         Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
         Task SaveFileAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);

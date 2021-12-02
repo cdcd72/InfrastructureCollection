@@ -94,6 +94,59 @@ namespace Infra.FileAccess.Grpc
 
         #region Async Method
 
+        #region Directory
+
+        public async Task CreateDirectoryAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetDirectoryClient();
+            var progressInfo = new ProgressInfo();
+            var directoryName = directoryPath;
+
+            try
+            {
+                var request = new CreateRequest()
+                {
+                    Directoryname = directoryName,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently create directory【{directoryName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                await client.CreateAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Create directory【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = directoryName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Create directory【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Create directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
+        #endregion
+
         public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
             var mark = $"{Guid.NewGuid()}";
@@ -119,7 +172,7 @@ namespace Infra.FileAccess.Grpc
                 {
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Check file【{fileName}】exist completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.FileName = fileName;
+                    progressInfo.Result = fileName;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
@@ -218,7 +271,7 @@ namespace Infra.FileAccess.Grpc
                         {
                             progressInfo.IsCompleted = true;
                             progressInfo.Message = $"File【{fileName}】upload completed. SpentTime:{DateTime.Now - startTime}";
-                            progressInfo.FileName = fileName;
+                            progressInfo.Result = fileName;
                             _logger.LogInformation(progressInfo.Message);
                             progressCallBack?.Invoke(progressInfo);
                         }
@@ -273,7 +326,7 @@ namespace Infra.FileAccess.Grpc
                 {
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Delete file【{fileName}】completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.FileName = fileName;
+                    progressInfo.Result = fileName;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
@@ -322,7 +375,7 @@ namespace Infra.FileAccess.Grpc
                 {
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Get file【{fileName}】size completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.FileName = fileName;
+                    progressInfo.Result = fileName;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
@@ -421,7 +474,7 @@ namespace Infra.FileAccess.Grpc
 
                         progressInfo.IsCompleted = true;
                         progressInfo.Message = $"File【{fileName}】download completed. SpentTime:{DateTime.Now - startTime}";
-                        progressInfo.FileName = fileName;
+                        progressInfo.Result = fileName;
                         _logger.LogInformation(progressInfo.Message);
                         progressCallBack?.Invoke(progressInfo);
                     }
@@ -483,7 +536,7 @@ namespace Infra.FileAccess.Grpc
                 {
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFilename}】completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.FileName = destinationFilename;
+                    progressInfo.Result = destinationFilename;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
@@ -535,7 +588,7 @@ namespace Infra.FileAccess.Grpc
                 {
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFilename}】completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.FileName = destinationFilename;
+                    progressInfo.Result = destinationFilename;
                     _logger.LogInformation(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
@@ -567,6 +620,13 @@ namespace Infra.FileAccess.Grpc
         {
             var channel = GetGrpcChannel();
             var client = new FileTransfer.FileTransferClient(channel);
+            return (channel, client);
+        }
+
+        private (GrpcChannel, DirectoryTransfer.DirectoryTransferClient) GetDirectoryClient()
+        {
+            var channel = GetGrpcChannel();
+            var client = new DirectoryTransfer.DirectoryTransferClient(channel);
             return (channel, client);
         }
 
