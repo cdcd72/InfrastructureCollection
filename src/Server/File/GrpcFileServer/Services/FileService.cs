@@ -34,13 +34,13 @@ namespace GrpcFileServer.Services
             FileStream fs = null;
             var startTime = DateTime.Now;
             var mark = string.Empty;
-            var uploadDirectoryPath = Path.Combine(_env.DirectoryRoot);
-            var uploadSubDirectoryPath = string.Empty;
+            var rootDirectoryPath = _env.DirectoryRoot;
+            var subDirectoryPath = string.Empty;
             var fileName = string.Empty;
             var savePath = string.Empty;
 
-            if (!_fileAccess.DirectoryExists(uploadDirectoryPath))
-                _fileAccess.CreateDirectory(uploadDirectoryPath);
+            if (!_fileAccess.DirectoryExists(rootDirectoryPath))
+                _fileAccess.CreateDirectory(rootDirectoryPath);
 
             try
             {
@@ -107,14 +107,14 @@ namespace GrpcFileServer.Services
                             // reply.Filename value may be:
                             // 1. 123.txt
                             // 2. Data\\123.txt
-                            uploadSubDirectoryPath =
-                                Path.Combine(uploadDirectoryPath, Path.GetDirectoryName(reply.Filename));
+                            subDirectoryPath =
+                                Path.Combine(rootDirectoryPath, Path.GetDirectoryName(reply.Filename));
                             fileName = Path.GetFileName(reply.Filename);
 
-                            if (!_fileAccess.DirectoryExists(uploadSubDirectoryPath))
-                                _fileAccess.CreateDirectory(uploadSubDirectoryPath);
+                            if (!_fileAccess.DirectoryExists(subDirectoryPath))
+                                _fileAccess.CreateDirectory(subDirectoryPath);
 
-                            savePath = Path.Combine(uploadSubDirectoryPath, fileName);
+                            savePath = Path.Combine(subDirectoryPath, fileName);
                             fs = new FileStream(savePath, FileMode.Create, FileAccess.ReadWrite);
                             _logger.LogInformation($"【{mark}】Currently upload file to {savePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
                         }
@@ -153,9 +153,8 @@ namespace GrpcFileServer.Services
             var mark = request.Mark;
             var chunkSize = _env.ChunkSize;
             var buffer = new byte[chunkSize];
-            var downloadDirectoryPath = Path.Combine(_env.DirectoryRoot);
             var fileName = request.Filename;
-            var filePath = Path.Combine(downloadDirectoryPath, fileName);
+            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
             var reply = new DownloadResponse
             {
                 Filename = fileName,
@@ -233,13 +232,14 @@ namespace GrpcFileServer.Services
             }
         }
 
-        public override async Task<IsExistResponse> IsExist(IsExistRequest request, ServerCallContext context)
+        public override async Task<IsExistResponse> IsExist(
+            IsExistRequest request,
+            ServerCallContext context)
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var checkDirectoryPath = Path.Combine(_env.DirectoryRoot);
             var fileName = request.Filename;
-            var filePath = Path.Combine(checkDirectoryPath, fileName);
+            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
             var reply = new IsExistResponse
             {
                 Mark = mark
@@ -256,6 +256,35 @@ namespace GrpcFileServer.Services
             catch (Exception ex)
             {
                 _logger.LogError($"【{mark}】Check file exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
+
+        public override async Task<DeleteResponse> Delete(
+            DeleteRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var fileName = request.Filename;
+            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
+            var reply = new DeleteResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently delete file {filePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                _fileAccess.DeleteFile(filePath);
+
+                _logger.LogInformation($"【{mark}】Delete file completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Delete file unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;

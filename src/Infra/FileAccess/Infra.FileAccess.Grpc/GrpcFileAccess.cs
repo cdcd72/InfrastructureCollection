@@ -252,6 +252,55 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public async Task DeleteFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetFileClient();
+            var progressInfo = new ProgressInfo();
+            var fileName = filePath;
+
+            try
+            {
+                var request = new DeleteRequest()
+                {
+                    Filename = fileName,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently delete file【{fileName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                await client.DeleteAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Delete file【{fileName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.FileName = fileName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Delete file【{fileName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Delete file【{fileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
         public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
 
@@ -373,6 +422,8 @@ namespace Infra.FileAccess.Grpc
         private GrpcChannel GetGrpcChannel()
             => GrpcChannel.ForAddress(_env.ServerAddress);
 
+        #region Memory manage related
+
         private RecyclableMemoryStreamManager GetRecyclableMemoryStreamManager()
         {
             var blockSize = 1024;
@@ -395,6 +446,8 @@ namespace Infra.FileAccess.Grpc
 
         private void RecyclableMemoryStreamManager_StreamDisposed(object sender, RecyclableMemoryStreamManager.StreamDisposedEventArgs e)
             => _logger.LogDebug("File memory stream disposed.");
+
+        #endregion
 
         #endregion
     }

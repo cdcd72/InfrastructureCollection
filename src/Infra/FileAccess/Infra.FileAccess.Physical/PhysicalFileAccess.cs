@@ -127,6 +127,9 @@ namespace Infra.FileAccess.Physical
         public async Task SaveFileAsync(string filePath, byte[] bytes, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await File.WriteAllBytesAsync(GetVerifiedPath(filePath), bytes, cancellationToken);
 
+        public Task DeleteFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         public async Task<string> ReadTextFileAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await ReadTextFileAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
 
