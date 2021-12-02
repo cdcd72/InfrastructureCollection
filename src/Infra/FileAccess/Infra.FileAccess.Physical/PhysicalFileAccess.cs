@@ -117,6 +117,9 @@ namespace Infra.FileAccess.Physical
         public Task<bool> DirectoryExistsAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
+        public Task<string[]> GetFilesAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         #endregion
 
         public Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
@@ -161,6 +164,9 @@ namespace Infra.FileAccess.Physical
         #region Private Method
 
         private string GetVerifiedPath(string path) => _pathValidator.GetValidPath(path);
+
+        // TODO: 方法若回傳路徑，需要轉回非 Unc 路徑... (待處理)
+        //       GetParentPath, GetFiles
 
         #endregion
     }

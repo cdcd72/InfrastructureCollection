@@ -77,5 +77,37 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<GetFilesResponse> GetFiles(
+            GetFilesRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var reply = new GetFilesResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently get files from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                // TODO: 依據參數數值，決定呼叫方法...
+                reply.FileNames.AddRange(_fileAccess.GetFiles(directoryPath));
+
+                _logger.LogInformation($"{request.SearchPattern == ""}, {request.SearchOption == ""}");
+                _logger.LogInformation($"{request.SearchPattern}, {request.SearchOption}");
+
+                _logger.LogInformation($"【{mark}】Get files completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Get files unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

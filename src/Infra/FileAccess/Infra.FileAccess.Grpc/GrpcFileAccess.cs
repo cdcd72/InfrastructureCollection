@@ -196,6 +196,9 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public async Task<string[]> GetFilesAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await GetFilesInternalAsync(directoryPath, progressCallBack: progressCallBack, cancellationToken: cancellationToken);
+
         #endregion
 
         public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
@@ -667,6 +670,61 @@ namespace Infra.FileAccess.Grpc
 
         #region Private Method
 
+        private async Task<string[]> GetFilesInternalAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = SearchOption.TopDirectoryOnly, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetDirectoryClient();
+            var progressInfo = new ProgressInfo();
+            var directoryName = directoryPath;
+
+            try
+            {
+                var request = new GetFilesRequest()
+                {
+                    DirectoryName = directoryName,
+                    SearchPattern = searchPattern,
+                    SearchOption = $"{searchOption}",
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently get files from【{directoryName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                var call = await client.GetFilesAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Get files from【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = directoryName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Get files from【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+
+                return call.FileNames.ToArray();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Get files from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
+        #region gRPC manage related
+
         private (GrpcChannel, FileTransfer.FileTransferClient) GetFileClient()
         {
             var channel = GetGrpcChannel();
@@ -683,6 +741,8 @@ namespace Infra.FileAccess.Grpc
 
         private GrpcChannel GetGrpcChannel()
             => GrpcChannel.ForAddress(_env.ServerAddress);
+
+        #endregion
 
         #region Memory manage related
 
