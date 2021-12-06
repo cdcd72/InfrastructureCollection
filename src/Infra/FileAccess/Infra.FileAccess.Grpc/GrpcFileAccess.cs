@@ -40,45 +40,45 @@ namespace Infra.FileAccess.Grpc
 
         #region Directory
 
-        public void CreateDirectory(string directoryPath) => throw new NotImplementedException();
+        public void CreateDirectory(string directoryPath) => throw new NotSupportedException();
 
-        public bool DirectoryExists(string directoryPath) => throw new NotImplementedException();
+        public bool DirectoryExists(string directoryPath) => throw new NotSupportedException();
 
-        public string[] GetFiles(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotImplementedException();
+        public string[] GetFiles(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotSupportedException();
 
-        public void DeleteDirectory(string directoryPath, bool recursive = true) => throw new NotImplementedException();
+        public void DeleteDirectory(string directoryPath, bool recursive = true) => throw new NotSupportedException();
 
-        public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotImplementedException();
+        public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotSupportedException();
 
-        public void DirectoryCompress(string directoryPath, string zipFilePath) => throw new NotImplementedException();
+        public void DirectoryCompress(string directoryPath, string zipFilePath) => throw new NotSupportedException();
 
-        public string GetParentPath(string directoryPath) => throw new NotImplementedException();
+        public string GetParentPath(string directoryPath) => throw new NotSupportedException();
 
-        public string GetCurrentDirectoryName(string directoryPath) => throw new NotImplementedException();
+        public string GetCurrentDirectoryName(string directoryPath) => throw new NotSupportedException();
 
         #endregion
 
-        public bool FileExists(string filePath) => throw new NotImplementedException();
+        public bool FileExists(string filePath) => throw new NotSupportedException();
 
-        public void SaveFile(string filePath, string content) => throw new NotImplementedException();
+        public void SaveFile(string filePath, string content) => throw new NotSupportedException();
 
-        public void SaveFile(string filePath, string content, Encoding encoding) => throw new NotImplementedException();
+        public void SaveFile(string filePath, string content, Encoding encoding) => throw new NotSupportedException();
 
-        public void SaveFile(string filePath, byte[] bytes) => throw new NotImplementedException();
+        public void SaveFile(string filePath, byte[] bytes) => throw new NotSupportedException();
 
-        public void DeleteFile(string filePath) => throw new NotImplementedException();
+        public void DeleteFile(string filePath) => throw new NotSupportedException();
 
-        public long GetFileSize(string filePath) => throw new NotImplementedException();
+        public long GetFileSize(string filePath) => throw new NotSupportedException();
 
-        public string ReadTextFile(string filePath) => throw new NotImplementedException();
+        public string ReadTextFile(string filePath) => throw new NotSupportedException();
 
-        public string ReadTextFile(string filePath, Encoding encoding) => throw new NotImplementedException();
+        public string ReadTextFile(string filePath, Encoding encoding) => throw new NotSupportedException();
 
-        public byte[] ReadFile(string filePath) => throw new NotImplementedException();
+        public byte[] ReadFile(string filePath) => throw new NotSupportedException();
 
-        public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotImplementedException();
+        public void MoveFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotSupportedException();
 
-        public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotImplementedException();
+        public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotSupportedException();
 
         #endregion
 
