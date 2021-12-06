@@ -342,6 +342,57 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public async Task DirectoryCompressAsync(string directoryPath, string zipFilePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetDirectoryClient();
+            var progressInfo = new ProgressInfo();
+            var directoryName = directoryPath;
+            var zipFileName = zipFilePath;
+
+            try
+            {
+                var request = new DirectoryCompressRequest()
+                {
+                    DirectoryName = directoryName,
+                    ZipFileName = zipFileName,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently compress directory【{directoryName}】to【{zipFileName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                await client.DirectoryCompressAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Compress directory【{directoryName}】to【{zipFileName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = directoryName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Compress directory【{directoryName}】to【{zipFileName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Compress directory【{directoryName}】to【{zipFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
         #endregion
 
         public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)

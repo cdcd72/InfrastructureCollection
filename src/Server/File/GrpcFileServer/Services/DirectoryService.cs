@@ -163,5 +163,34 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<DirectoryCompressResponse> DirectoryCompress(
+            DirectoryCompressRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var zipFilePath = Path.Combine(_env.DirectoryRoot, request.ZipFileName);
+            var reply = new DirectoryCompressResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently compress directory {directoryPath} to {zipFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                _fileAccess.DirectoryCompress(directoryPath, zipFilePath);
+
+                _logger.LogInformation($"【{mark}】Compress directory completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Compress directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

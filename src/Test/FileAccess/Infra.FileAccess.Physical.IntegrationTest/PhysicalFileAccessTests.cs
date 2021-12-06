@@ -332,6 +332,15 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories));
         }
 
+        [Test]
+        public void DirectoryCompressAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(_tempPath, "DirectoryCompress.zip");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath));
+        }
+
         #endregion
 
         [Test]

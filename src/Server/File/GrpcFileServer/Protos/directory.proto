@@ -10,6 +10,7 @@ service DirectoryTransfer {
   rpc GetFiles (GetFilesRequest) returns (GetFilesResponse);
   rpc DeleteDirectory (DeleteDirectoryRequest) returns (DeleteDirectoryResponse);
   rpc GetSubDirectories (GetSubDirectoriesRequest) returns (GetSubDirectoriesResponse);
+  rpc DirectoryCompress (DirectoryCompressRequest) returns (DirectoryCompressResponse);
 }
 
 message CreateDirectoryRequest {
@@ -63,4 +64,14 @@ message GetSubDirectoriesRequest {
 message GetSubDirectoriesResponse {
   repeated string directory_names = 1;
   string mark = 2;
+}
+
+message DirectoryCompressRequest {
+  string directory_name = 1;
+  string zip_file_name = 2;
+  string mark = 3;
+}
+
+message DirectoryCompressResponse {
+  string mark = 1;
 }
