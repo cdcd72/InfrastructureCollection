@@ -341,6 +341,22 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath));
         }
 
+        [Test]
+        public void GetParentPathAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetParentPathAsync(directoryPath));
+        }
+
+        [Test]
+        public void GetCurrentDirectoryNameAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetCurrentDirectoryNameAsync(directoryPath));
+        }
+
         #endregion
 
         [Test]

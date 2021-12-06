@@ -393,6 +393,14 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            // Can't implemented, because of some security issue.
+            => throw new NotSupportedException();
+
+        public Task<string> GetCurrentDirectoryNameAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            // Can't implemented, because of some security issue.
+            => throw new NotSupportedException();
+
         #endregion
 
         public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
