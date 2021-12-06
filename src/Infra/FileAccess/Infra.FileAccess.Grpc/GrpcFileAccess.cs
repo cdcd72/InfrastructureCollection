@@ -199,6 +199,11 @@ namespace Infra.FileAccess.Grpc
         public async Task<string[]> GetFilesAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => await GetFilesInternalAsync(directoryPath, progressCallBack: progressCallBack, cancellationToken: cancellationToken);
 
+        public async Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await GetFilesInternalAsync(directoryPath, searchPattern, progressCallBack: progressCallBack, cancellationToken: cancellationToken);
+        public async Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, SearchOption searchOption, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await GetFilesInternalAsync(directoryPath, searchPattern, searchOption, progressCallBack, cancellationToken);
+
         #endregion
 
         public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)

@@ -61,7 +61,7 @@ namespace Infra.FileAccess.Physical
             => ZipFile.CreateFromDirectory(GetVerifiedPath(directoryPath), GetVerifiedPath(zipFilePath), CompressionLevel.Optimal, false);
 
         public string GetParentPath(string directoryPath)
-            => Directory.GetParent(GetVerifiedPath(directoryPath).Replace(PathValidator.NonUncPattern, string.Empty)).FullName;
+            => Directory.GetParent(GetVerifiedPath(directoryPath)).FullName;
 
         public string GetCurrentDirectoryName(string directoryPath)
             => new DirectoryInfo(GetVerifiedPath(directoryPath)).Name;
@@ -120,6 +120,12 @@ namespace Infra.FileAccess.Physical
         public Task<string[]> GetFilesAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
+        public Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, SearchOption searchOption, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
         #endregion
 
         public Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
@@ -164,9 +170,6 @@ namespace Infra.FileAccess.Physical
         #region Private Method
 
         private string GetVerifiedPath(string path) => _pathValidator.GetValidPath(path);
-
-        // TODO: 方法若回傳路徑，需要轉回非 Unc 路徑... (待處理)
-        //       GetParentPath, GetFiles
 
         #endregion
     }

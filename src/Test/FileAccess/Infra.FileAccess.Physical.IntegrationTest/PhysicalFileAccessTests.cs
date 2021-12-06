@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Validators;
 using NUnit.Framework;
 
 namespace Infra.FileAccess.Physical.IntegrationTest
@@ -10,19 +11,26 @@ namespace Infra.FileAccess.Physical.IntegrationTest
     public class PhysicalFileAccessTests
     {
         private readonly string _rootPath;
+        private readonly IFileAccess _fileAccess;
         private readonly string _filesPath;
         private readonly string _tempPath;
-        private readonly IFileAccess _fileAccess;
+        private readonly string _nonUncPattern;
 
         public PhysicalFileAccessTests()
         {
             _rootPath =
                 Path.Combine(
                     Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "TestData");
-            _filesPath = Path.Combine(_rootPath, "Files");
-            _tempPath = Path.Combine(_rootPath, "Temp");
 
             _fileAccess = new PhysicalFileAccess(_rootPath);
+
+            // Can't operate directory
+            _filesPath = Path.Combine(_rootPath, "Files");
+
+            // Can operate directory
+            _tempPath = Path.Combine(_rootPath, "Temp");
+
+            _nonUncPattern = PathValidator.NonUncPattern;
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
@@ -134,7 +142,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         {
             var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
 
-            Assert.AreEqual(_filesPath, _fileAccess.GetParentPath(directoryPath));
+            Assert.AreEqual(_nonUncPattern + _filesPath, _fileAccess.GetParentPath(directoryPath));
         }
 
         [Test]
@@ -274,6 +282,22 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath));
+        }
+
+        [Test]
+        public void GetFilesWithSearchPatternAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath, "*.txt"));
+        }
+
+        [Test]
+        public void GetFilesWithSearchPatternAndOptionAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath, "*.txt", SearchOption.AllDirectories));
         }
 
         #endregion
