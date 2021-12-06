@@ -134,5 +134,34 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<GetSubDirectoriesResponse> GetSubDirectories(
+            GetSubDirectoriesRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var reply = new GetSubDirectoriesResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently get subdirectories from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                if (Enum.TryParse<SearchOption>(request.SearchOption, out var searchOption))
+                    reply.DirectoryNames.AddRange(_fileAccess.GetSubDirectories(directoryPath, request.SearchPattern, searchOption));
+
+                _logger.LogInformation($"【{mark}】Get subdirectories completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Get subdirectories unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

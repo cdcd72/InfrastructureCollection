@@ -39,13 +39,7 @@ namespace Infra.FileAccess.Physical
         public void DeleteDirectory(string directoryPath, bool recursive = true)
             => Directory.Delete(GetVerifiedPath(directoryPath), recursive);
 
-        public string[] GetSubDirectories(string directoryPath)
-            => Directory.GetDirectories(GetVerifiedPath(directoryPath));
-
-        public string[] GetSubDirectories(string directoryPath, string searchPattern)
-            => Directory.GetDirectories(GetVerifiedPath(directoryPath), searchPattern);
-
-        public string[] GetSubDirectories(string directoryPath, string searchPattern, SearchOption searchOption)
+        public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default)
             => Directory.GetDirectories(GetVerifiedPath(directoryPath), searchPattern, searchOption);
 
         public void DirectoryCompress(string directoryPath, string zipFilePath)
@@ -112,6 +106,9 @@ namespace Infra.FileAccess.Physical
             => throw new NotSupportedException();
 
         public Task DeleteDirectoryAsync(string directoryPath, bool recursive = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<string[]> GetSubDirectoriesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
         #endregion

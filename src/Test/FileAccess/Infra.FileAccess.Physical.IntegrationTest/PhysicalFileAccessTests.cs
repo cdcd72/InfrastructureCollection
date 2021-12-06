@@ -308,6 +308,30 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteDirectoryAsync(directoryPath));
         }
 
+        [Test]
+        public void GetSubDirectoriesAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath));
+        }
+
+        [Test]
+        public void GetSubDirectoriesWithSearchPatternAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath, "Another*"));
+        }
+
+        [Test]
+        public void GetSubDirectoriesWithSearchPatternAndOptionAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_filesPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories));
+        }
+
         #endregion
 
         [Test]

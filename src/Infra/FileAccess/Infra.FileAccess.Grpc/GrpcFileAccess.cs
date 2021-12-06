@@ -46,15 +46,9 @@ namespace Infra.FileAccess.Grpc
 
         public string[] GetFiles(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotImplementedException();
 
-        public void DeleteDirectory(string directoryPath) => throw new NotImplementedException();
+        public void DeleteDirectory(string directoryPath, bool recursive = true) => throw new NotImplementedException();
 
-        public void DeleteDirectory(string directoryPath, bool recursive) => throw new NotImplementedException();
-
-        public string[] GetSubDirectories(string directoryPath) => throw new NotImplementedException();
-
-        public string[] GetSubDirectories(string directoryPath, string searchPattern) => throw new NotImplementedException();
-
-        public string[] GetSubDirectories(string directoryPath, string searchPattern, SearchOption searchOption) => throw new NotImplementedException();
+        public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotImplementedException();
 
         public void DirectoryCompress(string directoryPath, string zipFilePath) => throw new NotImplementedException();
 
@@ -286,6 +280,59 @@ namespace Infra.FileAccess.Grpc
             catch (Exception ex)
             {
                 _logger.LogError($"Delete directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
+        public async Task<string[]> GetSubDirectoriesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetDirectoryClient();
+            var progressInfo = new ProgressInfo();
+            var directoryName = directoryPath;
+
+            try
+            {
+                var request = new GetSubDirectoriesRequest()
+                {
+                    DirectoryName = directoryName,
+                    SearchPattern = searchPattern,
+                    SearchOption = $"{searchOption}",
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently get subdirectories from【{directoryName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                var call = await client.GetSubDirectoriesAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Get subdirectories from【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = directoryName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Get subdirectories from【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+
+                return call.DirectoryNames.ToArray();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Get subdirectories from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
