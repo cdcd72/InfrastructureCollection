@@ -13,7 +13,6 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         private readonly string _rootPath;
         private readonly IFileAccess _fileAccess;
         private readonly string _tempPath;
-        private readonly string _nonUncPattern;
 
         public PhysicalFileAccessTests()
         {
@@ -26,10 +25,11 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             // Can operated directory...
             _tempPath = Path.Combine(_rootPath, "Temp");
 
-            _nonUncPattern = PathValidator.NonUncPattern;
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
+
+        [SetUp]
+        public void SetUp() => _fileAccess.CreateDirectory(_tempPath);
 
         [Test]
         public void NewPhysicalFileAccessWithoutRoot()
@@ -172,7 +172,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             _fileAccess.CreateDirectory(directoryPath);
 
-            Assert.AreEqual(_nonUncPattern + _tempPath, _fileAccess.GetParentPath(directoryPath));
+            Assert.AreEqual(PathValidator.NonUncPattern + _tempPath, _fileAccess.GetParentPath(directoryPath));
         }
 
         [Test]
@@ -483,21 +483,6 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         #endregion
 
         [TearDown]
-        public void TearDown()
-        {
-            var directories = _fileAccess.GetSubDirectories(_tempPath);
-
-            foreach (var directory in directories)
-            {
-                _fileAccess.DeleteDirectory(directory);
-            }
-
-            var files = _fileAccess.GetFiles(_tempPath);
-
-            foreach (var file in files)
-            {
-                _fileAccess.DeleteFile(file);
-            }
-        }
+        public void TearDown() => _fileAccess.DeleteDirectory(_tempPath);
     }
 }
