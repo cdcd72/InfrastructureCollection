@@ -106,5 +106,33 @@ namespace GrpcFileServer.Services
 
             return reply;
         }
+
+        public override async Task<DeleteDirectoryResponse> DeleteDirectory(
+            DeleteDirectoryRequest request,
+            ServerCallContext context)
+        {
+            var startTime = DateTime.Now;
+            var mark = request.Mark;
+            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var reply = new DeleteDirectoryResponse
+            {
+                Mark = mark
+            };
+
+            try
+            {
+                _logger.LogInformation($"【{mark}】Currently delete directory {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+
+                _fileAccess.DeleteDirectory(directoryPath, request.Recursive);
+
+                _logger.LogInformation($"【{mark}】Delete directory completed. SpentTime:{DateTime.Now - startTime}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"【{mark}】Delete directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
+            }
+
+            return reply;
+        }
     }
 }

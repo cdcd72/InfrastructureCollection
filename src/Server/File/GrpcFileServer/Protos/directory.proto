@@ -8,6 +8,7 @@ service DirectoryTransfer {
   rpc CreateDirectory (CreateDirectoryRequest) returns (CreateDirectoryResponse);
   rpc IsExistDirectory (IsExistDirectoryRequest) returns (IsExistDirectoryResponse);
   rpc GetFiles (GetFilesRequest) returns (GetFilesResponse);
+  rpc DeleteDirectory (DeleteDirectoryRequest) returns (DeleteDirectoryResponse);
 }
 
 message CreateDirectoryRequest {
@@ -39,4 +40,14 @@ message GetFilesRequest {
 message GetFilesResponse {
   repeated string file_names = 1;
   string mark = 2;
+}
+
+message DeleteDirectoryRequest {
+  string directory_name = 1;
+  bool recursive = 2;
+  string mark = 3;
+}
+
+message DeleteDirectoryResponse {
+  string mark = 1;
 }

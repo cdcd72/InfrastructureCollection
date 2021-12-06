@@ -300,6 +300,14 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath, "*.txt", SearchOption.AllDirectories));
         }
 
+        [Test]
+        public void DeleteDirectoryAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteDirectoryAsync(directoryPath));
+        }
+
         #endregion
 
         [Test]

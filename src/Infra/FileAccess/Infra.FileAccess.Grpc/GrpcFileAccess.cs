@@ -245,6 +245,56 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
+        public async Task DeleteDirectoryAsync(string directoryPath, bool recursive = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetDirectoryClient();
+            var progressInfo = new ProgressInfo();
+            var directoryName = directoryPath;
+
+            try
+            {
+                var request = new DeleteDirectoryRequest()
+                {
+                    DirectoryName = directoryName,
+                    Recursive = recursive,
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently delete directory【{directoryName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                await client.DeleteDirectoryAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Delete directory【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = directoryName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Delete directory【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Delete directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
+
         #endregion
 
         public async Task<bool> FileExistsAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)

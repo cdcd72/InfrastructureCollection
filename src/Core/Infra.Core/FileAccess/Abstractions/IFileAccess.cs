@@ -19,9 +19,7 @@ namespace Infra.Core.FileAccess.Abstractions
 
         string[] GetFiles(string directoryPath, string searchPattern = "", SearchOption searchOption = default);
 
-        void DeleteDirectory(string directoryPath);
-
-        void DeleteDirectory(string directoryPath, bool recursive);
+        void DeleteDirectory(string directoryPath, bool recursive = true);
 
         string[] GetSubDirectories(string directoryPath);
 
@@ -70,6 +68,8 @@ namespace Infra.Core.FileAccess.Abstractions
         Task<bool> DirectoryExistsAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
         Task<string[]> GetFilesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+        Task DeleteDirectoryAsync(string directoryPath, bool recursive = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
         #endregion
 
