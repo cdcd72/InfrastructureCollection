@@ -17,8 +17,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         public PhysicalFileAccessTests()
         {
             _rootPath =
-                Path.Combine(
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty, "TestData");
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
             _fileAccess = new PhysicalFileAccess(_rootPath);
 
