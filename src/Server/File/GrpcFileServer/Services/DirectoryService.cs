@@ -94,17 +94,8 @@ namespace GrpcFileServer.Services
             {
                 _logger.LogInformation($"【{mark}】Currently get files from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                if (request.SearchPattern.Length > 0)
-                {
-                    if (Enum.TryParse<SearchOption>(request.SearchOption, out var searchOption))
-                        reply.FileNames.AddRange(_fileAccess.GetFiles(directoryPath, request.SearchPattern, searchOption));
-                    else
-                        reply.FileNames.AddRange(_fileAccess.GetFiles(directoryPath, request.SearchPattern));
-                }
-                else
-                {
-                    reply.FileNames.AddRange(_fileAccess.GetFiles(directoryPath));
-                }
+                if (Enum.TryParse<SearchOption>(request.SearchOption, out var searchOption))
+                    reply.FileNames.AddRange(_fileAccess.GetFiles(directoryPath, request.SearchPattern, searchOption));
 
                 _logger.LogInformation($"【{mark}】Get files completed. SpentTime:{DateTime.Now - startTime}");
             }

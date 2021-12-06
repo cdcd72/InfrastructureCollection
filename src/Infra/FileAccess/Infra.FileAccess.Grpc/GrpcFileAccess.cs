@@ -44,11 +44,7 @@ namespace Infra.FileAccess.Grpc
 
         public bool DirectoryExists(string directoryPath) => throw new NotImplementedException();
 
-        public string[] GetFiles(string directoryPath) => throw new NotImplementedException();
-
-        public string[] GetFiles(string directoryPath, string searchPattern) => throw new NotImplementedException();
-
-        public string[] GetFiles(string directoryPath, string searchPattern, SearchOption searchOption) => throw new NotImplementedException();
+        public string[] GetFiles(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotImplementedException();
 
         public void DeleteDirectory(string directoryPath) => throw new NotImplementedException();
 
@@ -196,13 +192,58 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
-        public async Task<string[]> GetFilesAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await GetFilesInternalAsync(directoryPath, progressCallBack: progressCallBack, cancellationToken: cancellationToken);
+        public async Task<string[]> GetFilesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            var mark = $"{Guid.NewGuid()}";
+            var startTime = DateTime.Now;
+            var (channel, client) = GetDirectoryClient();
+            var progressInfo = new ProgressInfo();
+            var directoryName = directoryPath;
 
-        public async Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await GetFilesInternalAsync(directoryPath, searchPattern, progressCallBack: progressCallBack, cancellationToken: cancellationToken);
-        public async Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, SearchOption searchOption, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await GetFilesInternalAsync(directoryPath, searchPattern, searchOption, progressCallBack, cancellationToken);
+            try
+            {
+                var request = new GetFilesRequest()
+                {
+                    DirectoryName = directoryName,
+                    SearchPattern = searchPattern,
+                    SearchOption = $"{searchOption}",
+                    Mark = mark
+                };
+
+                progressInfo.Message = $"Currently get files from【{directoryName}】...";
+                progressCallBack?.Invoke(progressInfo);
+
+                var call = await client.GetFilesAsync(request, cancellationToken: cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    progressInfo.IsCompleted = true;
+                    progressInfo.Message = $"Get files from【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
+                    progressInfo.Result = directoryName;
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+                else
+                {
+                    progressInfo.IsCompleted = false;
+                    progressInfo.Message = $"Get files from【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
+                    _logger.LogInformation(progressInfo.Message);
+                    progressCallBack?.Invoke(progressInfo);
+                }
+
+                return call.FileNames.ToArray();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Get files from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                throw;
+            }
+            finally
+            {
+                // Shutdown the channel.
+                await channel?.ShutdownAsync();
+            }
+        }
 
         #endregion
 
@@ -674,59 +715,6 @@ namespace Infra.FileAccess.Grpc
         #endregion
 
         #region Private Method
-
-        private async Task<string[]> GetFilesInternalAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = SearchOption.TopDirectoryOnly, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-        {
-            var mark = $"{Guid.NewGuid()}";
-            var startTime = DateTime.Now;
-            var (channel, client) = GetDirectoryClient();
-            var progressInfo = new ProgressInfo();
-            var directoryName = directoryPath;
-
-            try
-            {
-                var request = new GetFilesRequest()
-                {
-                    DirectoryName = directoryName,
-                    SearchPattern = searchPattern,
-                    SearchOption = $"{searchOption}",
-                    Mark = mark
-                };
-
-                progressInfo.Message = $"Currently get files from【{directoryName}】...";
-                progressCallBack?.Invoke(progressInfo);
-
-                var call = await client.GetFilesAsync(request, cancellationToken: cancellationToken);
-
-                if (!cancellationToken.IsCancellationRequested)
-                {
-                    progressInfo.IsCompleted = true;
-                    progressInfo.Message = $"Get files from【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
-                    progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
-                    progressCallBack?.Invoke(progressInfo);
-                }
-                else
-                {
-                    progressInfo.IsCompleted = false;
-                    progressInfo.Message = $"Get files from【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
-                    progressCallBack?.Invoke(progressInfo);
-                }
-
-                return call.FileNames.ToArray();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Get files from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
-                throw;
-            }
-            finally
-            {
-                // Shutdown the channel.
-                await channel?.ShutdownAsync();
-            }
-        }
 
         #region gRPC manage related
 

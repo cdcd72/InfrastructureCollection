@@ -33,13 +33,7 @@ namespace Infra.FileAccess.Physical
         public bool DirectoryExists(string directoryPath)
             => Directory.Exists(GetVerifiedPath(directoryPath));
 
-        public string[] GetFiles(string directoryPath)
-            => Directory.GetFiles(GetVerifiedPath(directoryPath));
-
-        public string[] GetFiles(string directoryPath, string searchPattern)
-            => Directory.GetFiles(GetVerifiedPath(directoryPath), searchPattern);
-
-        public string[] GetFiles(string directoryPath, string searchPattern, SearchOption searchOption)
+        public string[] GetFiles(string directoryPath, string searchPattern = "", SearchOption searchOption = default)
             => Directory.GetFiles(GetVerifiedPath(directoryPath), searchPattern, searchOption);
 
         public void DeleteDirectory(string directoryPath)
@@ -117,13 +111,7 @@ namespace Infra.FileAccess.Physical
         public Task<bool> DirectoryExistsAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task<string[]> GetFilesAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        public Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
-
-        public Task<string[]> GetFilesAsync(string directoryPath, string searchPattern, SearchOption searchOption, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task<string[]> GetFilesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
         #endregion
