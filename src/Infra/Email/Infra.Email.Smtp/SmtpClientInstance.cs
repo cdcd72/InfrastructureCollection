@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
+using Infra.Core.Extensions;
 using Infra.Email.Smtp.Exceptions;
 using Infra.Email.Smtp.Models;
 using MailKit.Net.Smtp;
@@ -60,7 +61,7 @@ namespace Infra.Email.Smtp
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Send mail error: {ex.Message}");
+                _logger.Error($"Send mail error: {ex.Message}");
                 throw;
             }
             finally

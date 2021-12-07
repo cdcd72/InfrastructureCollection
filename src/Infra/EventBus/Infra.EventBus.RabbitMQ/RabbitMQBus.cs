@@ -8,6 +8,7 @@ using Infra.Core.EventBus;
 using Infra.Core.EventBus.Abstractions;
 using Infra.Core.EventBus.Events;
 using Infra.Core.EventBus.Extensions;
+using Infra.Core.Extensions;
 using Infra.EventBus.RabbitMQ.Abstractions;
 using Infra.EventBus.RabbitMQ.Common;
 using Microsoft.Extensions.Configuration;
@@ -62,15 +63,15 @@ namespace Infra.EventBus.RabbitMQ
             var policy = Policy.Handle<SocketException>()
                 .Or<BrokerUnreachableException>()
                 .WaitAndRetry(_env.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
-                    => _logger.LogWarning(ex, "Could not publish event: {EventId} after {Timeout}s. ({ExceptionMessage})", integrationEvent.Id, $"{time.TotalSeconds:n1}", ex.Message));
+                    => _logger.Warning(ex, $"Could not publish event: {integrationEvent.Id} after {time.TotalSeconds:n1}s. ({ex.Message})"));
 
             var eventName = integrationEvent.GetType().Name;
 
-            _logger.LogTrace("Creating RabbitMQ channel to publish event: {EventId}. ({EventName})", integrationEvent.Id, eventName);
+            _logger.Trace($"Creating RabbitMQ channel to publish event: {integrationEvent.Id}. ({eventName})");
 
             using var channel = _connection.CreateChannel();
 
-            _logger.LogTrace("Declaring RabbitMQ exchange to publish event: {EventId}.", integrationEvent.Id);
+            _logger.Trace($"Declaring RabbitMQ exchange to publish event: {integrationEvent.Id}.");
 
             channel.ExchangeDeclare(exchange: RABBITMQ_EXCHANGE_NAME, type: RABBITMQ_TYPE);
 
@@ -84,7 +85,7 @@ namespace Infra.EventBus.RabbitMQ
                 var properties = channel.CreateBasicProperties();
                 properties.DeliveryMode = 2; // persistent
 
-                _logger.LogTrace("Publishing event to RabbitMQ: {EventId}.", integrationEvent.Id);
+                _logger.Trace($"Publishing event to RabbitMQ: {integrationEvent.Id}.");
 
                 channel.BasicPublish(
                     exchange: RABBITMQ_EXCHANGE_NAME,
@@ -103,7 +104,7 @@ namespace Infra.EventBus.RabbitMQ
 
             DoInternalSubscription(eventName);
 
-            _logger.LogInformation("Subscribing to event {EventName} with {EventHandler}.", eventName, typeof(TIntegrationEventHandler).GetGenericTypeName());
+            _logger.Information($"Subscribing to event {eventName} with {typeof(TIntegrationEventHandler).GetGenericTypeName()}.");
 
             _subsManager.AddSubscription<TIntegrationEvent, TIntegrationEventHandler>();
 
@@ -112,7 +113,7 @@ namespace Infra.EventBus.RabbitMQ
 
         public void SubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
-            _logger.LogInformation("Subscribing to dynamic event {EventName} with {EventHandler}.", eventName, typeof(TDynamicIntegrationEventHandler).GetGenericTypeName());
+            _logger.Information($"Subscribing to dynamic event {eventName} with {typeof(TDynamicIntegrationEventHandler).GetGenericTypeName()}.");
 
             DoInternalSubscription(eventName);
 
@@ -127,14 +128,14 @@ namespace Infra.EventBus.RabbitMQ
         {
             var eventName = _subsManager.GetEventName<TIntegrationEvent>();
 
-            _logger.LogInformation("Unsubscribing from event {EventName}.", eventName);
+            _logger.Information($"Unsubscribing from event {eventName}.");
 
             _subsManager.RemoveSubscription<TIntegrationEvent, TIntegrationEventHandler>();
         }
 
         public void UnsubscribeDynamic<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
         {
-            _logger.LogInformation("Unsubscribing from dynamic event {EventName}.", eventName);
+            _logger.Information($"Unsubscribing from dynamic event {eventName}.");
 
             _subsManager.RemoveDynamicSubscription<TDynamicIntegrationEventHandler>(eventName);
         }
@@ -176,7 +177,7 @@ namespace Infra.EventBus.RabbitMQ
             if (!_connection.IsConnected)
                 _connection.TryConnect();
 
-            _logger.LogTrace("Creating RabbitMQ consumer channel.");
+            _logger.Trace("Creating RabbitMQ consumer channel.");
 
             var channel = _connection.CreateChannel();
 
@@ -193,7 +194,7 @@ namespace Infra.EventBus.RabbitMQ
 
             channel.CallbackException += (sender, ea) =>
             {
-                _logger.LogWarning(ea.Exception, "Recreating RabbitMQ consumer channel.");
+                _logger.Warning(ea.Exception, "Recreating RabbitMQ consumer channel.");
 
                 _consumer.Dispose();
                 _consumer = CreateConsumer();
@@ -205,7 +206,7 @@ namespace Infra.EventBus.RabbitMQ
 
         private void StartBasicConsume()
         {
-            _logger.LogTrace("Starting RabbitMQ basic consume.");
+            _logger.Trace("Starting RabbitMQ basic consume.");
 
             if (_consumer != null)
             {
@@ -220,7 +221,7 @@ namespace Infra.EventBus.RabbitMQ
             }
             else
             {
-                _logger.LogError("StartBasicConsume can't call on _consumerChannel == null .");
+                _logger.Error("StartBasicConsume can't call on _consumerChannel == null .");
             }
         }
 
@@ -235,18 +236,18 @@ namespace Infra.EventBus.RabbitMQ
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "----- ERROR Processing message \"{Message}\"", message);
+                _logger.Warning(ex, $"----- ERROR Processing message \"{message}\"");
             }
 
             // Even on exception we take the message off the queue.
-            // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX). 
+            // in a REAL WORLD app this should be handled with a Dead Letter Exchange (DLX).
             // For more information see: https://www.rabbitmq.com/dlx.html
             _consumer.BasicAck(eventArgs.DeliveryTag, multiple: false);
         }
 
         private async Task ProcessEvent(string eventName, string message)
         {
-            _logger.LogTrace("Processing RabbitMQ event: {EventName}", eventName);
+            _logger.Trace($"Processing RabbitMQ event: {eventName}");
 
             if (_subsManager.HasSubscriptionsForEvent(eventName))
             {
@@ -284,7 +285,7 @@ namespace Infra.EventBus.RabbitMQ
             }
             else
             {
-                _logger.LogWarning("No subscription for RabbitMQ event: {EventName}", eventName);
+                _logger.Warning($"No subscription for RabbitMQ event: {eventName}");
             }
         }
 

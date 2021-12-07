@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
 using GrpcFileServer;
+using Infra.Core.Extensions;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
 using Infra.FileAccess.Grpc.Common;
@@ -112,20 +113,20 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Create directory【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Create directory【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Create directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Create directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -161,14 +162,14 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Check directory【{directoryName}】exist completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Check directory【{directoryName}】exist canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
 
@@ -176,7 +177,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Check directory【{directoryName}】exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Check directory【{directoryName}】exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -214,14 +215,14 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Get files from【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Get files from【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
 
@@ -229,7 +230,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Get files from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Get files from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -266,20 +267,20 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Delete directory【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Delete directory【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Delete directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Delete directory【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -317,14 +318,14 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Get subdirectories from【{directoryName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Get subdirectories from【{directoryName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
 
@@ -332,7 +333,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Get subdirectories from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Get subdirectories from【{directoryName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -370,20 +371,20 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Compress directory【{directoryName}】to【{zipFileName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = directoryName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Compress directory【{directoryName}】to【{zipFileName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Compress directory【{directoryName}】to【{zipFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Compress directory【{directoryName}】to【{zipFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -429,14 +430,14 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Check file【{fileName}】exist completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = fileName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Check file【{fileName}】exist canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
 
@@ -444,7 +445,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Check file【{fileName}】exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Check file【{fileName}】exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -495,7 +496,7 @@ namespace Infra.FileAccess.Grpc
 
                         progressInfo.IsCompleted = false;
                         progressInfo.Message = $"File【{fileName}】upload canceled. SpentTime:{DateTime.Now - startTime}";
-                        _logger.LogInformation(progressInfo.Message);
+                        _logger.Information(progressInfo.Message);
                         progressCallBack?.Invoke(progressInfo);
                         break;
                     }
@@ -528,7 +529,7 @@ namespace Infra.FileAccess.Grpc
                             progressInfo.IsCompleted = true;
                             progressInfo.Message = $"File【{fileName}】upload completed. SpentTime:{DateTime.Now - startTime}";
                             progressInfo.Result = fileName;
-                            _logger.LogInformation(progressInfo.Message);
+                            _logger.Information(progressInfo.Message);
                             progressCallBack?.Invoke(progressInfo);
                         }
 
@@ -547,7 +548,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"File【{fileName}】upload unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"File【{fileName}】upload unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -583,20 +584,20 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Delete file【{fileName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = fileName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Delete file【{fileName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Delete file【{fileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Delete file【{fileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -632,14 +633,14 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Get file【{fileName}】size completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = fileName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Get file【{fileName}】size canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
 
@@ -647,7 +648,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Get file【{fileName}】size unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Get file【{fileName}】size unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -696,7 +697,7 @@ namespace Infra.FileAccess.Grpc
                     {
                         progressInfo.IsCompleted = false;
                         progressInfo.Message = $"File【{fileName}】download canceled. SpentTime:{DateTime.Now - startTime}";
-                        _logger.LogInformation(progressInfo.Message);
+                        _logger.Information(progressInfo.Message);
                         progressCallBack?.Invoke(progressInfo);
                         break;
                     }
@@ -712,7 +713,7 @@ namespace Infra.FileAccess.Grpc
                     {
                         progressInfo.IsCompleted = false;
                         progressInfo.Message = $"File【{fileName}】download transfer failed. SpentTime:{DateTime.Now - startTime}";
-                        _logger.LogInformation(progressInfo.Message);
+                        _logger.Information(progressInfo.Message);
                         progressCallBack?.Invoke(progressInfo);
                         fileContents.Clear();
                     }
@@ -731,7 +732,7 @@ namespace Infra.FileAccess.Grpc
                         progressInfo.IsCompleted = true;
                         progressInfo.Message = $"File【{fileName}】download completed. SpentTime:{DateTime.Now - startTime}";
                         progressInfo.Result = fileName;
-                        _logger.LogInformation(progressInfo.Message);
+                        _logger.Information(progressInfo.Message);
                         progressCallBack?.Invoke(progressInfo);
                     }
                     else
@@ -754,7 +755,7 @@ namespace Infra.FileAccess.Grpc
             }
             catch (Exception ex)
             {
-                _logger.LogError($"File【{fileName}】download unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"File【{fileName}】download unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -793,20 +794,20 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFileName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = destinationFileName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Move file from【{sourceFileName}】to【{destinationFileName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Move file from【{sourceFileName}】to【{destinationFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Move file from【{sourceFileName}】to【{destinationFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -845,20 +846,20 @@ namespace Infra.FileAccess.Grpc
                     progressInfo.IsCompleted = true;
                     progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFileName}】completed. SpentTime:{DateTime.Now - startTime}";
                     progressInfo.Result = destinationFileName;
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
                 else
                 {
                     progressInfo.IsCompleted = false;
                     progressInfo.Message = $"Copy file from【{sourceFileName}】to【{destinationFileName}】canceled. SpentTime:{DateTime.Now - startTime}";
-                    _logger.LogInformation(progressInfo.Message);
+                    _logger.Information(progressInfo.Message);
                     progressCallBack?.Invoke(progressInfo);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Copy file from【{sourceFileName}】to【{destinationFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                _logger.Error($"Copy file from【{sourceFileName}】to【{destinationFileName}】unexpected exception happened.({ex.GetType()}):{ex.Message}");
                 throw;
             }
             finally
@@ -916,7 +917,7 @@ namespace Infra.FileAccess.Grpc
         }
 
         private void RecyclableMemoryStreamManager_StreamDisposed(object sender, RecyclableMemoryStreamManager.StreamDisposedEventArgs e)
-            => _logger.LogDebug("File memory stream disposed.");
+            => _logger.Debug("File memory stream disposed.");
 
         #endregion
 

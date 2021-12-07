@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Sockets;
+using Infra.Core.Extensions;
 using Infra.EventBus.RabbitMQ.Abstractions;
 using Infra.EventBus.RabbitMQ.Common;
 using Microsoft.Extensions.Configuration;
@@ -49,14 +50,14 @@ namespace Infra.EventBus.RabbitMQ
 
         public bool TryConnect()
         {
-            _logger.LogInformation("RabbitMQ client is trying to connect...");
+            _logger.Information("RabbitMQ client is trying to connect...");
 
             lock (_syncRoot)
             {
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
                     .WaitAndRetry(_env.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
-                        => _logger.LogWarning(ex, "RabbitMQ client could not connect after {TimeOut}s. ({ExceptionMessage})", $"{time.TotalSeconds:n1}", ex.Message));
+                        => _logger.Warning(ex, $"RabbitMQ client could not connect after {time.TotalSeconds:n1}s. ({ex.Message})"));
 
                 policy.Execute(() => _connection = _connectionFactory.CreateConnection());
 
@@ -66,13 +67,13 @@ namespace Infra.EventBus.RabbitMQ
                     _connection.CallbackException += OnCallbackException;
                     _connection.ConnectionShutdown += OnConnectionShutdown;
 
-                    _logger.LogInformation("RabbitMQ client acquired a persistent connection to '{HostName}' and is subscribed to failure events.", _connection.Endpoint.HostName);
+                    _logger.Information($"RabbitMQ client acquired a persistent connection to '{_connection.Endpoint.HostName}' and is subscribed to failure events.");
 
                     return true;
                 }
                 else
                 {
-                    _logger.LogCritical("FATAL ERROR: RabbitMQ connections could not be created and opened.");
+                    _logger.Critical("FATAL ERROR: RabbitMQ connections could not be created and opened.");
 
                     return false;
                 }
@@ -104,7 +105,7 @@ namespace Infra.EventBus.RabbitMQ
             if (_disposed)
                 return;
 
-            _logger.LogWarning("A RabbitMQ connection is blocked. Trying to re-connect...");
+            _logger.Warning("A RabbitMQ connection is blocked. Trying to re-connect...");
 
             TryConnect();
         }
@@ -114,7 +115,7 @@ namespace Infra.EventBus.RabbitMQ
             if (_disposed)
                 return;
 
-            _logger.LogWarning("A RabbitMQ connection throw exception. Trying to re-connect...");
+            _logger.Warning("A RabbitMQ connection throw exception. Trying to re-connect...");
 
             TryConnect();
         }
@@ -124,7 +125,7 @@ namespace Infra.EventBus.RabbitMQ
             if (_disposed)
                 return;
 
-            _logger.LogWarning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+            _logger.Warning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
 
             TryConnect();
         }
@@ -154,7 +155,7 @@ namespace Infra.EventBus.RabbitMQ
                 }
                 catch (IOException ex)
                 {
-                    _logger.LogCritical($"{ex}");
+                    _logger.Critical($"{ex}");
                 }
             }
 

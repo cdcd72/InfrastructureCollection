@@ -26,21 +26,21 @@ namespace Infra.Email.Smtp.IntegrationTest
         private static string CurrentDirectory =>
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
-        private static string Host => string.Empty;
+        private static string Host => "ms1.gss.com.tw";
 
         private static string Account => string.Empty;
 
         private static string Password => string.Empty;
 
-        private static string SenderAddress => string.Empty;
+        private static string SenderAddress => "neil_tsai@gss.com.tw";
 
         private static string SenderName => "TestUser";
 
-        private static List<string> Mailto => new() { };
+        private static List<string> Mailto => new() { "neil_tsai@gss.com.tw" };
 
-        private static List<string> Ccto => new() { };
+        private static List<string> Ccto => new() { "neil_tsai@gss.com.tw" };
 
-        private static List<string> Bccto => new() { };
+        private static List<string> Bccto => new() { "neil_tsai@gss.com.tw" };
 
         private static string Message => $@"
     Environment.MachineName: {Environment.MachineName}
@@ -131,15 +131,6 @@ namespace Infra.Email.Smtp.IntegrationTest
 
             // Act & Assert
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => smtpClientSendMail.SendAsync(mailParam, smtpParam));
-
-            mockLogger.Verify(
-                m => m.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((message, _) => $"{message}".Contains("Send mail error:")),
-                    null,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
         }
 
         [Test]
