@@ -23,7 +23,8 @@ namespace Infra.Email.Smtp.IntegrationTest
     {
         #region Properties
 
-        private static string CurrentDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? string.Empty);
+        private static string CurrentDirectory =>
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
         private static string Host => string.Empty;
 
@@ -41,8 +42,8 @@ namespace Infra.Email.Smtp.IntegrationTest
 
         private static List<string> Bccto => new() { };
 
-        private static string Messgae => $@"
-    Environment.MachineName: {Environment.MachineName} 
+        private static string Message => $@"
+    Environment.MachineName: {Environment.MachineName}
     Environment.OSVersion.VersionString: {Environment.OSVersion.VersionString}";
 
         #endregion
@@ -64,7 +65,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 SenderName = SenderName,
                 Mailto = Mailto,
                 Subject = "Send mail fail with cast smtp parameter failed.",
-                Message = Messgae,
+                Message = Message,
                 IsHtml = false
             };
 
@@ -92,7 +93,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 SenderName = SenderName,
                 Mailto = Mailto,
                 Subject = "Send mail fail with none host.",
-                Message = Messgae,
+                Message = Message,
                 IsHtml = false
             };
 
@@ -124,7 +125,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 SenderName = SenderName,
                 Mailto = Mailto,
                 Subject = "Send mail fail with unexpected argument out of range exception.",
-                Message = Messgae,
+                Message = Message,
                 IsHtml = false
             };
 
@@ -160,7 +161,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 SenderName = SenderName,
                 Mailto = Mailto,
                 Subject = "Send plain text mail success.",
-                Message = Messgae,
+                Message = Message,
                 IsHtml = false
             };
 
@@ -190,7 +191,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 SenderName = SenderName,
                 Mailto = Mailto,
                 Subject = "Send html content mail success.",
-                Message = $"<b>{Messgae}</b>",
+                Message = $"<b>{Message}</b>",
                 IsHtml = true
             };
 
@@ -221,7 +222,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 Mailto = Mailto,
                 Cc = Ccto,
                 Subject = "Send mail with carbon copy success.",
-                Message = Messgae,
+                Message = Message,
                 IsHtml = false
             };
 
@@ -252,7 +253,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 Mailto = Mailto,
                 Bcc = Bccto,
                 Subject = "Send mail with blind carbon copy success.",
-                Message = Messgae,
+                Message = Message,
                 IsHtml = false
             };
 
@@ -291,7 +292,7 @@ namespace Infra.Email.Smtp.IntegrationTest
                 SenderName = SenderName,
                 Mailto = Mailto,
                 Subject = "Send mail with attachment success.",
-                Message = Messgae,
+                Message = Message,
                 Attachment = attachmentDic,
                 IsHtml = false
             };

@@ -20,20 +20,28 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
     public class GrpcFileAccessTests
     {
         private readonly IFileAccess _fileAccess;
-        private readonly string _tempPath;
+
+        #region Properties
+
+        private static string ServerAddress => "https://localhost:5001";
+
+        private static string ChunkSize => "1048576";
+
+        private static string ChunkBufferCount => "20";
+
+        private static string TempPath => "Temp";
+
+        #endregion
 
         public GrpcFileAccessTests()
         {
             _fileAccess = GetGrpcFileAccess();
 
-            // Can operated directory...
-            _tempPath = "Temp";
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         [SetUp]
-        public async Task SetUp() => await _fileAccess.CreateDirectoryAsync(_tempPath);
+        public async Task SetUp() => await _fileAccess.CreateDirectoryAsync(TempPath);
 
         #region Sync
 
@@ -42,7 +50,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void CreateDirectoryNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.CreateDirectory(directoryPath));
         }
@@ -50,7 +58,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void DirectoryExistsNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.DirectoryExists(directoryPath));
         }
@@ -58,7 +66,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetFilesNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetFiles(directoryPath));
         }
@@ -66,7 +74,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetFilesWithSearchPatternNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetFiles(directoryPath, "*.txt"));
         }
@@ -74,7 +82,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetFilesWithSearchPatternAndOptionNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories));
         }
@@ -82,7 +90,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void DeleteDirectoryNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.DeleteDirectory(directoryPath));
         }
@@ -90,7 +98,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetSubDirectoriesNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetSubDirectories(directoryPath));
         }
@@ -98,7 +106,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetSubDirectoriesWithSearchPatternNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetSubDirectories(directoryPath, "Another*"));
         }
@@ -106,7 +114,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetSubDirectoriesWithSearchPatternAndOptionNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories));
         }
@@ -114,8 +122,8 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void DirectoryCompressNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
-            var zipFilePath = Path.Combine(_tempPath, "DirectoryCompress.zip");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.DirectoryCompress(directoryPath, zipFilePath));
         }
@@ -123,7 +131,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetParentPathNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetParentPath(directoryPath));
         }
@@ -131,7 +139,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetCurrentDirectoryNameNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetCurrentDirectoryName(directoryPath));
         }
@@ -141,23 +149,23 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void FileExistsNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "test.txt");
+            var filePath = Path.Combine(TempPath, "test.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.FileExists(filePath));
         }
 
         [Test]
-        public void SaveFileSuccess()
+        public void SaveFileNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "utf8.txt");
+            var filePath = Path.Combine(TempPath, "utf8.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.SaveFile(filePath, "資料種類"));
         }
 
         [Test]
-        public void SaveFileWithEncodingSuccess()
+        public void SaveFileWithEncodingNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "big5.txt");
+            var filePath = Path.Combine(TempPath, "big5.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.SaveFile(filePath, "資料種類", Encoding.GetEncoding(950)));
         }
@@ -165,7 +173,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void DeleteFileNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "test.txt");
+            var filePath = Path.Combine(TempPath, "test.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.DeleteFile(filePath));
         }
@@ -173,23 +181,23 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void GetFileSizeNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "test.txt");
+            var filePath = Path.Combine(TempPath, "test.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.GetFileSize(filePath));
         }
 
         [Test]
-        public void ReadUtf8FileSuccess()
+        public void ReadUtf8FileNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "utf8.txt");
+            var filePath = Path.Combine(TempPath, "utf8.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.ReadTextFile(filePath));
         }
 
         [Test]
-        public void ReadBig5FileSuccess()
+        public void ReadBig5FileNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "big5.txt");
+            var filePath = Path.Combine(TempPath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.ReadTextFile(filePath, encoding));
@@ -198,8 +206,8 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void MoveFileNotSupported()
         {
-            var sourceFilePath = Path.Combine(_tempPath, "test.txt");
-            var destFilePath = Path.Combine(_tempPath, "Move", "test.txt");
+            var sourceFilePath = Path.Combine(TempPath, "test.txt");
+            var destFilePath = Path.Combine(TempPath, "Move", "test.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.MoveFile(sourceFilePath, destFilePath));
         }
@@ -207,8 +215,8 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         [Test]
         public void CopyFileNotSupported()
         {
-            var sourceFilePath = Path.Combine(_tempPath, "test.txt");
-            var destFilePath = Path.Combine(_tempPath, "Copy", "test.txt");
+            var sourceFilePath = Path.Combine(TempPath, "test.txt");
+            var destFilePath = Path.Combine(TempPath, "Copy", "test.txt");
 
             Assert.Throws<NotSupportedException>(() => _fileAccess.CopyFile(sourceFilePath, destFilePath));
         }
@@ -219,14 +227,272 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
 
         #region Directory
 
-        // TODO: Add test cases...
+        [Test]
+        public async Task CreateDirectorySuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+
+            Assert.IsTrue(await _fileAccess.DirectoryExistsAsync(directoryPath));
+        }
+
+        [Test]
+        public async Task JudgeDirectoryNotExistsSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            Assert.IsFalse(await _fileAccess.DirectoryExistsAsync(directoryPath));
+        }
+
+        [Test]
+        public async Task GetFilesSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+
+            var files = await _fileAccess.GetFilesAsync(directoryPath);
+
+            Assert.AreEqual(2, files.Length);
+        }
+
+        [Test]
+        public async Task GetFilesWithSearchPatternSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+
+            var files = await _fileAccess.GetFilesAsync(directoryPath, "*.txt");
+
+            Assert.AreEqual(1, files.Length);
+        }
+
+        [Test]
+        public async Task GetFilesWithSearchPatternAndOptionSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await _fileAccess.CreateDirectoryAsync(subDirectoryPath);
+            await _fileAccess.SaveFileAsync(Path.Combine(subDirectoryPath, "temp_3.txt"), "content_3");
+
+            var files = await _fileAccess.GetFilesAsync(directoryPath, "*.txt", SearchOption.AllDirectories);
+
+            Assert.AreEqual(2, files.Length);
+        }
+
+        [Test]
+        public async Task DeleteDirectorySuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.DeleteDirectoryAsync(directoryPath);
+
+            Assert.IsFalse(await _fileAccess.DirectoryExistsAsync(directoryPath));
+        }
+
+        [Test]
+        public async Task GetSubDirectoriesSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
+            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
+
+            var subdirectories = await _fileAccess.GetSubDirectoriesAsync(directoryPath);
+
+            Assert.AreEqual(2, subdirectories.Length);
+        }
+
+        [Test]
+        public async Task GetSubDirectoriesWithSearchPatternSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
+            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
+
+            var subdirectories = await _fileAccess.GetSubDirectoriesAsync(directoryPath, "Another*");
+
+            Assert.AreEqual(1, subdirectories.Length);
+        }
+
+        [Test]
+        public async Task GetSubDirectoriesWithSearchPatternAndOptionSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var anotherDirectoryPath = Path.Combine(directoryPath, "AnotherCreatedDirectory");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.CreateDirectoryAsync(anotherDirectoryPath);
+            await _fileAccess.CreateDirectoryAsync(Path.Combine(anotherDirectoryPath, "SubDirectory"));
+            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
+
+            var subdirectories = await _fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories);
+
+            Assert.AreEqual(2, subdirectories.Length);
+        }
+
+        [Test]
+        public async Task DirectoryCompressSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await _fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath);
+
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(zipFilePath));
+        }
+
+        [Test]
+        public void GetParentPathAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetParentPathAsync(directoryPath));
+        }
+
+        [Test]
+        public void GetCurrentDirectoryNameAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetCurrentDirectoryNameAsync(directoryPath));
+        }
 
         #endregion
+
+        [Test]
+        public async Task JudgeFileExistsSuccessAsync()
+        {
+            var filePath = Path.Combine(TempPath, "temp_1.txt");
+
+            await _fileAccess.SaveFileAsync(filePath, "content_1");
+
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+        }
+
+        [Test]
+        public async Task SaveFileSuccessAsync()
+        {
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            await _fileAccess.SaveFileAsync(filePath, "資料種類");
+
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+        }
+
+        [Test]
+        public async Task SaveFileWithEncodingSuccessAsync()
+        {
+            var filePath = Path.Combine(TempPath, "big5.txt");
+
+            await _fileAccess.SaveFileAsync(filePath, "資料種類", Encoding.GetEncoding(950));
+
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+        }
+
+        [Test]
+        public async Task DeleteFileSuccessAsync()
+        {
+            var filePath = Path.Combine(TempPath, "test.txt");
+
+            await _fileAccess.SaveFileAsync(filePath, "資料種類");
+            await _fileAccess.DeleteFileAsync(filePath);
+
+            Assert.IsFalse(await _fileAccess.FileExistsAsync(filePath));
+        }
+
+        [Test]
+        public async Task ReadUtf8FileSuccessAsync()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            await _fileAccess.SaveFileAsync(filePath, content);
+
+            Assert.AreEqual(content, await _fileAccess.ReadTextFileAsync(filePath));
+        }
+
+        [Test]
+        public async Task ReadBig5FileSuccessAsync()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            await _fileAccess.SaveFileAsync(filePath, content, encoding);
+
+            Assert.AreEqual(content, await _fileAccess.ReadTextFileAsync(filePath, encoding));
+        }
+
+        [Test]
+        public async Task GetFileSizeSuccessAsync()
+        {
+            var filePath = Path.Combine(TempPath, "temp.txt");
+
+            await _fileAccess.SaveFileAsync(filePath, "have_a_nice_day_!_1");
+
+            var fileSize = await _fileAccess.GetFileSizeAsync(filePath);
+
+            Assert.IsTrue(fileSize > 0);
+        }
+
+        [Test]
+        public async Task MoveFileSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
+            var filePath = Path.Combine(directoryPath, "temp.txt");
+            var subFilePath = Path.Combine(subDirectoryPath, "temp.txt");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.CreateDirectoryAsync(subDirectoryPath);
+            await _fileAccess.SaveFileAsync(filePath, "資料種類");
+            await _fileAccess.MoveFileAsync(filePath, subFilePath);
+
+            Assert.IsFalse(await _fileAccess.FileExistsAsync(filePath));
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(subFilePath));
+        }
+
+        [Test]
+        public async Task CopyFileSuccessAsync()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
+            var filePath = Path.Combine(directoryPath, "temp.txt");
+            var subFilePath = Path.Combine(subDirectoryPath, "temp.txt");
+
+            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await _fileAccess.CreateDirectoryAsync(subDirectoryPath);
+            await _fileAccess.SaveFileAsync(filePath, "資料種類");
+            await _fileAccess.CopyFileAsync(filePath, subFilePath);
+
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+            Assert.IsTrue(await _fileAccess.FileExistsAsync(subFilePath));
+        }
 
         #endregion
 
         [TearDown]
-        public async Task TearDown() => await _fileAccess.DeleteDirectoryAsync(_tempPath);
+        public async Task TearDown() => await _fileAccess.DeleteDirectoryAsync(TempPath);
 
         #region Private Method
 
@@ -236,13 +502,13 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var mockConfiguration = new Mock<IConfiguration>();
             var mockServerAddress = new Mock<IConfigurationSection>();
             mockServerAddress.Setup(m => m.Value)
-                .Returns("https://localhost:5001");
+                .Returns(ServerAddress);
             var mockChunkSize = new Mock<IConfigurationSection>();
             mockChunkSize.Setup(m => m.Value)
-                .Returns("1048576");
+                .Returns(ChunkSize);
             var mockChunkBufferCount = new Mock<IConfigurationSection>();
             mockChunkBufferCount.Setup(m => m.Value)
-                .Returns("20");
+                .Returns(ChunkBufferCount);
             mockConfiguration.Setup(m => m.GetSection(It.Is<string>(key => key == "Grpc:File:ServerAddress")))
                 .Returns(mockServerAddress.Object);
             mockConfiguration.Setup(m => m.GetSection(It.Is<string>(key => key == "Grpc:File:ChunkSize")))

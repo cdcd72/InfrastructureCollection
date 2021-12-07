@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 using Infra.Core.FileAccess.Validators;
 using NUnit.Framework;
 
@@ -7,12 +8,13 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:識別項不應包含底線", Justification = "<暫止>")]
     public class FileExtensionValidatorTests
     {
-        private readonly string _folderPath;
+        #region Properties
 
-        public FileExtensionValidatorTests() =>
-            _folderPath =
-                Path.Combine(
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "TestData", "Files");
+        private static string RootPath =>
+            Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "TestData", "Files");
+
+        #endregion
 
         [Test]
         public void Should_True_Validate_JPG() => Assert.IsTrue(IsValidFileExtensionByBytes("1.jpg"));
@@ -248,16 +250,16 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
 
         #region Private Method
 
-        private bool IsValidFileExtensionByBytes(string fileName)
+        private static bool IsValidFileExtensionByBytes(string fileName)
         {
-            var filePath = Path.Combine(_folderPath, fileName);
+            var filePath = Path.Combine(RootPath, fileName);
             var fileData = File.ReadAllBytes(filePath);
             return FileExtensionValidator.IsValidFileExtension(fileName, fileData, null);
         }
 
-        private bool IsValidFileExtensionByFileStream(string fileName)
+        private static bool IsValidFileExtensionByFileStream(string fileName)
         {
-            var filePath = Path.Combine(_folderPath, fileName);
+            var filePath = Path.Combine(RootPath, fileName);
             using var fs = File.OpenRead(filePath);
             return FileExtensionValidator.IsValidFileExtension(fileName, fs, null);
         }

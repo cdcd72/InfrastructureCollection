@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
@@ -10,25 +11,26 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 {
     public class PhysicalFileAccessTests
     {
-        private readonly string _rootPath;
         private readonly IFileAccess _fileAccess;
-        private readonly string _tempPath;
+
+        #region Properties
+
+        private static string RootPath =>
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+
+        private static string TempPath => Path.Combine(RootPath, "Temp");
+
+        #endregion
 
         public PhysicalFileAccessTests()
         {
-            _rootPath =
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty;
-
-            _fileAccess = new PhysicalFileAccess(_rootPath);
-
-            // Can operated directory...
-            _tempPath = Path.Combine(_rootPath, "Temp");
+            _fileAccess = new PhysicalFileAccess(RootPath);
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         [SetUp]
-        public void SetUp() => _fileAccess.CreateDirectory(_tempPath);
+        public void SetUp() => _fileAccess.CreateDirectory(TempPath);
 
         [Test]
         public void NewPhysicalFileAccessWithoutRoot()
@@ -47,7 +49,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void CreateDirectorySuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
 
@@ -57,7 +59,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void JudgeDirectoryNotExistsSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.IsFalse(_fileAccess.DirectoryExists(directoryPath));
         }
@@ -65,7 +67,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFilesSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
             _fileAccess.SaveFile(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
@@ -77,7 +79,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFilesWithSearchPatternSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
             _fileAccess.SaveFile(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
@@ -89,7 +91,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFilesWithSearchPatternAndOptionSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
@@ -104,7 +106,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void DeleteDirectorySuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
             _fileAccess.DeleteDirectory(directoryPath);
@@ -115,7 +117,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetSubDirectoriesSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
             _fileAccess.CreateDirectory(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
@@ -127,7 +129,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetSubDirectoriesWithSearchPatternSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
             _fileAccess.CreateDirectory(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
@@ -139,7 +141,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetSubDirectoriesWithSearchPatternAndOptionSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var anotherDirectoryPath = Path.Combine(directoryPath, "AnotherCreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
@@ -153,8 +155,8 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void DirectoryCompressSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
-            var zipFilePath = Path.Combine(_tempPath, "DirectoryCompress.zip");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
             _fileAccess.CreateDirectory(directoryPath);
             _fileAccess.SaveFile(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
@@ -167,11 +169,11 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetParentPathSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             _fileAccess.CreateDirectory(directoryPath);
 
-            Assert.AreEqual(PathValidator.NonUncPattern + _tempPath, _fileAccess.GetParentPath(directoryPath));
+            Assert.AreEqual(PathValidator.NonUncPattern + TempPath, _fileAccess.GetParentPath(directoryPath));
         }
 
         [Test]
@@ -179,7 +181,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         {
             const string directoryName = "CreatedDirectory";
 
-            var directoryPath = Path.Combine(_tempPath, directoryName);
+            var directoryPath = Path.Combine(TempPath, directoryName);
 
             _fileAccess.CreateDirectory(directoryPath);
 
@@ -191,7 +193,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void JudgeFileExistsSuccess()
         {
-            var filePath = Path.Combine(_tempPath, "temp_1.txt");
+            var filePath = Path.Combine(TempPath, "temp_1.txt");
 
             _fileAccess.SaveFile(filePath, "content_1");
 
@@ -201,7 +203,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void SaveFileSuccess()
         {
-            var filePath = Path.Combine(_tempPath, "utf8.txt");
+            var filePath = Path.Combine(TempPath, "utf8.txt");
 
             _fileAccess.SaveFile(filePath, "資料種類");
 
@@ -211,7 +213,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void SaveFileWithEncodingSuccess()
         {
-            var filePath = Path.Combine(_tempPath, "big5.txt");
+            var filePath = Path.Combine(TempPath, "big5.txt");
 
             _fileAccess.SaveFile(filePath, "資料種類", Encoding.GetEncoding(950));
 
@@ -219,11 +221,22 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         }
 
         [Test]
+        public void DeleteFileSuccess()
+        {
+            var filePath = Path.Combine(TempPath, "test.txt");
+
+            _fileAccess.SaveFile(filePath, "資料種類");
+            _fileAccess.DeleteFile(filePath);
+
+            Assert.IsFalse(_fileAccess.FileExists(filePath));
+        }
+
+        [Test]
         public void ReadUtf8FileSuccess()
         {
             const string content = "資料種類";
 
-            var filePath = Path.Combine(_tempPath, "utf8.txt");
+            var filePath = Path.Combine(TempPath, "utf8.txt");
 
             _fileAccess.SaveFile(filePath, content);
 
@@ -235,7 +248,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         {
             const string content = "資料種類";
 
-            var filePath = Path.Combine(_tempPath, "big5.txt");
+            var filePath = Path.Combine(TempPath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
             _fileAccess.SaveFile(filePath, content, encoding);
@@ -246,7 +259,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFileSizeSuccess()
         {
-            var filePath = Path.Combine(_tempPath, "temp.txt");
+            var filePath = Path.Combine(TempPath, "temp.txt");
 
             _fileAccess.SaveFile(filePath, "have_a_nice_day_!_1");
 
@@ -256,7 +269,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void MoveFileSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
             var filePath = Path.Combine(directoryPath, "temp.txt");
             var subFilePath = Path.Combine(subDirectoryPath, "temp.txt");
@@ -273,7 +286,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void CopyFileSuccess()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
             var filePath = Path.Combine(directoryPath, "temp.txt");
             var subFilePath = Path.Combine(subDirectoryPath, "temp.txt");
@@ -296,7 +309,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void CreateDirectoryAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.CreateDirectoryAsync(directoryPath));
         }
@@ -304,7 +317,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void DirectoryExistsAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DirectoryExistsAsync(directoryPath));
         }
@@ -312,7 +325,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFilesAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath));
         }
@@ -320,7 +333,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFilesWithSearchPatternAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath, "*.txt"));
         }
@@ -328,7 +341,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFilesWithSearchPatternAndOptionAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFilesAsync(directoryPath, "*.txt", SearchOption.AllDirectories));
         }
@@ -336,7 +349,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void DeleteDirectoryAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteDirectoryAsync(directoryPath));
         }
@@ -344,7 +357,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetSubDirectoriesAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath));
         }
@@ -352,7 +365,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetSubDirectoriesWithSearchPatternAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath, "Another*"));
         }
@@ -360,7 +373,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetSubDirectoriesWithSearchPatternAndOptionAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories));
         }
@@ -368,8 +381,8 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void DirectoryCompressAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
-            var zipFilePath = Path.Combine(_tempPath, "DirectoryCompress.zip");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath));
         }
@@ -377,7 +390,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetParentPathAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetParentPathAsync(directoryPath));
         }
@@ -385,7 +398,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetCurrentDirectoryNameAsyncNotSupported()
         {
-            var directoryPath = Path.Combine(_tempPath, "CreatedDirectory");
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetCurrentDirectoryNameAsync(directoryPath));
         }
@@ -395,7 +408,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void FileExistsAsyncNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "test.txt");
+            var filePath = Path.Combine(TempPath, "test.txt");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.FileExistsAsync(filePath));
         }
@@ -403,7 +416,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public async Task SaveFileSuccessAsync()
         {
-            var filePath = Path.Combine(_tempPath, "utf8.txt");
+            var filePath = Path.Combine(TempPath, "utf8.txt");
 
             await _fileAccess.SaveFileAsync(filePath, "資料種類");
 
@@ -413,7 +426,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public async Task SaveFileWithEncodingSuccessAsync()
         {
-            var filePath = Path.Combine(_tempPath, "big5.txt");
+            var filePath = Path.Combine(TempPath, "big5.txt");
 
             await _fileAccess.SaveFileAsync(filePath, "資料種類", Encoding.GetEncoding(950));
 
@@ -423,7 +436,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void DeleteFileAsyncNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "test.txt");
+            var filePath = Path.Combine(TempPath, "test.txt");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.DeleteFileAsync(filePath));
         }
@@ -431,7 +444,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void GetFileSizeAsyncNotSupported()
         {
-            var filePath = Path.Combine(_tempPath, "test.txt");
+            var filePath = Path.Combine(TempPath, "test.txt");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetFileSizeAsync(filePath));
         }
@@ -441,7 +454,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         {
             const string content = "資料種類";
 
-            var filePath = Path.Combine(_tempPath, "utf8.txt");
+            var filePath = Path.Combine(TempPath, "utf8.txt");
 
             await _fileAccess.SaveFileAsync(filePath, content);
 
@@ -453,7 +466,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         {
             const string content = "資料種類";
 
-            var filePath = Path.Combine(_tempPath, "big5.txt");
+            var filePath = Path.Combine(TempPath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
             await _fileAccess.SaveFileAsync(filePath, content, encoding);
@@ -464,8 +477,8 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void MoveFileAsyncNotSupported()
         {
-            var sourceFilePath = Path.Combine(_tempPath, "test.txt");
-            var destFilePath = Path.Combine(_tempPath, "Move", "test.txt");
+            var sourceFilePath = Path.Combine(TempPath, "test.txt");
+            var destFilePath = Path.Combine(TempPath, "Move", "test.txt");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.MoveFileAsync(sourceFilePath, destFilePath));
         }
@@ -473,8 +486,8 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         [Test]
         public void CopyFileAsyncNotSupported()
         {
-            var sourceFilePath = Path.Combine(_tempPath, "test.txt");
-            var destFilePath = Path.Combine(_tempPath, "Copy", "test.txt");
+            var sourceFilePath = Path.Combine(TempPath, "test.txt");
+            var destFilePath = Path.Combine(TempPath, "Copy", "test.txt");
 
             Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.CopyFileAsync(sourceFilePath, destFilePath));
         }
@@ -482,6 +495,6 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         #endregion
 
         [TearDown]
-        public void TearDown() => _fileAccess.DeleteDirectory(_tempPath);
+        public void TearDown() => _fileAccess.DeleteDirectory(TempPath);
     }
 }

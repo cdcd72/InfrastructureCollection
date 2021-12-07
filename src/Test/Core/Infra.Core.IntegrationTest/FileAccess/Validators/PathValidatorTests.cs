@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 using Infra.Core.FileAccess.Validators;
 using NUnit.Framework;
 
@@ -6,32 +7,34 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
 {
     public class PathValidatorTests
     {
-        private const string NON_UNC_PATTERN = @"\\?\";
+        #region Properties
 
-        private readonly string _folderPath;
+        private static string RootPath =>
+            Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "TestData", "Files");
 
-        public PathValidatorTests() =>
-            _folderPath = Path.Combine(
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "TestData", "Files");
+        private static string NonUncPattern => @"\\?\";
+
+        #endregion
 
         [Test]
         public void IsValidPath()
-            => PathIsValidShouldBe(_folderPath, Path.Combine(_folderPath, "1.jpg"), true);
+            => PathIsValidShouldBe(RootPath, Path.Combine(RootPath, "1.jpg"), true);
 
         [Test]
         public void IsInvalidPathWithViolationPathPattern()
-            => PathIsValidShouldBe(_folderPath, Path.Combine(_folderPath, "..", "1.jpg"), false);
+            => PathIsValidShouldBe(RootPath, Path.Combine(RootPath, "..", "1.jpg"), false);
 
         [Test]
         public void IsInvalidPathWithNotAccordingToRoot()
-            => PathIsValidShouldBe(_folderPath, Path.Combine("C:\\", "Test", "1.jpg"), false);
+            => PathIsValidShouldBe(RootPath, Path.Combine("C:\\", "Test", "1.jpg"), false);
 
         [Test]
         public void GetNonUncValidPath()
         {
-            var validNonUncPath = Path.Combine(_folderPath, "1.jpg");
+            var validNonUncPath = Path.Combine(RootPath, "1.jpg");
 
-            PathShouldBe(_folderPath, validNonUncPath, NON_UNC_PATTERN + validNonUncPath);
+            PathShouldBe(RootPath, validNonUncPath, NonUncPattern + validNonUncPath);
         }
 
         [Test]
@@ -46,11 +49,11 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
         [Test]
         public void GetValidPathFail()
         {
-            var validNonUncPath = Path.Combine(_folderPath, "1.jpg");
-            var invalidNonUncPath = Path.Combine(_folderPath, "..", "1.jpg");
+            var validNonUncPath = Path.Combine(RootPath, "1.jpg");
+            var invalidNonUncPath = Path.Combine(RootPath, "..", "1.jpg");
 
             Assert.Throws<IOException>(()
-                => PathShouldBe(_folderPath, invalidNonUncPath, NON_UNC_PATTERN + validNonUncPath));
+                => PathShouldBe(RootPath, invalidNonUncPath, NonUncPattern + validNonUncPath));
         }
 
         #region Private Method
