@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Core\Infra.Core\Infra.Core.csproj" />
     <ProjectReference Include="..\..\..\Infra\FileAccess\Infra.FileAccess.Physical\Infra.FileAccess.Physical.csproj" />
   </ItemGroup>
 
