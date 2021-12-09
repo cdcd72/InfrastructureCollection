@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Net.Client;
-using GrpcFileServer;
+using GrpcFileService;
 using Infra.Core.Extensions;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
