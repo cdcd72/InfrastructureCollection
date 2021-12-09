@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using GrpcFileServer.Common;
 using Infra.Core.Extensions;
+using GrpcFileService;
 using Infra.Core.FileAccess.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "GrpcFileServer";
+option csharp_namespace = "GrpcFileService";
 
 package infra.file.v1;
 
