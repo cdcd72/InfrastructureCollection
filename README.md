@@ -15,13 +15,13 @@ The practice may not be the best, but I hope to get better and better!
     - Implement with [MailKit](https://github.com/jstedfast/MailKit)
 - FileAccess
   - [Infra.FileAccess.Physical](src/Infra/FileAccess/Infra.FileAccess.Physical)
-  - \[WIP\] [Infra.FileAccess.Grpc](src/Infra/FileAccess/Infra.FileAccess.Grpc) :point_right: Demo
+  - [Infra.FileAccess.Grpc](src/Infra/FileAccess/Infra.FileAccess.Grpc) :point_right: [Demo](https://github.com/cdcd72/Grpc.FileTransfer.Demo)
 - EventBus
   - [Infra.EventBus.RabbitMQ](src/Infra/EventBus/Infra.EventBus.RabbitMQ) :point_right: [Demo](https://github.com/cdcd72/EventBus.RabbitMQ.Demo)
     - Implement with [Autofac](https://github.com/autofac/Autofac) - Prevent memory leak and better to control object life time.
     - Implement with [Polly](https://github.com/App-vNext/Polly) - Retry mechanism.
 - Server
-  - \[WIP\] [GrpcFileServer](src/Server/File/GrpcFileServer)
+  - [GrpcFileServer](src/Server/File/GrpcFileServer)
     - Collocate with **Infra.FileAccess.Grpc**.
 - ...（Keep it up.）
 
