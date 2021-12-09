@@ -6,7 +6,7 @@ namespace GrpcFileServer.Common
     {
         private const string SectionName = "Grpc:File";
 
-        public string DirectoryRoot { get; set; }
+        public string Root { get; set; }
 
         public int ChunkSize { get; set; }
 
@@ -22,7 +22,7 @@ namespace GrpcFileServer.Common
 
         private void InitEnv(IConfiguration config)
         {
-            DirectoryRoot = config.GetValue<string>($"{SectionName}:{nameof(DirectoryRoot)}");
+            Root = config.GetValue<string>($"{SectionName}:{nameof(Root)}");
             ChunkSize = config.GetValue<int>($"{SectionName}:{nameof(ChunkSize)}");
             ChunkBufferCount = config.GetValue<int>($"{SectionName}:{nameof(ChunkBufferCount)}");
         }

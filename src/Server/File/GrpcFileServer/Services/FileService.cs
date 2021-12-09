@@ -37,7 +37,7 @@ namespace GrpcFileServer.Services
             FileStream fs = null;
             var startTime = DateTime.Now;
             var mark = string.Empty;
-            var rootDirectoryPath = _env.DirectoryRoot;
+            var rootDirectoryPath = _env.Root;
             var subDirectoryPath = string.Empty;
             var fileName = string.Empty;
             var savePath = string.Empty;
@@ -157,7 +157,7 @@ namespace GrpcFileServer.Services
             var chunkSize = _env.ChunkSize;
             var buffer = new byte[chunkSize];
             var fileName = request.FileName;
-            var filePath = Path.Combine(_env.DirectoryRoot, fileName);
+            var filePath = Path.Combine(_env.Root, fileName);
             var reply = new DownloadFileResponse
             {
                 FileName = fileName,
@@ -241,7 +241,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.DirectoryRoot, request.FileName);
+            var filePath = Path.Combine(_env.Root, request.FileName);
             var reply = new IsExistFileResponse
             {
                 Mark = mark
@@ -269,7 +269,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.DirectoryRoot, request.FileName);
+            var filePath = Path.Combine(_env.Root, request.FileName);
             var reply = new DeleteFileResponse
             {
                 Mark = mark
@@ -297,7 +297,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.DirectoryRoot, request.FileName);
+            var filePath = Path.Combine(_env.Root, request.FileName);
             var reply = new GetFileSizeResponse
             {
                 Mark = mark
@@ -325,7 +325,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var rootDirectoryPath = _env.DirectoryRoot;
+            var rootDirectoryPath = _env.Root;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new MoveFileResponse
@@ -355,7 +355,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var rootDirectoryPath = _env.DirectoryRoot;
+            var rootDirectoryPath = _env.Root;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new CopyFileResponse

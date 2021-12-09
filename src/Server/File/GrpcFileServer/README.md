@@ -12,14 +12,14 @@ Implement file server with gRPC.
     ```json
     "Grpc": {
         "File": {
-            "DirectoryRoot": "D:\\Output\\File\\Upload",
+            "Root": "D:\\Output\\File\\Upload",
             "ChunkSize": 1048576,
             "ChunkBufferCount": 20
         }
     }
     ```
 
-    - DirectoryRoot：File saved directory
+    - Root：File saved directory
     - ChunkSize：File chunk size for read file
     - ChunkBufferCount：File chunk buffer for write file
 

@@ -21,8 +21,7 @@ namespace GrpcFileServer
         {
             services.AddLogging(builder => builder.AddNLog("Nlog.config"));
 
-            services.AddSingleton<IFileAccess>(
-                new PhysicalFileAccess(Configuration.GetValue<string>("Grpc:File:DirectoryRoot")));
+            services.AddSingleton<IFileAccess, PhysicalFileAccess>();
 
             services.AddGrpc();
         }

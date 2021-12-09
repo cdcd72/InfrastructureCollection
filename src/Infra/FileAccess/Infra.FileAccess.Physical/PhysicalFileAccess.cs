@@ -1,26 +1,26 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
 using Infra.Core.FileAccess.Validators;
+using Infra.FileAccess.Physical.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace Infra.FileAccess.Physical
 {
     public class PhysicalFileAccess : IFileAccess
     {
+        private readonly Env _env;
         private readonly PathValidator _pathValidator;
 
-        public PhysicalFileAccess(params string[] rootPaths)
+        public PhysicalFileAccess(IConfiguration config)
         {
-            if (rootPaths is null || (rootPaths is not null && (rootPaths.Length is 0 || rootPaths.Any(path => path is null or ""))))
-                throw new ArgumentNullException(nameof(rootPaths));
-
-            _pathValidator = new PathValidator(rootPaths);
+            _env = new Env(config);
+            _pathValidator = new PathValidator(_env.Roots);
         }
 
         #region Sync Method

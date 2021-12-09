@@ -31,7 +31,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
             var reply = new CreateDirectoryResponse
             {
                 Mark = mark
@@ -59,7 +59,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
             var reply = new IsExistDirectoryResponse
             {
                 Mark = mark
@@ -87,7 +87,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
             var reply = new GetFilesResponse
             {
                 Mark = mark
@@ -116,7 +116,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
             var reply = new DeleteDirectoryResponse
             {
                 Mark = mark
@@ -144,7 +144,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
+            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
             var reply = new GetSubDirectoriesResponse
             {
                 Mark = mark
@@ -173,8 +173,8 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.DirectoryRoot, request.DirectoryName);
-            var zipFilePath = Path.Combine(_env.DirectoryRoot, request.ZipFileName);
+            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
+            var zipFilePath = Path.Combine(_env.Root, request.ZipFileName);
             var reply = new DirectoryCompressResponse
             {
                 Mark = mark
