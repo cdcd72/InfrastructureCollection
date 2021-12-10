@@ -7,13 +7,13 @@ namespace Infra.Core.Email.Abstractions
     {
         #region Sync Method
 
-        bool Send(MailParam mailParam, object otherParam = null);
+        bool Send(MailParam mailParam);
 
         #endregion
 
         #region Async Method
 
-        Task<bool> SendAsync(MailParam mailParam, object otherParam = null);
+        Task<bool> SendAsync(MailParam mailParam);
 
         #endregion
     }

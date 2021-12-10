@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
 using Infra.Core.Extensions;
-using Infra.Email.Smtp.Exceptions;
-using Infra.Email.Smtp.Models;
+using Infra.Email.Smtp.Configuration;
+using Infra.Email.Smtp.Configuration.Validators;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace Infra.Email.Smtp
@@ -15,30 +16,36 @@ namespace Infra.Email.Smtp
     public class SmtpClientInstance : IMail
     {
         private readonly ILogger<SmtpClientInstance> _logger;
+        private readonly Settings _settings;
 
-        public SmtpClientInstance(ILogger<SmtpClientInstance> logger) => _logger = logger;
+        public SmtpClientInstance(
+            ILogger<SmtpClientInstance> logger,
+            IOptions<Settings> settings)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+        }
 
         #region Sync Method
 
-        public bool Send(MailParam mailParam, object otherParam = null)
-            => Task.Run(() => SendAsync(mailParam, otherParam)).GetAwaiter().GetResult();
+        public bool Send(MailParam mailParam)
+            => Task.Run(() => SendAsync(mailParam)).GetAwaiter().GetResult();
 
         #endregion
 
         #region Async Method
 
-        public async Task<bool> SendAsync(MailParam mailParam, object otherParam = null)
+        public async Task<bool> SendAsync(MailParam mailParam)
         {
-            var smtpParam = GetSmtpParam(otherParam);
-            var host = smtpParam.Host;
+            var host = _settings.Host;
 
             // Check host isn't empty.
             if (string.IsNullOrWhiteSpace(host))
                 return false;
 
-            var port = smtpParam.Port;
-            var account = smtpParam.Account;
-            var password = smtpParam.Password;
+            var port = _settings.Port;
+            var account = _settings.Account;
+            var password = _settings.Password;
 
             // Get mail message.
             var message = GetMimeMessage(mailParam);
@@ -75,23 +82,6 @@ namespace Infra.Email.Smtp
         #endregion
 
         #region Private Method
-
-        /// <summary>
-        /// Get SMTP（Simple Mail Transfer Protocol） parameter
-        /// </summary>
-        /// <param name="otherParam">Other parameter</param>
-        /// <returns></returns>
-        private static SmtpParam GetSmtpParam(object otherParam)
-        {
-            SmtpParam smtpParam;
-
-            if (otherParam is SmtpParam)
-                smtpParam = otherParam as SmtpParam;
-            else
-                throw new CastSmtpParamFailException($"{nameof(otherParam)} type must be Infra.Email.Smtp.Models.SmtpParam.");
-
-            return smtpParam;
-        }
 
         /// <summary>
         /// Get mail message

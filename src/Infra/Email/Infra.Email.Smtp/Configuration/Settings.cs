@@ -1,14 +1,16 @@
-namespace Infra.Email.Smtp.Models
+﻿namespace Infra.Email.Smtp.Configuration
 {
-    public class SmtpParam
+    public class Settings
     {
+        public const string SectionName = "Email";
+
         /// <summary>
-        /// Host
+        /// Smtp Host
         /// </summary>
         public string Host { get; set; }
 
         /// <summary>
-        /// Port
+        /// Smtp Port
         /// </summary>
         public int Port { get; set; }
 
