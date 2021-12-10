@@ -3,9 +3,6 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
 using NUnit.Framework;
 
 namespace Infra.FileAccess.Grpc.IntegrationTest
@@ -23,19 +20,15 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
 
         #region Properties
 
-        private static string ServerAddress => "https://localhost:5001";
-
-        private static string ChunkSize => "1048576";
-
-        private static string ChunkBufferCount => "20";
-
         private static string TempPath => "Temp";
 
         #endregion
 
         public GrpcFileAccessTests()
         {
-            _fileAccess = GetGrpcFileAccess();
+            var startup = new Startup();
+
+            _fileAccess = startup.GetService<IFileAccess>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
@@ -493,32 +486,5 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
 
         [TearDown]
         public async Task TearDown() => await _fileAccess.DeleteDirectoryAsync(TempPath);
-
-        #region Private Method
-
-        private static GrpcFileAccess GetGrpcFileAccess()
-        {
-            var mockLogger = new Mock<ILogger<GrpcFileAccess>>();
-            var mockConfiguration = new Mock<IConfiguration>();
-            var mockServerAddress = new Mock<IConfigurationSection>();
-            mockServerAddress.Setup(m => m.Value)
-                .Returns(ServerAddress);
-            var mockChunkSize = new Mock<IConfigurationSection>();
-            mockChunkSize.Setup(m => m.Value)
-                .Returns(ChunkSize);
-            var mockChunkBufferCount = new Mock<IConfigurationSection>();
-            mockChunkBufferCount.Setup(m => m.Value)
-                .Returns(ChunkBufferCount);
-            mockConfiguration.Setup(m => m.GetSection(It.Is<string>(key => key == "Grpc:File:ServerAddress")))
-                .Returns(mockServerAddress.Object);
-            mockConfiguration.Setup(m => m.GetSection(It.Is<string>(key => key == "Grpc:File:ChunkSize")))
-                .Returns(mockChunkSize.Object);
-            mockConfiguration.Setup(m => m.GetSection(It.Is<string>(key => key == "Grpc:File:ChunkBufferCount")))
-                .Returns(mockChunkBufferCount.Object);
-
-            return new GrpcFileAccess(mockLogger.Object, mockConfiguration.Object);
-        }
-
-        #endregion
     }
 }

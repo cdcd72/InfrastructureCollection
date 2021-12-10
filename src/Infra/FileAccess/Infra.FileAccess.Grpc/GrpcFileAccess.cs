@@ -11,9 +11,10 @@ using GrpcFileService;
 using Infra.Core.Extensions;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
-using Infra.FileAccess.Grpc.Common;
-using Microsoft.Extensions.Configuration;
+using Infra.FileAccess.Grpc.Configuration;
+using Infra.FileAccess.Grpc.Configuration.Validators;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IO;
 
 namespace Infra.FileAccess.Grpc
@@ -21,17 +22,20 @@ namespace Infra.FileAccess.Grpc
     public class GrpcFileAccess : IFileAccess
     {
         private readonly ILogger<GrpcFileAccess> _logger;
-        private readonly Env _env;
+        private readonly Settings _settings;
         private readonly RecyclableMemoryStreamManager _msManager;
 
         #region Constructor
 
-        public GrpcFileAccess(
-            ILogger<GrpcFileAccess> logger,
-            IConfiguration config)
+        public GrpcFileAccess(ILogger<GrpcFileAccess> logger, IOptions<Settings> settings)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _env = new Env(config);
+
+            _settings = settings.Value;
+
+            if (!SettingsValidator.TryValidate(_settings, out var validationException))
+                throw validationException;
+
             _msManager = GetRecyclableMemoryStreamManager();
         }
 
@@ -465,7 +469,7 @@ namespace Infra.FileAccess.Grpc
         {
             var mark = $"{Guid.NewGuid()}";
             var startTime = DateTime.Now;
-            var buffer = new byte[_env.ChunkSize];
+            var buffer = new byte[_settings.ChunkSize];
             var memory = new Memory<byte>(buffer);
             var (channel, client) = GetFileClient();
             var progressInfo = new ProgressInfo();
@@ -741,7 +745,7 @@ namespace Infra.FileAccess.Grpc
                         fileContents.Add(reaponseStream.Current);
 
                         // Collect file chunks then write into stream. (file chunk size decide by server code...)
-                        if (fileContents.Count >= _env.ChunkBufferCount)
+                        if (fileContents.Count >= _settings.ChunkBufferCount)
                         {
                             fileContents.OrderBy(c => c.Block).ToList().ForEach(c => c.Content.WriteTo(ms));
                             progressInfo.Message = $"File【{fileName}】current download progress【{ms.Length}】bytes.";
@@ -890,7 +894,7 @@ namespace Infra.FileAccess.Grpc
         }
 
         private GrpcChannel GetGrpcChannel()
-            => GrpcChannel.ForAddress(_env.ServerAddress);
+            => GrpcChannel.ForAddress(_settings.ServerAddress);
 
         #endregion
 

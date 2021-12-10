@@ -32,6 +32,10 @@ Implement file access mechanism with gRPC.
     {
         // ...
 
+        services.AddLogging();
+
+        services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
+
         services.AddSingleton<IFileAccess, GrpcFileAccess>();
     }
     ```
