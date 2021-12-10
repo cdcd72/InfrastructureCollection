@@ -37,12 +37,7 @@ namespace Infra.EventBus.RabbitMQ
             IOptions<ConnectionSettings> settings)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            _settings = settings.Value;
-
-            if (!ConnectionSettingsValidator.TryValidate(_settings, out var validationException))
-                throw validationException;
-
+            _settings = ConnectionSettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
             _connectionFactory = GetConnectionFactory(_settings);
         }
 

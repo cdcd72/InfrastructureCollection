@@ -25,12 +25,7 @@ namespace GrpcFileServer.Services
         public FileService(ILogger<FileService> logger, IOptions<Settings> settings, IFileAccess fileAccess)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            _settings = settings.Value;
-
-            if (!SettingsValidator.TryValidate(_settings, out var validationException))
-                throw validationException;
-
+            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
             _fileAccess = fileAccess;
         }
 

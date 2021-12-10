@@ -46,12 +46,7 @@ namespace Infra.EventBus.RabbitMQ
             ILifetimeScope autofac)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-            _settings = settings.Value;
-
-            if (!SettingsValidator.TryValidate(_settings, out var validationException))
-                throw validationException;
-
+            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _subsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
             _autofac = autofac;
