@@ -11,21 +11,28 @@ Implement event bus mechanism with RabbitMQ.
 
     ```json
     "EventBus": {
-        "Host": "localhost",
-        "Port": 5672,
-        "UserName": "",
-        "Password": "",
-        "RetryCount": 5,
-        "QueueName": "Queue"
+        "RabbitMQ": {
+            "Connection": {
+                "Host": "localhost",
+                "Port": 5672,
+                "UserName": "",
+                "Password": "",
+                "RetryCount": 5,
+            },
+            "QueueName": "Queue",
+            "RetryCount": 5
+        }
     }
     ```
 
-    - Host：RabbitMQ host name
-    - Port：RabbitMQ host port
-    - UserName：RabbitMQ user name
-    - Password：RabbitMQ user password
-    - RetryCount：RabbitMQ connection retry count and event publish retry count
+    - Connection
+        - Host：RabbitMQ host name
+        - Port：RabbitMQ host port
+        - UserName：RabbitMQ user name
+        - Password：RabbitMQ user password
+        - RetryCount：RabbitMQ connection retry count
     - QueueName：RabbitMQ queue name
+    - RetryCount：RabbitMQ event publish retry count
 
 > 註冊事件匯流排
 

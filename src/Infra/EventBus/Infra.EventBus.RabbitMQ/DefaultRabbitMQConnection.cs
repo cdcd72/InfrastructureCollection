@@ -3,9 +3,10 @@ using System.IO;
 using System.Net.Sockets;
 using Infra.Core.Extensions;
 using Infra.EventBus.RabbitMQ.Abstractions;
-using Infra.EventBus.RabbitMQ.Common;
-using Microsoft.Extensions.Configuration;
+using Infra.EventBus.RabbitMQ.Configuration;
+using Infra.EventBus.RabbitMQ.Configuration.Validators;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -16,7 +17,7 @@ namespace Infra.EventBus.RabbitMQ
     public class DefaultRabbitMQConnection : IRabbitMQConnection
     {
         private readonly ILogger<DefaultRabbitMQConnection> _logger;
-        private readonly Env _env;
+        private readonly ConnectionSettings _settings;
         private readonly IConnectionFactory _connectionFactory;
         private readonly object _syncRoot = new();
 
@@ -31,11 +32,18 @@ namespace Infra.EventBus.RabbitMQ
 
         #region Constructor
 
-        public DefaultRabbitMQConnection(ILogger<DefaultRabbitMQConnection> logger, IConfiguration config)
+        public DefaultRabbitMQConnection(
+            ILogger<DefaultRabbitMQConnection> logger,
+            IOptions<ConnectionSettings> settings)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _env = new Env(config);
-            _connectionFactory = GetConnectionFactory(_env);
+
+            _settings = settings.Value;
+
+            if (!ConnectionSettingsValidator.TryValidate(_settings, out var validationException))
+                throw validationException;
+
+            _connectionFactory = GetConnectionFactory(_settings);
         }
 
         #endregion
@@ -56,7 +64,7 @@ namespace Infra.EventBus.RabbitMQ
             {
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
-                    .WaitAndRetry(_env.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
+                    .WaitAndRetry(_settings.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
                         => _logger.Warning(ex, $"RabbitMQ client could not connect after {time.TotalSeconds:n1}s. ({ex.Message})"));
 
                 policy.Execute(() => _connection = _connectionFactory.CreateConnection());
@@ -82,20 +90,20 @@ namespace Infra.EventBus.RabbitMQ
 
         #region Private Method
 
-        private static IConnectionFactory GetConnectionFactory(Env env)
+        private static IConnectionFactory GetConnectionFactory(ConnectionSettings settings)
         {
             var factory = new ConnectionFactory()
             {
-                HostName = env.Host,
-                Port = env.Port,
+                HostName = settings.Host,
+                Port = settings.Port,
                 DispatchConsumersAsync = true
             };
 
-            if (!string.IsNullOrEmpty(env.UserName))
-                factory.UserName = env.UserName;
+            if (!string.IsNullOrEmpty(settings.UserName))
+                factory.UserName = settings.UserName;
 
-            if (!string.IsNullOrEmpty(env.Password))
-                factory.Password = env.Password;
+            if (!string.IsNullOrEmpty(settings.Password))
+                factory.Password = settings.Password;
 
             return factory;
         }

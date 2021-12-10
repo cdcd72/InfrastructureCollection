@@ -10,9 +10,10 @@ using Infra.Core.EventBus.Events;
 using Infra.Core.EventBus.Extensions;
 using Infra.Core.Extensions;
 using Infra.EventBus.RabbitMQ.Abstractions;
-using Infra.EventBus.RabbitMQ.Common;
-using Microsoft.Extensions.Configuration;
+using Infra.EventBus.RabbitMQ.Configuration;
+using Infra.EventBus.RabbitMQ.Configuration.Validators;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -27,10 +28,10 @@ namespace Infra.EventBus.RabbitMQ
         private const string AUTOFAC_SCOPE_NAME = "event.bus";
 
         private readonly ILogger<RabbitMQBus> _logger;
+        private readonly Settings _settings;
         private readonly IRabbitMQConnection _connection;
         private readonly IEventBusSubscriptionsManager _subsManager;
         private readonly ILifetimeScope _autofac;
-        private readonly Env _env;
 
         private IModel _consumer;
         private bool _disposed;
@@ -39,16 +40,21 @@ namespace Infra.EventBus.RabbitMQ
 
         public RabbitMQBus(
             ILogger<RabbitMQBus> logger,
+            IOptions<Settings> settings,
             IRabbitMQConnection connection,
             IEventBusSubscriptionsManager subsManager,
-            ILifetimeScope autofac,
-            IConfiguration config)
+            ILifetimeScope autofac)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+            _settings = settings.Value;
+
+            if (!SettingsValidator.TryValidate(_settings, out var validationException))
+                throw validationException;
+
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _subsManager = subsManager ?? new InMemoryEventBusSubscriptionsManager();
             _autofac = autofac;
-            _env = new Env(config);
             _consumer = CreateConsumer();
             _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         }
@@ -62,7 +68,7 @@ namespace Infra.EventBus.RabbitMQ
 
             var policy = Policy.Handle<SocketException>()
                 .Or<BrokerUnreachableException>()
-                .WaitAndRetry(_env.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
+                .WaitAndRetry(_settings.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
                     => _logger.Warning(ex, $"Could not publish event: {integrationEvent.Id} after {time.TotalSeconds:n1}s. ({ex.Message})"));
 
             var eventName = integrationEvent.GetType().Name;
@@ -150,7 +156,7 @@ namespace Infra.EventBus.RabbitMQ
             using var channel = _connection.CreateChannel();
 
             channel.QueueUnbind(
-                queue: _env.QueueName,
+                queue: _settings.QueueName,
                 exchange: RABBITMQ_EXCHANGE_NAME,
                 routingKey: eventName);
 
@@ -166,7 +172,7 @@ namespace Infra.EventBus.RabbitMQ
                     _connection.TryConnect();
 
                 _consumer.QueueBind(
-                    queue: _env.QueueName,
+                    queue: _settings.QueueName,
                     exchange: RABBITMQ_EXCHANGE_NAME,
                     routingKey: eventName);
             }
@@ -186,7 +192,7 @@ namespace Infra.EventBus.RabbitMQ
                 type: RABBITMQ_TYPE);
 
             channel.QueueDeclare(
-                queue: _env.QueueName,
+                queue: _settings.QueueName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false,
@@ -215,7 +221,7 @@ namespace Infra.EventBus.RabbitMQ
                 consumer.Received += Consumer_Received;
 
                 _consumer.BasicConsume(
-                    queue: _env.QueueName,
+                    queue: _settings.QueueName,
                     autoAck: false,
                     consumer: consumer);
             }
