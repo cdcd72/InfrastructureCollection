@@ -10,11 +10,13 @@ Implement file access mechanism with gRPC.
 1. Configure appsettings.json
 
     ```json
-    "Grpc": {
-        "File": {
-            "ServerAddress": "https://localhost:5001",
-            "ChunkSize": 1048576,
-            "ChunkBufferCount": 20
+    "File": {
+        "Grpc": {
+            "Client": {
+                "ServerAddress": "https://localhost:5001",
+                "ChunkSize": 1048576,
+                "ChunkBufferCount": 20
+            }
         }
     }
     ```

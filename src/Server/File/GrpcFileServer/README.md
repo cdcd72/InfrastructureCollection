@@ -10,11 +10,13 @@ Implement file server with gRPC.
 1. Configure appsettings.json
 
     ```json
-    "Grpc": {
-        "File": {
-            "Root": "D:\\Output\\File\\Upload",
-            "ChunkSize": 1048576,
-            "ChunkBufferCount": 20
+    "File": {
+        "Grpc": {
+            "Server": {
+                "Root": "D:\\Output\\File\\Upload",
+                "ChunkSize": 1048576,
+                "ChunkBufferCount": 20
+            }
         }
     }
     ```

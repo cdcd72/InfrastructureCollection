@@ -2,7 +2,7 @@
 {
     public class Settings
     {
-        public const string SectionName = "Grpc:File";
+        public const string SectionName = "File:Grpc:Client";
 
         /// <summary>
         /// gRPC server address
