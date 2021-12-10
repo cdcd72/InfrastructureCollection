@@ -11,8 +11,10 @@ Implement physical file access mechanism.
 
     ```json
     "File": {
-        "Roots": "D:\\Output\\File\\Upload"
-    },
+        "Roots": [
+            "D:\\Output\\File\\Upload"
+        ]
+    }
     ```
 
     - Roots：Root directories for prevent path traversal ( Split with comma )
@@ -25,6 +27,8 @@ Implement physical file access mechanism.
     public void ConfigureServices(IServiceCollection services)
     {
         // ...
+
+        services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 
         services.AddSingleton<IFileAccess, PhysicalFileAccess>();
     }

@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Validators;
-using Microsoft.Extensions.Configuration;
-using Moq;
 using NUnit.Framework;
 
 namespace Infra.FileAccess.Physical.IntegrationTest
@@ -22,16 +20,13 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
         private static string TempPath => Path.Combine(RootPath, "Temp");
 
-        private static string[] Roots => new string[]
-        {
-            RootPath
-        };
-
         #endregion
 
         public PhysicalFileAccessTests()
         {
-            _fileAccess = GetPhysicalFileAccess();
+            var startup = new Startup();
+
+            _fileAccess = startup.GetService<IFileAccess>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
@@ -493,21 +488,5 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
         [TearDown]
         public void TearDown() => _fileAccess.DeleteDirectory(TempPath);
-
-        #region Private Method
-
-        private static PhysicalFileAccess GetPhysicalFileAccess()
-        {
-            var mockConfiguration = new Mock<IConfiguration>();
-            var mockRoots = new Mock<IConfigurationSection>();
-            mockRoots.Setup(m => m.Value)
-                .Returns(string.Join(",", Roots));
-            mockConfiguration.Setup(m => m.GetSection(It.Is<string>(key => key == "File:Roots")))
-                .Returns(mockRoots.Object);
-
-            return new PhysicalFileAccess(mockConfiguration.Object);
-        }
-
-        #endregion
     }
 }

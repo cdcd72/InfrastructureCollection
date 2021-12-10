@@ -7,20 +7,25 @@ using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
 using Infra.Core.FileAccess.Validators;
-using Infra.FileAccess.Physical.Common;
-using Microsoft.Extensions.Configuration;
+using Infra.FileAccess.Physical.Configuration;
+using Infra.FileAccess.Physical.Configuration.Validators;
+using Microsoft.Extensions.Options;
 
 namespace Infra.FileAccess.Physical
 {
     public class PhysicalFileAccess : IFileAccess
     {
-        private readonly Env _env;
+        private readonly Settings _settings;
         private readonly PathValidator _pathValidator;
 
-        public PhysicalFileAccess(IConfiguration config)
+        public PhysicalFileAccess(IOptions<Settings> settings)
         {
-            _env = new Env(config);
-            _pathValidator = new PathValidator(_env.Roots);
+            _settings = settings.Value;
+
+            if (!SettingsValidator.TryValidate(_settings, out var validationException))
+                throw validationException;
+
+            _pathValidator = new PathValidator(_settings.Roots);
         }
 
         #region Sync Method
@@ -46,7 +51,7 @@ namespace Infra.FileAccess.Physical
             => ZipFile.CreateFromDirectory(GetVerifiedPath(directoryPath), GetVerifiedPath(zipFilePath), CompressionLevel.Optimal, false);
 
         public string GetParentPath(string directoryPath)
-            => Directory.GetParent(GetVerifiedPath(directoryPath)).FullName;
+            => Directory.GetParent(GetVerifiedPath(directoryPath))?.FullName;
 
         public string GetCurrentDirectoryName(string directoryPath)
             => new DirectoryInfo(GetVerifiedPath(directoryPath)).Name;
