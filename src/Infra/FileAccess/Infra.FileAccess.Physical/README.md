@@ -17,7 +17,7 @@ Implement physical file access mechanism.
     }
     ```
 
-    - Roots：Root directories for prevent path traversal ( Split with comma )
+    - Roots：Root directories for prevent path traversal
 
 > 新增實體檔案存取實例至 DI 容器中。
 
