@@ -2,12 +2,14 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Grpc.Core;
-using GrpcFileServer.Common;
+using GrpcFileServer.Configuration;
+using GrpcFileServer.Configuration.Validators;
 using Infra.Core.Extensions;
 using GrpcFileService;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
 #pragma warning disable 1998
 
 namespace GrpcFileServer.Services
@@ -15,13 +17,18 @@ namespace GrpcFileServer.Services
     public class DirectoryService : DirectoryTransfer.DirectoryTransferBase
     {
         private readonly ILogger<FileService> _logger;
-        private readonly Env _env;
+        private readonly Settings _settings;
         private readonly IFileAccess _fileAccess;
 
-        public DirectoryService(ILogger<FileService> logger, IConfiguration config, IFileAccess fileAccess)
+        public DirectoryService(ILogger<FileService> logger, IOptions<Settings> settings, IFileAccess fileAccess)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _env = new Env(config);
+
+            _settings = settings.Value;
+
+            if (!SettingsValidator.TryValidate(_settings, out var validationException))
+                throw validationException;
+
             _fileAccess = fileAccess;
         }
 
@@ -31,7 +38,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
             var reply = new CreateDirectoryResponse
             {
                 Mark = mark
@@ -59,7 +66,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
             var reply = new IsExistDirectoryResponse
             {
                 Mark = mark
@@ -87,7 +94,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
             var reply = new GetFilesResponse
             {
                 Mark = mark
@@ -116,7 +123,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
             var reply = new DeleteDirectoryResponse
             {
                 Mark = mark
@@ -144,7 +151,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
             var reply = new GetSubDirectoriesResponse
             {
                 Mark = mark
@@ -173,8 +180,8 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_env.Root, request.DirectoryName);
-            var zipFilePath = Path.Combine(_env.Root, request.ZipFileName);
+            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
+            var zipFilePath = Path.Combine(_settings.Root, request.ZipFileName);
             var reply = new DirectoryCompressResponse
             {
                 Mark = mark

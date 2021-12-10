@@ -19,7 +19,7 @@ Implement file server with gRPC.
     }
     ```
 
-    - Root：File saved directory
+    - Root：Files saved directory
     - ChunkSize：File chunk size for read file
     - ChunkBufferCount：File chunk buffer for write file
 

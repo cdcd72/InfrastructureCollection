@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
-using GrpcFileServer.Common;
+using GrpcFileServer.Configuration;
+using GrpcFileServer.Configuration.Validators;
 using Infra.Core.Extensions;
 using GrpcFileService;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
 #pragma warning disable 1998
 
 namespace GrpcFileServer.Services
@@ -17,13 +19,18 @@ namespace GrpcFileServer.Services
     public class FileService : FileTransfer.FileTransferBase
     {
         private readonly ILogger<FileService> _logger;
-        private readonly Env _env;
+        private readonly Settings _settings;
         private readonly IFileAccess _fileAccess;
 
-        public FileService(ILogger<FileService> logger, IConfiguration config, IFileAccess fileAccess)
+        public FileService(ILogger<FileService> logger, IOptions<Settings> settings, IFileAccess fileAccess)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _env = new Env(config);
+
+            _settings = settings.Value;
+
+            if (!SettingsValidator.TryValidate(_settings, out var validationException))
+                throw validationException;
+
             _fileAccess = fileAccess;
         }
 
@@ -37,7 +44,7 @@ namespace GrpcFileServer.Services
             FileStream fs = null;
             var startTime = DateTime.Now;
             var mark = string.Empty;
-            var rootDirectoryPath = _env.Root;
+            var rootDirectoryPath = _settings.Root;
             var subDirectoryPath = string.Empty;
             var fileName = string.Empty;
             var savePath = string.Empty;
@@ -126,7 +133,7 @@ namespace GrpcFileServer.Services
                         fileContents.Add(reply);
 
                         // Collect file chunks then write into file stream. (file chunk size decide by client code...)
-                        if (fileContents.Count >= _env.ChunkBufferCount)
+                        if (fileContents.Count >= _settings.ChunkBufferCount)
                         {
                             fileContents.OrderBy(c => c.Block).ToList().ForEach(c => c.Content.WriteTo(fs));
                             fileContents.Clear();
@@ -154,10 +161,10 @@ namespace GrpcFileServer.Services
             FileStream fs = null;
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var chunkSize = _env.ChunkSize;
+            var chunkSize = _settings.ChunkSize;
             var buffer = new byte[chunkSize];
             var fileName = request.FileName;
-            var filePath = Path.Combine(_env.Root, fileName);
+            var filePath = Path.Combine(_settings.Root, fileName);
             var reply = new DownloadFileResponse
             {
                 FileName = fileName,
@@ -241,7 +248,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.Root, request.FileName);
+            var filePath = Path.Combine(_settings.Root, request.FileName);
             var reply = new IsExistFileResponse
             {
                 Mark = mark
@@ -269,7 +276,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.Root, request.FileName);
+            var filePath = Path.Combine(_settings.Root, request.FileName);
             var reply = new DeleteFileResponse
             {
                 Mark = mark
@@ -297,7 +304,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_env.Root, request.FileName);
+            var filePath = Path.Combine(_settings.Root, request.FileName);
             var reply = new GetFileSizeResponse
             {
                 Mark = mark
@@ -325,7 +332,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var rootDirectoryPath = _env.Root;
+            var rootDirectoryPath = _settings.Root;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new MoveFileResponse
@@ -355,7 +362,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var rootDirectoryPath = _env.Root;
+            var rootDirectoryPath = _settings.Root;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new CopyFileResponse

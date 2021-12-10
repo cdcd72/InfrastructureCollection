@@ -1,7 +1,6 @@
 using GrpcFileServer.Services;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.FileAccess.Physical;
-using Infra.FileAccess.Physical.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog.Web;
+using GrpcFileServerConfig = GrpcFileServer.Configuration;
+using PhysicalFileAccessConfig = Infra.FileAccess.Physical.Configuration;
 
 namespace GrpcFileServer
 {
@@ -22,7 +23,9 @@ namespace GrpcFileServer
         {
             services.AddLogging(builder => builder.AddNLog("Nlog.config"));
 
-            services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
+            services.Configure<GrpcFileServerConfig.Settings>(settings => Configuration.GetSection(GrpcFileServerConfig.Settings.SectionName).Bind(settings));
+
+            services.Configure<PhysicalFileAccessConfig.Settings>(settings => Configuration.GetSection(PhysicalFileAccessConfig.Settings.SectionName).Bind(settings));
 
             services.AddSingleton<IFileAccess, PhysicalFileAccess>();
 

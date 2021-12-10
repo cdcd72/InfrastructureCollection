@@ -4,7 +4,7 @@ using System.Linq;
 
 #pragma warning disable CA2208
 
-namespace Infra.FileAccess.Physical.Configuration.Validators
+namespace GrpcFileServer.Configuration.Validators
 {
     public static class SettingsValidator
     {
@@ -14,8 +14,14 @@ namespace Infra.FileAccess.Physical.Configuration.Validators
 
             var exceptions = new List<Exception>();
 
-            if (settings.Roots is null || (settings.Roots is not null && settings.Roots.Any(root => root is "")))
-                exceptions.Add(new ArgumentNullException(nameof(settings.Roots)));
+            if (string.IsNullOrWhiteSpace(settings.Root))
+                exceptions.Add(new ArgumentNullException(nameof(settings.Root)));
+
+            if (settings.ChunkSize is 0)
+                exceptions.Add(new ArgumentNullException(nameof(settings.ChunkSize)));
+
+            if (settings.ChunkBufferCount is 0)
+                exceptions.Add(new ArgumentNullException(nameof(settings.ChunkBufferCount)));
 
             validationExceptions = new AggregateException(exceptions);
 
