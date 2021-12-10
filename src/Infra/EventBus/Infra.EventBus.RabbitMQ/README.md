@@ -43,6 +43,9 @@ Implement event bus mechanism with RabbitMQ.
     {
         // ...
 
+        services.Configure<ConnectionSettings>(settings => Configuration.GetSection(ConnectionSettings.SectionName).Bind(settings))
+                .Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
+
         // Register event bus
         RegisterEventBus(services);
     }
