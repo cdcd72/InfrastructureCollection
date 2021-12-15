@@ -3,7 +3,7 @@ using System;
 
 namespace Infra.Core.Extensions
 {
-    public static class LoggerExtensions
+    public static class LoggerExtension
     {
         private static Action<ILogger, string, Exception> TraceExecuted => LoggerMessage.Define<string>(
                 LogLevel.Trace,
