@@ -165,7 +165,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             _fileAccess.CreateDirectory(directoryPath);
 
-            Assert.AreEqual(PathValidator.NonUncPattern + TempPath, _fileAccess.GetParentPath(directoryPath));
+            Assert.AreEqual(TempPath, _fileAccess.GetParentPath(directoryPath));
         }
 
         [Test]
