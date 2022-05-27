@@ -13,8 +13,6 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
             Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty, "TestData", "Files");
 
-        private static string NonUncPattern => @"\\?\";
-
         #endregion
 
         [Test]
@@ -34,7 +32,7 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
         {
             var validNonUncPath = Path.Combine(RootPath, "1.jpg");
 
-            PathShouldBe(RootPath, validNonUncPath, NonUncPattern + validNonUncPath);
+            PathShouldBe(RootPath, validNonUncPath, validNonUncPath);
         }
 
         [Test]
@@ -53,7 +51,7 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
             var invalidNonUncPath = Path.Combine(RootPath, "..", "1.jpg");
 
             Assert.Throws<IOException>(()
-                => PathShouldBe(RootPath, invalidNonUncPath, NonUncPattern + validNonUncPath));
+                => PathShouldBe(RootPath, invalidNonUncPath, validNonUncPath));
         }
 
         #region Private Method
