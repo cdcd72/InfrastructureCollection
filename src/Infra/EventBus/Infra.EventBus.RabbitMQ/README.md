@@ -43,6 +43,7 @@ Implement event bus mechanism with RabbitMQ.
     {
         // ...
 
+        // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
         services.Configure<ConnectionSettings>(settings => Configuration.GetSection(ConnectionSettings.SectionName).Bind(settings))
                 .Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 
