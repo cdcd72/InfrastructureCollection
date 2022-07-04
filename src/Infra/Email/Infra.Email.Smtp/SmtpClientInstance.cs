@@ -13,7 +13,7 @@ using MimeKit;
 
 namespace Infra.Email.Smtp
 {
-    public class SmtpClientInstance : IMail
+    public class SmtpClientInstance : IMailClient
     {
         private readonly ILogger<SmtpClientInstance> _logger;
         private readonly Settings _settings;

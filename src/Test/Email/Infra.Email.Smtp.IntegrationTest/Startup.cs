@@ -31,7 +31,7 @@ namespace Infra.Email.Smtp.IntegrationTest
 
             services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-            services.AddSingleton<IMail, SmtpClientInstance>();
+            services.AddSingleton<IMailClient, SmtpClientInstance>();
 
             return services.BuildServiceProvider();
         }

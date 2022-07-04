@@ -3,7 +3,7 @@ using Infra.Core.Email.Models;
 
 namespace Infra.Core.Email.Abstractions
 {
-    public interface IMail
+    public interface IMailClient
     {
         #region Sync Method
 

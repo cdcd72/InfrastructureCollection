@@ -36,10 +36,10 @@ Implement send mail mechanism with MailKit.
 
         services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-        services.AddSingleton<IMail, SmtpClientInstance>();
+        services.AddSingleton<IMailClient, SmtpClientInstance>();
     }
     ```
 
-> 注入 IMail 來送信。
+> 注入 IMailClient 來送信。
 
-3. Inject IMail to send mail.
+3. Inject IMailClient to send mail.

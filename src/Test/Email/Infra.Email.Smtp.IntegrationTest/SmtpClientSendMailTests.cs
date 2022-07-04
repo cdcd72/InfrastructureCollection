@@ -18,7 +18,7 @@ namespace Infra.Email.Smtp.IntegrationTest
     /// </summary>
     public class SmtpClientSendMailTests
     {
-        private readonly IMail _mail;
+        private readonly IMailClient _mailClient;
 
         #region Properties
 
@@ -45,7 +45,7 @@ namespace Infra.Email.Smtp.IntegrationTest
         {
             var startup = new Startup();
 
-            _mail = startup.GetService<IMail>();
+            _mailClient = startup.GetService<IMailClient>();
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var result = await _mail.SendAsync(mailParam);
+            var result = await _mailClient.SendAsync(mailParam);
 
             // Assert
             Assert.IsTrue(result);
@@ -84,7 +84,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var result = await _mail.SendAsync(mailParam);
+            var result = await _mailClient.SendAsync(mailParam);
 
             // Assert
             Assert.IsTrue(result);
@@ -106,7 +106,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var result = await _mail.SendAsync(mailParam);
+            var result = await _mailClient.SendAsync(mailParam);
 
             // Assert
             Assert.IsTrue(result);
@@ -128,7 +128,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var result = await _mail.SendAsync(mailParam);
+            var result = await _mailClient.SendAsync(mailParam);
 
             // Assert
             Assert.IsTrue(result);
@@ -159,7 +159,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var result = await _mail.SendAsync(mailParam);
+            var result = await _mailClient.SendAsync(mailParam);
 
             // Assert
             Assert.IsTrue(result);
