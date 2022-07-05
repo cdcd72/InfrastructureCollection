@@ -26,7 +26,7 @@ namespace Infra.Caching.Memory.IntegrationTest
         {
             services.AddMemoryCache();
 
-            services.AddSingleton<ICache, Infra.Caching.Memory.MemoryCache>();
+            services.AddSingleton<ICache, MemoryCache>();
 
             return services.BuildServiceProvider();
         }
