@@ -64,6 +64,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Caching.Memory.Integr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Caching.Redis.IntegrationTest", "Test\Infra\Cache\Infra.Caching.Redis.IntegrationTest\Infra.Caching.Redis.IntegrationTest.csproj", "{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Time", "Time", "{6C970560-A9AE-4A1F-ACCC-432EF1CC5A68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Time", "Infra\Time\Infra.Time\Infra.Time.csproj", "{93579E16-0F54-41AA-A944-7EAA96AC0BB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +130,10 @@ Global
 		{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93579E16-0F54-41AA-A944-7EAA96AC0BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93579E16-0F54-41AA-A944-7EAA96AC0BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93579E16-0F54-41AA-A944-7EAA96AC0BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93579E16-0F54-41AA-A944-7EAA96AC0BB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +163,8 @@ Global
 		{388AC30D-19A0-41AB-9534-DB1C8F831BBD} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{1C83B479-3063-41A2-88E3-C989DB335EA8} = {388AC30D-19A0-41AB-9534-DB1C8F831BBD}
 		{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD} = {388AC30D-19A0-41AB-9534-DB1C8F831BBD}
+		{6C970560-A9AE-4A1F-ACCC-432EF1CC5A68} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
+		{93579E16-0F54-41AA-A944-7EAA96AC0BB2} = {6C970560-A9AE-4A1F-ACCC-432EF1CC5A68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
