@@ -20,16 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Infra\Email\Infra.Email.Smtp\Infra.Email.Smtp.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="TestData\Files\test.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Infra\Email\Infra.Email.Smtp\Infra.Email.Smtp.csproj" />
   </ItemGroup>
 
 </Project>
