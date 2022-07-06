@@ -45,6 +45,30 @@ public class MemoryCacheTests
         });
 
     [Test]
+    public void SetStringSuccess() => _cache.SetString("key", "value");
+
+    [Test]
+    public void SetStringWithSlidingExpirationSuccess() =>
+        _cache.SetString("key", "value", new CacheOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(5)
+        });
+
+    [Test]
+    public void SetStringWithAbsoluteExpirationSuccess() =>
+        _cache.SetString("key", "value", new CacheOptions
+        {
+            AbsoluteExpiration = DateTimeOffset.MaxValue
+        });
+
+    [Test]
+    public void SetStringWithAbsoluteExpirationRelativeToNowSuccess() =>
+        _cache.SetString("key", "value", new CacheOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
+        });
+
+    [Test]
     public void GetSuccess()
     {
         const string key = "key";
@@ -58,6 +82,23 @@ public class MemoryCacheTests
         {
             Assert.That(cachedValue, Is.Not.Empty);
             Assert.That(_encoding.GetString(cachedValue), Is.EqualTo(value));
+        });
+    }
+
+    [Test]
+    public void GetStringSuccess()
+    {
+        const string key = "key";
+        const string value = "value";
+
+        _cache.SetString(key, value);
+
+        var cachedValue = _cache.GetString(key);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(cachedValue, Is.Not.Empty);
+            Assert.That(cachedValue, Is.EqualTo(value));
         });
     }
 
@@ -87,8 +128,16 @@ public class MemoryCacheTests
         => Assert.ThrowsAsync<NotSupportedException>(() => _cache.SetAsync("key", _encoding.GetBytes("value")));
 
     [Test]
+    public void SetStringAsyncNotSupported()
+        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.SetStringAsync("key", "value"));
+
+    [Test]
     public void GetAsyncNotSupported()
         => Assert.ThrowsAsync<NotSupportedException>(() => _cache.GetAsync("key"));
+
+    [Test]
+    public void GetStringAsyncNotSupported()
+        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.GetStringAsync("key"));
 
     [Test]
     public void RemoveAsyncNotSupported()

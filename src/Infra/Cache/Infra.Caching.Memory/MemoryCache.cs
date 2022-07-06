@@ -1,4 +1,5 @@
-﻿using Infra.Core.Cache.Abstractions;
+﻿using Infra.Caching.Memory.Extensions;
+using Infra.Core.Cache.Abstractions;
 using Infra.Core.Cache.Models;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -12,23 +13,15 @@ public class MemoryCache : ICache
 
     #region Sync Method
 
-    public void Set(string key, byte[] value, CacheOptions? cacheOptions = null)
-    {
-        var memoryCacheEntryOptions = new MemoryCacheEntryOptions();
+    public void Set(string key, byte[] value, CacheOptions? cacheOptions)
+        => _cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
 
-        if (cacheOptions?.SlidingExpiration is not null)
-            memoryCacheEntryOptions.SetSlidingExpiration(cacheOptions.SlidingExpiration.Value);
-
-        if (cacheOptions?.AbsoluteExpiration is not null)
-            memoryCacheEntryOptions.SetAbsoluteExpiration(cacheOptions.AbsoluteExpiration.Value);
-
-        if (cacheOptions?.AbsoluteExpirationRelativeToNow is not null)
-            memoryCacheEntryOptions.SetAbsoluteExpiration(cacheOptions.AbsoluteExpirationRelativeToNow.Value);
-
-        _cache.Set(key, value, memoryCacheEntryOptions);
-    }
+    public void SetString(string key, string value, CacheOptions? cacheOptions)
+        => _cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
 
     public byte[] Get(string key) => _cache.Get<byte[]>(key);
+
+    public string GetString(string key) => _cache.Get<string>(key);
 
     public void Remove(string key) => _cache.Remove(key);
 
@@ -38,13 +31,17 @@ public class MemoryCache : ICache
 
     #region Async Method
 
-    public Task SetAsync(string key, byte[] value, CacheOptions? cacheOptions = null) => throw new NotSupportedException();
+    public Task SetAsync(string key, byte[] value, CacheOptions cacheOptions, CancellationToken token = default) => throw new NotSupportedException();
 
-    public Task<byte[]> GetAsync(string key) => throw new NotSupportedException();
+    public Task SetStringAsync(string key, string value, CacheOptions cacheOptions, CancellationToken token = default) => throw new NotSupportedException();
 
-    public Task RemoveAsync(string key) => throw new NotSupportedException();
+    public Task<byte[]> GetAsync(string key, CancellationToken token = default) => throw new NotSupportedException();
 
-    public Task RefreshAsync(string key) => throw new NotSupportedException();
+    public Task<string> GetStringAsync(string key, CancellationToken token = default) => throw new NotSupportedException();
+
+    public Task RemoveAsync(string key, CancellationToken token = default) => throw new NotSupportedException();
+
+    public Task RefreshAsync(string key, CancellationToken token = default) => throw new NotSupportedException();
 
     #endregion
 }
