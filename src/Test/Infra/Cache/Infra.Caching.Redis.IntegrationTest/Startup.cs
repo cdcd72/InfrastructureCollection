@@ -26,8 +26,8 @@ namespace Infra.Caching.Redis.IntegrationTest
         {
             services.AddStackExchangeRedisCache(options =>
             {
-                options.InstanceName = Configuration.GetValue<string>("Redis:InstanceName");
-                options.Configuration = Configuration.GetValue<string>("Redis:Configuration");
+                options.InstanceName = Configuration.GetValue<string>("Cache:Redis:InstanceName");
+                options.Configuration = Configuration.GetValue<string>("Cache:Redis:Configuration");
             });
 
             services.AddSingleton<ICache, RedisCache>();
