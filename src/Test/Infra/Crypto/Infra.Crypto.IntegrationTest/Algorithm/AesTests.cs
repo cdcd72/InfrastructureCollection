@@ -5,7 +5,7 @@ using Infra.Core.Crypto.Enums;
 using Infra.Core.Crypto.Models;
 using NUnit.Framework;
 
-namespace Infra.Crypto.IntegrationTest;
+namespace Infra.Crypto.IntegrationTest.Algorithm;
 
 public class AesTests
 {
