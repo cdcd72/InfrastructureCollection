@@ -2,9 +2,9 @@
 
 public interface ICryptoAlgorithm
 {
-    string Encrypt(string plainText);
+    string Encrypt(string text);
 
-    byte[] Encrypt(byte[] plainBytes);
+    byte[] Encrypt(byte[] bytes);
 
     string Decrypt(string encryptedText);
 

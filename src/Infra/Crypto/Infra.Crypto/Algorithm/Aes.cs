@@ -14,22 +14,22 @@ public class Aes : CipherBase, ICryptoAlgorithm
         this.iv = iv;
     }
 
-    public string Encrypt(string plainText)
+    public string Encrypt(string text)
     {
         using var aes = System.Security.Cryptography.Aes.Create();
 
         SetCryptoTransform(aes.CreateEncryptor(key, iv));
 
-        return Convert.ToBase64String(Cipher(Encoding.UTF8.GetBytes(plainText)));
+        return Convert.ToBase64String(Cipher(Encoding.UTF8.GetBytes(text)));
     }
 
-    public byte[] Encrypt(byte[] plainBytes)
+    public byte[] Encrypt(byte[] bytes)
     {
         using var aes = System.Security.Cryptography.Aes.Create();
 
         SetCryptoTransform(aes.CreateEncryptor(key, iv));
 
-        return Cipher(plainBytes);
+        return Cipher(bytes);
     }
 
     public string Decrypt(string encryptedText)
