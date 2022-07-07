@@ -15,6 +15,8 @@ The practice may not be the best, but I hope to get better and better!
     - Implement with [Microsoft.Extensions.Caching.Memory](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Memory)
   - [Infra.Caching.Redis](src/Infra/Cache/Infra.Caching.Redis)
     - Implement with [Microsoft.Extensions.Caching.StackExchangeRedis](https://www.nuget.org/packages/Microsoft.Extensions.Caching.StackExchangeRedis)
+- Crypto
+  - [Infra.Crypto](src/Infra/Crypto/Infra.Crypto)
 - Email
   - [Infra.Email.Smtp](src/Infra/Email/Infra.Email.Smtp)
     - Implement with [MailKit](https://github.com/jstedfast/MailKit)
@@ -25,6 +27,8 @@ The practice may not be the best, but I hope to get better and better!
 - FileAccess
   - [Infra.FileAccess.Physical](src/Infra/FileAccess/Infra.FileAccess.Physical)
   - [Infra.FileAccess.Grpc](src/Infra/FileAccess/Infra.FileAccess.Grpc) :point_right: [Demo](https://github.com/cdcd72/Grpc.FileTransfer.Demo)
+- Hash
+  - [Infra.Hash](src/Infra/Hash/Infra.Hash)
 - Time
   - [Infra.Time](src/Infra/Time/Infra.Time)
 - Server
