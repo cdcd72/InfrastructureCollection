@@ -1,7 +1,7 @@
-﻿using Infra.Core.Utility;
+﻿using Infra.Core.Generators;
 using NUnit.Framework;
 
-namespace Infra.Core.IntegrationTest.Utility;
+namespace Infra.Core.IntegrationTest.Generators;
 
 public class RandomNumberGeneratorTests
 {

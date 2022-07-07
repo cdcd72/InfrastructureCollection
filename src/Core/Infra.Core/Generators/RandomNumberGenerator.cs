@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Infra.Core.Utility;
+namespace Infra.Core.Generators;
 
 public static class RandomNumberGenerator
 {
