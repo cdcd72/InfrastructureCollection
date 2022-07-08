@@ -25,6 +25,7 @@ public class Startup
     private static IServiceProvider ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IHashFactory, HashFactory>();
+        services.AddSingleton<IHmacFactory, HmacFactory>();
 
         return services.BuildServiceProvider();
     }

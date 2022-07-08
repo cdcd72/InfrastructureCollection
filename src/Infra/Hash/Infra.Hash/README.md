@@ -15,9 +15,13 @@ Implement hash mechanism.
         // ...
 
         services.AddSingleton<IHashFactory, HashFactory>();
+   
+        // or Hash-based Message Authentication Code, HMAC
+        
+        services.AddSingleton<IHmacFactory, HmacFactory>();
     }
     ```
 
-> 注入 IHashFactory 並建立 IHashAlgorithm 來加解密資料。
+> 注入 IHashFactory (or IHmacAlgorithm) 並建立 IHashAlgorithm (or IHmacFactory) 來加解密資料。
 
-2. Create IHashAlgorithm with injected IHashFactory to hash your data.
+2. Create IHashAlgorithm(or IHmacAlgorithm) with injected IHashFactory(or IHmacFactory) to hash your data.
