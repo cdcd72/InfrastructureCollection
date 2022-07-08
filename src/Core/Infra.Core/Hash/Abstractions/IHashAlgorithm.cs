@@ -6,7 +6,7 @@ public interface IHashAlgorithm
 
     byte[] Hash(byte[] bytes);
 
-    bool Verify(string hashedText, string text);
+    bool Verify(string text, string hashedText);
 
-    bool Verify(byte[] hashedBytes, byte[] bytes);
+    bool Verify(byte[] bytes, byte[] hashedBytes);
 }

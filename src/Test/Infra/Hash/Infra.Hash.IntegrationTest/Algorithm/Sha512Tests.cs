@@ -49,7 +49,7 @@ public class Sha512Tests
 
         var hashedText = _hasher.Hash(text);
 
-        Assert.That(_hasher.Verify(hashedText, text), Is.True);
+        Assert.That(_hasher.Verify(text, hashedText), Is.True);
     }
 
     [Test]
@@ -59,6 +59,6 @@ public class Sha512Tests
 
         var hashedBytes = _hasher.Hash(bytes);
 
-        Assert.That(_hasher.Verify(hashedBytes, bytes), Is.True);
+        Assert.That(_hasher.Verify(bytes, hashedBytes), Is.True);
     }
 }

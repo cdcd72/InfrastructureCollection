@@ -10,9 +10,9 @@ public class Sha512 : IHashAlgorithm
 
     public byte[] Hash(byte[] bytes) => HashBytes(bytes);
 
-    public bool Verify(string hashedText, string text) => hashedText == HashValue(text);
+    public bool Verify(string text, string hashedText) => HashValue(text) == hashedText;
 
-    public bool Verify(byte[] hashedBytes, byte[] bytes) => hashedBytes.Length == HashBytes(bytes).Length;
+    public bool Verify(byte[] bytes, byte[] hashedBytes) => !HashBytes(bytes).Where((b, i) => b != hashedBytes[i]).Any();
 
     #region Private Method
 
