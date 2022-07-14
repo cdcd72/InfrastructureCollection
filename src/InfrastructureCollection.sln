@@ -88,6 +88,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{1449
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Storage.Minio", "Infra\Storage\Infra.Storage.Minio\Infra.Storage.Minio.csproj", "{27F8D720-60C2-42AB-B07F-0C33251B3983}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{F29F6A7B-1788-4DCC-9944-045108E88B2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Storage.Minio.IntegrationTest", "Test\Infra\Storage\Infra.Storage.Minio.IntegrationTest\Infra.Storage.Minio.IntegrationTest.csproj", "{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -174,6 +178,10 @@ Global
 		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -215,6 +223,8 @@ Global
 		{7305CF8D-090B-40B2-867D-B48A382F4F38} = {FF98C60C-2354-42DE-9A75-3BE75F5B5097}
 		{14490C9B-DB57-4F6A-9D29-C2304A3F0A17} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
 		{27F8D720-60C2-42AB-B07F-0C33251B3983} = {14490C9B-DB57-4F6A-9D29-C2304A3F0A17}
+		{F29F6A7B-1788-4DCC-9944-045108E88B2A} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
+		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD} = {F29F6A7B-1788-4DCC-9944-045108E88B2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}

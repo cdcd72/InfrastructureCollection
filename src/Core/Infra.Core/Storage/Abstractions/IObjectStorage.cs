@@ -22,7 +22,7 @@ namespace Infra.Core.Storage.Abstractions
 
         Task<bool> ObjectExistsAsync(string bucketName, string objectName);
 
-        Task PutObjectAsync(string bucketName, string objectName, Stream data);
+        Task PutObjectAsync(string bucketName, string objectName, Stream data, long size);
 
         Task RemoveObjectAsync(string bucketName, string objectName);
 

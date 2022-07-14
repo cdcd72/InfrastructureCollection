@@ -57,12 +57,13 @@ public class MinioStorage : IObjectStorage
         return statObject is not null;
     }
 
-    public async Task PutObjectAsync(string bucketName, string objectName, Stream data)
+    public async Task PutObjectAsync(string bucketName, string objectName, Stream data, long size)
         => await _minioClient.PutObjectAsync(
             new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
-                .WithStreamData(data));
+                .WithStreamData(data)
+                .WithObjectSize(size));
 
     public async Task RemoveObjectAsync(string bucketName, string objectName)
         => await _minioClient.RemoveObjectAsync(
