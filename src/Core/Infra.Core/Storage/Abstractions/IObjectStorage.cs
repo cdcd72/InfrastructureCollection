@@ -28,9 +28,8 @@ namespace Infra.Core.Storage.Abstractions
 
         Task<Stream> GetObjectAsync(string bucketName, string objectName);
 
-        Task<List<string>> ListObjectsAsync(string bucketName, string prefix = null, bool recursive = true);
+        List<string> ListObjects(string bucketName, string prefix = null, bool recursive = true);
 
         #endregion
-
     }
 }

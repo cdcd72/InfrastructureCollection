@@ -84,6 +84,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hash", "Hash", "{FF98C60C-2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Hash.IntegrationTest", "Test\Infra\Hash\Infra.Hash.IntegrationTest\Infra.Hash.IntegrationTest.csproj", "{7305CF8D-090B-40B2-867D-B48A382F4F38}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{14490C9B-DB57-4F6A-9D29-C2304A3F0A17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Storage.Minio", "Infra\Storage\Infra.Storage.Minio\Infra.Storage.Minio.csproj", "{27F8D720-60C2-42AB-B07F-0C33251B3983}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +170,10 @@ Global
 		{7305CF8D-090B-40B2-867D-B48A382F4F38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7305CF8D-090B-40B2-867D-B48A382F4F38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7305CF8D-090B-40B2-867D-B48A382F4F38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27F8D720-60C2-42AB-B07F-0C33251B3983}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +213,8 @@ Global
 		{353CBA35-0D44-469D-8BF9-4235F2E8AC1B} = {45D078DF-71D7-4BCA-91CA-13CA86257372}
 		{FF98C60C-2354-42DE-9A75-3BE75F5B5097} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{7305CF8D-090B-40B2-867D-B48A382F4F38} = {FF98C60C-2354-42DE-9A75-3BE75F5B5097}
+		{14490C9B-DB57-4F6A-9D29-C2304A3F0A17} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
+		{27F8D720-60C2-42AB-B07F-0C33251B3983} = {14490C9B-DB57-4F6A-9D29-C2304A3F0A17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
