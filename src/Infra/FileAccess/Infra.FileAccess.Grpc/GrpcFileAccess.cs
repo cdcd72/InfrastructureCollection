@@ -491,7 +491,7 @@ namespace Infra.FileAccess.Grpc
                     {
                         request.Block = -1; // -1 means file transfer canceled.
                         request.Content = Google.Protobuf.ByteString.Empty;
-                        await call.RequestStream.WriteAsync(request);
+                        await call.RequestStream.WriteAsync(request, cancellationToken);
 
                         progressInfo.IsCompleted = false;
                         progressInfo.Message = $"File【{fileName}】upload canceled. SpentTime:{DateTime.Now - startTime}";
@@ -507,7 +507,7 @@ namespace Infra.FileAccess.Grpc
                     {
                         request.Block = ++readTimes;
                         request.Content = Google.Protobuf.ByteString.CopyFrom(buffer, 0, readSize);
-                        await call.RequestStream.WriteAsync(request);
+                        await call.RequestStream.WriteAsync(request, cancellationToken);
 
                         uploadedSize += readSize;
                         progressInfo.Message = $"File【{fileName}】current upload progress【{uploadedSize}/{ms.Length}】bytes.";
@@ -518,7 +518,7 @@ namespace Infra.FileAccess.Grpc
                     {
                         request.Block = 0;
                         request.Content = Google.Protobuf.ByteString.Empty;
-                        await call.RequestStream.WriteAsync(request);
+                        await call.RequestStream.WriteAsync(request, cancellationToken);
 
                         // Waiting server response.
                         await call.ResponseStream.MoveNext(cancellationToken);
@@ -542,7 +542,7 @@ namespace Infra.FileAccess.Grpc
                     {
                         Block = -2, // -2 means all file chunk transfer completed.
                         Mark = mark
-                    });
+                    }, cancellationToken);
                 }
             }
             catch (Exception ex)
