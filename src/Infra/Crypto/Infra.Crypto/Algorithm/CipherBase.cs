@@ -4,7 +4,7 @@ namespace Infra.Crypto.Algorithm;
 
 public class CipherBase
 {
-    private ICryptoTransform? cryptoTransform;
+    private ICryptoTransform cryptoTransform;
 
     internal void SetCryptoTransform(ICryptoTransform transform) => cryptoTransform = transform;
 

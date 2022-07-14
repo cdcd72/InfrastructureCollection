@@ -83,7 +83,7 @@ public class MinioStorage : IObjectStorage
         return ms;
     }
 
-    public List<string> ListObjects(string bucketName, string? prefix = null, bool recursive = true)
+    public List<string> ListObjects(string bucketName, string prefix = null, bool recursive = true)
     {
         var result = new List<string>();
 

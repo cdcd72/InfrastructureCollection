@@ -20,14 +20,14 @@ public class HmacSha512 : IHmacAlgorithm
 
     #region Private Method
 
-    private static (string hashedText, byte[] key) HashValue(string text, byte[]? key = null)
+    private static (string hashedText, byte[] key) HashValue(string text, byte[] key = null)
     {
         var tuple = HashBytes(Encoding.UTF8.GetBytes(text), key);
 
         return (Convert.ToBase64String(tuple.hashedBytes), tuple.key);
     }
 
-    private static (byte[] hashedBytes, byte[] key) HashBytes(byte[] bytes, byte[]? key = null)
+    private static (byte[] hashedBytes, byte[] key) HashBytes(byte[] bytes, byte[] key = null)
     {
         using var hmacSha512 = key is not null ? new HMACSHA512(key) : new HMACSHA512();
 

@@ -12,7 +12,7 @@ public class Startup
 
     private IServiceProvider ServiceProvider { get; }
 
-    public Startup(IConfiguration? config = null)
+    public Startup(IConfiguration config = null)
     {
         Configuration = config ?? GetConfiguration();
         ServiceProvider = ConfigureServices(new ServiceCollection());

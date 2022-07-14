@@ -13,7 +13,7 @@ public class RedisCache : ICache
 
     #region Sync Method
 
-    public void Set(string key, byte[] value, CacheOptions? cacheOptions)
+    public void Set(string key, byte[] value, CacheOptions cacheOptions)
     {
         var distributedCacheEntryOptions =
             cacheOptions?.ToDistributedCacheEntryOptions() ?? new DistributedCacheEntryOptions();
@@ -21,7 +21,7 @@ public class RedisCache : ICache
         _cache.Set(key, value, distributedCacheEntryOptions);
     }
 
-    public void SetString(string key, string value, CacheOptions? cacheOptions)
+    public void SetString(string key, string value, CacheOptions cacheOptions)
     {
         var distributedCacheEntryOptions =
             cacheOptions?.ToDistributedCacheEntryOptions() ?? new DistributedCacheEntryOptions();
@@ -41,7 +41,7 @@ public class RedisCache : ICache
 
     #region Async Method
 
-    public async Task SetAsync(string key, byte[] value, CacheOptions? cacheOptions, CancellationToken token = default)
+    public async Task SetAsync(string key, byte[] value, CacheOptions cacheOptions, CancellationToken token = default)
     {
         var distributedCacheEntryOptions =
             cacheOptions?.ToDistributedCacheEntryOptions() ?? new DistributedCacheEntryOptions();
@@ -49,7 +49,7 @@ public class RedisCache : ICache
         await _cache.SetAsync(key, value, distributedCacheEntryOptions, token);
     }
 
-    public async Task SetStringAsync(string key, string value, CacheOptions? cacheOptions, CancellationToken token = default)
+    public async Task SetStringAsync(string key, string value, CacheOptions cacheOptions, CancellationToken token = default)
     {
         var distributedCacheEntryOptions =
             cacheOptions?.ToDistributedCacheEntryOptions() ?? new DistributedCacheEntryOptions();

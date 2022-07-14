@@ -13,10 +13,10 @@ public class MemoryCache : ICache
 
     #region Sync Method
 
-    public void Set(string key, byte[] value, CacheOptions? cacheOptions)
+    public void Set(string key, byte[] value, CacheOptions cacheOptions)
         => _cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
 
-    public void SetString(string key, string value, CacheOptions? cacheOptions)
+    public void SetString(string key, string value, CacheOptions cacheOptions)
         => _cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
 
     public byte[] Get(string key) => _cache.Get<byte[]>(key);
