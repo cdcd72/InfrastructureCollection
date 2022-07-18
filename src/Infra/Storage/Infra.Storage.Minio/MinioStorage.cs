@@ -48,13 +48,19 @@ public class MinioStorage : IObjectStorage
 
     public async Task<bool> ObjectExistsAsync(string bucketName, string objectName)
     {
-        var statObject =
+        try
+        {
             await _minioClient.StatObjectAsync(
                 new StatObjectArgs()
                     .WithBucket(bucketName)
                     .WithObject(objectName));
 
-        return statObject is not null;
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task PutObjectAsync(string bucketName, string objectName, Stream data, long size)
