@@ -29,6 +29,9 @@ The practice may not be the best, but I hope to get better and better!
   - [Infra.FileAccess.Grpc](src/Infra/FileAccess/Infra.FileAccess.Grpc) :point_right: [Demo](https://github.com/cdcd72/Grpc.FileTransfer.Demo)
 - Hash
   - [Infra.Hash](src/Infra/Hash/Infra.Hash)
+- Storage
+  - [Infra.Storage.Minio](src/Infra/Storage/Infra.Storage.Minio)
+    - Implement with [minio-dotnet](https://github.com/minio/minio-dotnet)
 - Time
   - [Infra.Time](src/Infra/Time/Infra.Time)
 - Server
