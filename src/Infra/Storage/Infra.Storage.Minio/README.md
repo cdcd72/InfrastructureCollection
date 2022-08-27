@@ -16,7 +16,7 @@ Implement object storage mechanism with Minio.
         "AccessKey": "",
         "SecretKey": "",
         "Timeout": 0,
-        "WithSSL": false
+        "EnableSsl": false
       }
     }
     ```
@@ -25,7 +25,7 @@ Implement object storage mechanism with Minio.
     - AccessKey：Access key is the user ID that uniquely identifies your account.
     - SecretKey：Secret key is the password to your account.
     - Timeout：Set timeout for all requests. (Timeout in milliseconds)
-    - WithSSL：Connects to object storage service with https.
+    - EnableSsl：Connects to object storage service with https.
 
 > 新增 Minio 儲存實例至 DI 容器中。
 

@@ -120,7 +120,7 @@ public class MinioStorage : IObjectStorage
         if (settings.Timeout > 0)
             minioClient.WithTimeout(settings.Timeout);
 
-        if (settings.WithSSL)
+        if (settings.EnableSsl)
             minioClient.WithSSL();
 
         return minioClient.Build();
