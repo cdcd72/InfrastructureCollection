@@ -23,5 +23,10 @@
         /// Password
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// EnableSsl
+        /// </summary>
+        public bool EnableSsl { get; set; }
     }
 }

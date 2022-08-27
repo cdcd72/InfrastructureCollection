@@ -14,14 +14,16 @@ Implement send mail mechanism with MailKit.
         "Host": "",
         "Port": 0,
         "Account": "",
-        "Password": ""
+        "Password": "",
+        "EnableSsl": false
     }
     ```
 
     - Host：SMTP host
     - Port：SMTP port
-    - Account：account for authenticate
-    - Password：password for authenticate
+    - Account：Account for authenticate
+    - Password：Password for authenticate
+    - EnableSsl: Connect to SMTP with https
 
 > 新增 SMTP 客戶端實例至 DI 容器中。
 

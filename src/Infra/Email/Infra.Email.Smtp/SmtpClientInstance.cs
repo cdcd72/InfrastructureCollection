@@ -56,7 +56,7 @@ namespace Infra.Email.Smtp
             {
                 if (!string.IsNullOrWhiteSpace(account) && !string.IsNullOrWhiteSpace(password))
                 {
-                    await smtpClient.ConnectAsync(host, port, true);
+                    await smtpClient.ConnectAsync(host, port, _settings.EnableSsl);
                     await smtpClient.AuthenticateAsync(account, password);
                 }
                 else
