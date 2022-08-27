@@ -26,15 +26,6 @@ namespace Infra.Email.Smtp
             _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
         }
 
-        #region Sync Method
-
-        public bool Send(MailParam mailParam)
-            => Task.Run(() => SendAsync(mailParam)).GetAwaiter().GetResult();
-
-        #endregion
-
-        #region Async Method
-
         public async Task<bool> SendAsync(MailParam mailParam)
         {
             var host = _settings.Host;
@@ -78,8 +69,6 @@ namespace Infra.Email.Smtp
 
             return true;
         }
-
-        #endregion
 
         #region Private Method
 

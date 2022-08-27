@@ -5,16 +5,6 @@ namespace Infra.Core.Email.Abstractions
 {
     public interface IMailClient
     {
-        #region Sync Method
-
-        bool Send(MailParam mailParam);
-
-        #endregion
-
-        #region Async Method
-
         Task<bool> SendAsync(MailParam mailParam);
-
-        #endregion
     }
 }
