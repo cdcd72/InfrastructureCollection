@@ -46,51 +46,53 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileAccess", "FileAccess", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{DA7722CC-7591-4D12-97D9-7CCC928FF3EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Caching.Memory", "Infra\Cache\Infra.Caching.Memory\Infra.Caching.Memory.csproj", "{023136FF-6DE0-4C0F-AF4D-A93BDB7F0A8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Caching.Memory", "Infra\Cache\Infra.Caching.Memory\Infra.Caching.Memory.csproj", "{023136FF-6DE0-4C0F-AF4D-A93BDB7F0A8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Caching.Redis", "Infra\Cache\Infra.Caching.Redis\Infra.Caching.Redis.csproj", "{764211C1-525E-47AB-BE7F-F678632CA4B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Caching.Redis", "Infra\Cache\Infra.Caching.Redis\Infra.Caching.Redis.csproj", "{764211C1-525E-47AB-BE7F-F678632CA4B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infra", "Infra", "{8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Email.Smtp.IntegrationTest", "Test\Infra\Email\Infra.Email.Smtp.IntegrationTest\Infra.Email.Smtp.IntegrationTest.csproj", "{58906875-1D71-426B-B14B-F3D986CF72B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Email.Smtp.IntegrationTest", "Test\Infra\Email\Infra.Email.Smtp.IntegrationTest\Infra.Email.Smtp.IntegrationTest.csproj", "{58906875-1D71-426B-B14B-F3D986CF72B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Physical.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Physical.IntegrationTest\Infra.FileAccess.Physical.IntegrationTest.csproj", "{32580656-1FFD-4F00-9A11-375247510CED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.FileAccess.Physical.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Physical.IntegrationTest\Infra.FileAccess.Physical.IntegrationTest.csproj", "{32580656-1FFD-4F00-9A11-375247510CED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Grpc.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Grpc.IntegrationTest\Infra.FileAccess.Grpc.IntegrationTest.csproj", "{66DBA724-4A0C-4CDA-AFF1-EFB0819F427E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.FileAccess.Grpc.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Grpc.IntegrationTest\Infra.FileAccess.Grpc.IntegrationTest.csproj", "{66DBA724-4A0C-4CDA-AFF1-EFB0819F427E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cache", "Cache", "{388AC30D-19A0-41AB-9534-DB1C8F831BBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Caching.Memory.IntegrationTest", "Test\Infra\Cache\Infra.Caching.Memory.IntegrationTest\Infra.Caching.Memory.IntegrationTest.csproj", "{1C83B479-3063-41A2-88E3-C989DB335EA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Caching.Memory.IntegrationTest", "Test\Infra\Cache\Infra.Caching.Memory.IntegrationTest\Infra.Caching.Memory.IntegrationTest.csproj", "{1C83B479-3063-41A2-88E3-C989DB335EA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Caching.Redis.IntegrationTest", "Test\Infra\Cache\Infra.Caching.Redis.IntegrationTest\Infra.Caching.Redis.IntegrationTest.csproj", "{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Caching.Redis.IntegrationTest", "Test\Infra\Cache\Infra.Caching.Redis.IntegrationTest\Infra.Caching.Redis.IntegrationTest.csproj", "{A923E6C2-47D9-4E06-98BD-C7AEB351EFAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Time", "Time", "{6C970560-A9AE-4A1F-ACCC-432EF1CC5A68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Time", "Infra\Time\Infra.Time\Infra.Time.csproj", "{93579E16-0F54-41AA-A944-7EAA96AC0BB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Time", "Infra\Time\Infra.Time\Infra.Time.csproj", "{93579E16-0F54-41AA-A944-7EAA96AC0BB2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crypto", "Crypto", "{07570126-F0CB-4946-876E-64BA6567E383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Crypto", "Infra\Crypto\Infra.Crypto\Infra.Crypto.csproj", "{9BFB1E5D-F000-4D7B-80E3-51555AB0E8F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Crypto", "Infra\Crypto\Infra.Crypto\Infra.Crypto.csproj", "{9BFB1E5D-F000-4D7B-80E3-51555AB0E8F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crypto", "Crypto", "{4FF4D6B6-862D-4241-83E1-5869A019C971}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Crypto.IntegrationTest", "Test\Infra\Crypto\Infra.Crypto.IntegrationTest\Infra.Crypto.IntegrationTest.csproj", "{8CEFCACF-145C-4749-B6CF-8208F08CFB0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Crypto.IntegrationTest", "Test\Infra\Crypto\Infra.Crypto.IntegrationTest\Infra.Crypto.IntegrationTest.csproj", "{8CEFCACF-145C-4749-B6CF-8208F08CFB0A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hash", "Hash", "{45D078DF-71D7-4BCA-91CA-13CA86257372}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Hash", "Infra\Hash\Infra.Hash\Infra.Hash.csproj", "{353CBA35-0D44-469D-8BF9-4235F2E8AC1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Hash", "Infra\Hash\Infra.Hash\Infra.Hash.csproj", "{353CBA35-0D44-469D-8BF9-4235F2E8AC1B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hash", "Hash", "{FF98C60C-2354-42DE-9A75-3BE75F5B5097}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Hash.IntegrationTest", "Test\Infra\Hash\Infra.Hash.IntegrationTest\Infra.Hash.IntegrationTest.csproj", "{7305CF8D-090B-40B2-867D-B48A382F4F38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Hash.IntegrationTest", "Test\Infra\Hash\Infra.Hash.IntegrationTest\Infra.Hash.IntegrationTest.csproj", "{7305CF8D-090B-40B2-867D-B48A382F4F38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{14490C9B-DB57-4F6A-9D29-C2304A3F0A17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Storage.Minio", "Infra\Storage\Infra.Storage.Minio\Infra.Storage.Minio.csproj", "{27F8D720-60C2-42AB-B07F-0C33251B3983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Storage.Minio", "Infra\Storage\Infra.Storage.Minio\Infra.Storage.Minio.csproj", "{27F8D720-60C2-42AB-B07F-0C33251B3983}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{F29F6A7B-1788-4DCC-9944-045108E88B2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Storage.Minio.IntegrationTest", "Test\Infra\Storage\Infra.Storage.Minio.IntegrationTest\Infra.Storage.Minio.IntegrationTest.csproj", "{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Storage.Minio.IntegrationTest", "Test\Infra\Storage\Infra.Storage.Minio.IntegrationTest\Infra.Storage.Minio.IntegrationTest.csproj", "{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Email.Mailgun", "Infra\Email\Infra.Email.Mailgun\Infra.Email.Mailgun.csproj", "{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,6 +184,10 @@ Global
 		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,6 +198,7 @@ Global
 		{CA8E5424-FD59-46E9-829C-CA74DA7D5E3A} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
 		{2CBCACC2-94F1-4DBB-82B7-F558CE370748} = {B49B0BE5-FB17-425B-8F35-1142DB608B6A}
 		{11D44A5F-9413-4FC1-BC85-DA6E74EC3C7D} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
+		{5E14A820-9AAD-4476-9049-320AE8F31064} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{8E9B901F-3760-476C-87A0-5B3DE74F35BF} = {9D90D3AB-7259-4BC3-BE00-FEF0D215E0D1}
 		{D8CDF8D3-9B63-4AA7-8C7F-B306F4F17AF2} = {8E9B901F-3760-476C-87A0-5B3DE74F35BF}
 		{D7F59DC9-595C-425A-AA36-F66ACA8D5F91} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
@@ -199,12 +206,11 @@ Global
 		{0A5668B7-3D6C-47A8-94EF-FF2CC5EB94EE} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
 		{31F725B3-1FB5-4C48-8F0B-478185D32C93} = {4124DA71-0ECC-4D94-80A4-9B004FB78FEA}
 		{DC4D7010-BB1B-46C1-9612-2611092DF5B2} = {31F725B3-1FB5-4C48-8F0B-478185D32C93}
+		{D60FC046-4051-449D-AA8F-609062CB4116} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{DA7722CC-7591-4D12-97D9-7CCC928FF3EF} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
 		{023136FF-6DE0-4C0F-AF4D-A93BDB7F0A8A} = {DA7722CC-7591-4D12-97D9-7CCC928FF3EF}
 		{764211C1-525E-47AB-BE7F-F678632CA4B0} = {DA7722CC-7591-4D12-97D9-7CCC928FF3EF}
 		{8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E} = {9D90D3AB-7259-4BC3-BE00-FEF0D215E0D1}
-		{5E14A820-9AAD-4476-9049-320AE8F31064} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
-		{D60FC046-4051-449D-AA8F-609062CB4116} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{58906875-1D71-426B-B14B-F3D986CF72B8} = {5E14A820-9AAD-4476-9049-320AE8F31064}
 		{32580656-1FFD-4F00-9A11-375247510CED} = {D60FC046-4051-449D-AA8F-609062CB4116}
 		{66DBA724-4A0C-4CDA-AFF1-EFB0819F427E} = {D60FC046-4051-449D-AA8F-609062CB4116}
@@ -225,6 +231,7 @@ Global
 		{27F8D720-60C2-42AB-B07F-0C33251B3983} = {14490C9B-DB57-4F6A-9D29-C2304A3F0A17}
 		{F29F6A7B-1788-4DCC-9944-045108E88B2A} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD} = {F29F6A7B-1788-4DCC-9944-045108E88B2A}
+		{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A} = {B49B0BE5-FB17-425B-8F35-1142DB608B6A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
