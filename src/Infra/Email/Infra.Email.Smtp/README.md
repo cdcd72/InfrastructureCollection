@@ -11,11 +11,13 @@ Implement send mail mechanism with MailKit.
 
     ```json
     "Email": {
-        "Host": "",
-        "Port": 0,
-        "Account": "",
-        "Password": "",
-        "EnableSsl": false
+        "Smtp": {
+          "Host": "",
+          "Port": 0,
+          "Account": "",
+          "Password": "",
+          "EnableSsl": false
+        }
     }
     ```
 
@@ -39,7 +41,7 @@ Implement send mail mechanism with MailKit.
         // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
         services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-        services.AddSingleton<IMailClient, SmtpClientInstance>();
+        services.AddSingleton<IMailClient, SmtpClient>();
     }
     ```
 

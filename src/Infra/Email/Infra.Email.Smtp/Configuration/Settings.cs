@@ -2,7 +2,7 @@
 {
     public class Settings
     {
-        public const string SectionName = "Email";
+        public const string SectionName = "Email:Smtp";
 
         /// <summary>
         /// Smtp Host

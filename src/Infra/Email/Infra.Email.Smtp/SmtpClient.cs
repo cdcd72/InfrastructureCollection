@@ -6,20 +6,19 @@ using Infra.Core.Email.Models;
 using Infra.Core.Extensions;
 using Infra.Email.Smtp.Configuration;
 using Infra.Email.Smtp.Configuration.Validators;
-using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace Infra.Email.Smtp
 {
-    public class SmtpClientInstance : IMailClient
+    public class SmtpClient : IMailClient
     {
-        private readonly ILogger<SmtpClientInstance> _logger;
+        private readonly ILogger<SmtpClient> _logger;
         private readonly Settings _settings;
 
-        public SmtpClientInstance(
-            ILogger<SmtpClientInstance> logger,
+        public SmtpClient(
+            ILogger<SmtpClient> logger,
             IOptions<Settings> settings)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -41,7 +40,7 @@ namespace Infra.Email.Smtp
             // Get mail message.
             var message = GetMimeMessage(mailParam);
 
-            using var smtpClient = new SmtpClient();
+            using var smtpClient = new MailKit.Net.Smtp.SmtpClient();
 
             try
             {
