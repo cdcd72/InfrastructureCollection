@@ -58,7 +58,7 @@ namespace Infra.Email.Mailgun
             content.Add(new StringContent(mailParams.SenderAddress), "from");
             content.Add(new StringContent(mailParams.Subject), "subject");
 
-            // add body content
+            // Set body content
             if (mailParams.IsHtml)
             {
                 content.Add(new StringContent(mailParams.Message), "html");
@@ -68,7 +68,7 @@ namespace Infra.Email.Mailgun
                 content.Add(new StringContent(mailParams.Message), "text");
             }
 
-            // add receivers
+            // Set receivers
             if (mailParams.Mailto?.Count > 0)
             {
                 foreach (var to in mailParams.Mailto)
@@ -77,7 +77,7 @@ namespace Infra.Email.Mailgun
                 }
             }
 
-            // add cc
+            // Set cc
             if (mailParams.Cc?.Count > 0)
             {
                 foreach (var cc in mailParams.Cc)
@@ -86,12 +86,26 @@ namespace Infra.Email.Mailgun
                 }
             }
 
-            // add bcc
+            // Set bcc
             if (mailParams.Bcc?.Count > 0)
             {
                 foreach (var bcc in mailParams.Bcc)
                 {
                     content.Add(new StringContent(bcc), "bcc");
+                }
+            }
+
+            // Set attachment
+            if (mailParams.Attachment?.Count > 0)
+            {
+                foreach (var attachmentKey in mailParams.Attachment.Keys)
+                {
+                    var attachmentName = attachmentKey;
+                    var attachmentBytes = mailParams.Attachment[attachmentName];
+
+                    var fileContent = new ByteArrayContent(attachmentBytes);
+
+                    content.Add(fileContent, "attachment", attachmentName);
                 }
             }
 

@@ -1,3 +1,4 @@
+using System.Reflection;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
 using NUnit.Framework;
@@ -7,6 +8,9 @@ namespace Infra.Email.Mailgun.IntegrationTest
     public class MailgunClientSendMailTests
     {
         private readonly IMailClient _mailClient;
+
+        private static string CurrentDirectory =>
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
         private static string SenderAddress => "unittest-dev@smtp.mailgun.org";
 
@@ -71,7 +75,6 @@ namespace Infra.Email.Mailgun.IntegrationTest
             Assert.IsTrue(result);
         }
 
-
         [Test]
         public async Task SendMailWithCcSuccessAsync()
         {
@@ -116,5 +119,35 @@ namespace Infra.Email.Mailgun.IntegrationTest
             Assert.IsTrue(result);
         }
 
+        [Test]
+        public async Task SendMailWithAttachmentSuccessAsync()
+        {
+            // Arrange
+            var filePath = Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg");
+            var fileName = Path.GetFileName(filePath);
+            var fileBytes = await File.ReadAllBytesAsync(filePath);
+
+            var attachmentDic = new Dictionary<string, byte[]>()
+            {
+                { fileName, fileBytes }
+            };
+
+            var mailParam = new MailParam()
+            {
+                SenderAddress = SenderAddress,
+                SenderName = SenderName,
+                Mailto = Mailto,
+                Subject = "Send mail with attachment success.",
+                Message = Message,
+                Attachment = attachmentDic,
+                IsHtml = false
+            };
+
+            // Act
+            var result = await _mailClient.SendAsync(mailParam);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
     }
 }
