@@ -12,13 +12,13 @@ namespace Infra.Email.Mailgun.IntegrationTest
         private static string CurrentDirectory =>
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
-        private static string SenderAddress => "unittest-dev@smtp.mailgun.org";
+        private static string SenderAddress => "testuser@smtp.mailgun.org";
 
         private static string SenderName => "TestUser";
 
-        private static List<string> Mailto => new() { "liangyun.stark@gmail.com" };
+        private static List<string> Mailto => new() { };
 
-        private static List<string> Ccto => new() { "a6898208@gmail.com" };
+        private static List<string> Ccto => new() { };
 
         private static List<string> Bccto => new() { };
 
