@@ -52,22 +52,20 @@ namespace Infra.Email.Mailgun
             return true;
         }
 
-        private static FormUrlEncodedContent GetRequestFormContent(MailParam mailParams)
+        private static MultipartFormDataContent GetRequestFormContent(MailParam mailParams)
         {
-            var content = new List<KeyValuePair<string, string>>()
-            {
-                new KeyValuePair<string, string>("from", mailParams.SenderAddress),
-                new KeyValuePair<string, string>("subject", mailParams.Subject)
-            };
+            var content = new MultipartFormDataContent();
+            content.Add(new StringContent(mailParams.SenderAddress), "from");
+            content.Add(new StringContent(mailParams.Subject), "subject");
 
             // add body content
             if (mailParams.IsHtml)
             {
-                content.Add(new KeyValuePair<string, string>("html", mailParams.Message));
+                content.Add(new StringContent(mailParams.Message), "html");
             }
             else
             {
-                content.Add(new KeyValuePair<string, string>("text", mailParams.Message));
+                content.Add(new StringContent(mailParams.Message), "text");
             }
 
             // add receivers
@@ -75,7 +73,7 @@ namespace Infra.Email.Mailgun
             {
                 foreach (var to in mailParams.Mailto)
                 {
-                    content.Add(new KeyValuePair<string, string>("to", to));
+                    content.Add(new StringContent(to), "to");
                 }
             }
 
@@ -84,22 +82,20 @@ namespace Infra.Email.Mailgun
             {
                 foreach (var cc in mailParams.Cc)
                 {
-                    content.Add(new KeyValuePair<string, string>("cc", cc));
+                    content.Add(new StringContent(cc), "cc");
                 }
             }
 
             // add bcc
             if (mailParams.Bcc?.Count > 0)
             {
-                foreach (var cc in mailParams.Bcc)
+                foreach (var bcc in mailParams.Bcc)
                 {
-                    content.Add(new KeyValuePair<string, string>("bcc", cc));
+                    content.Add(new StringContent(bcc), "bcc");
                 }
             }
 
-            var formContent = new FormUrlEncodedContent(content);
-
-            return formContent;
+            return content;
         }
     }
 }
