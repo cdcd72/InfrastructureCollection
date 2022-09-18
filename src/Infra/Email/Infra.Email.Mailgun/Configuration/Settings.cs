@@ -2,7 +2,7 @@ namespace Infra.Email.Mailgun.Configuration
 {
     public class Settings
     {
-        public const string SectionName = "MailgunAPI";
+        public const string SectionName = "Email:Mailgun";
 
         /// <summary>
         /// Mailgun API base URL
