@@ -41,7 +41,7 @@ namespace Infra.Email.Mailgun
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-                var content = GetRequestFormContent(mailParam);
+                var content = GetMailContent(mailParam);
 
                 await client.PostAsync("messages", content);
             }
@@ -54,7 +54,7 @@ namespace Infra.Email.Mailgun
             return true;
         }
 
-        private static MultipartFormDataContent GetRequestFormContent(MailParam mailParams)
+        private static MultipartFormDataContent GetMailContent(MailParam mailParams)
         {
             var content = new MultipartFormDataContent
             {
