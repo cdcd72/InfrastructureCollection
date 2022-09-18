@@ -13,28 +13,30 @@ namespace Infra.Email.Mailgun
     public class MailgunClient : IMailClient
     {
         private readonly ILogger<MailgunClient> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly Settings _settings;
 
         public MailgunClient(
             ILogger<MailgunClient> logger,
+            IHttpClientFactory httpClientFactory,
             IOptions<Settings> settings
         )
         {
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
             _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
         }
 
         public async Task<bool> SendAsync(MailParam mailParam)
         {
-            var apiBaseUrl = _settings.ApiBaseUrl;
+            var apiBaseUrl = _settings.ApiBaseUrl.EndsWith("/") ? _settings.ApiBaseUrl : $"{_settings.ApiBaseUrl}/";
             var apiKey = _settings.ApiKey;
 
             try
             {
-                var client = new HttpClient
-                {
-                    BaseAddress = new Uri($"{apiBaseUrl}")
-                };
+                var client = _httpClientFactory.CreateClient();
+
+                client.BaseAddress = new Uri(apiBaseUrl);
 
                 var byteArray = new UTF8Encoding().GetBytes($"api:{apiKey}");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
@@ -54,9 +56,11 @@ namespace Infra.Email.Mailgun
 
         private static MultipartFormDataContent GetRequestFormContent(MailParam mailParams)
         {
-            var content = new MultipartFormDataContent();
-            content.Add(new StringContent(mailParams.SenderAddress), "from");
-            content.Add(new StringContent(mailParams.Subject), "subject");
+            var content = new MultipartFormDataContent
+            {
+                { new StringContent(mailParams.SenderAddress), "from" },
+                { new StringContent(mailParams.Subject), "subject" }
+            };
 
             // Set body content
             if (mailParams.IsHtml)

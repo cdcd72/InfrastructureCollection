@@ -27,6 +27,8 @@ namespace Infra.Email.Mailgun.IntegrationTest
         {
             services.AddLogging();
 
+            services.AddHttpClient();
+
             services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 
             services.AddSingleton<IMailClient, MailgunClient>();
