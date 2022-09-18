@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infra\Email\Infra.Email.Mailgun\Infra.Email.Mailgun.csproj" />
+    <ProjectReference Include="..\..\..\..\Infra\Email\Infra.Email.Mailgun\Infra.Email.Mailgun.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -18,6 +18,8 @@ The practice may not be the best, but I hope to get better and better!
 - Crypto
   - [Infra.Crypto](src/Infra/Crypto/Infra.Crypto)
 - Email
+  - [Infra.Email.Mailgun](src/Infra/Email/Infra.Email.Mailgun)
+    - Implement with [Mailgun](https://www.mailgun.com)
   - [Infra.Email.Smtp](src/Infra/Email/Infra.Email.Smtp)
     - Implement with [MailKit](https://github.com/jstedfast/MailKit)
 - EventBus

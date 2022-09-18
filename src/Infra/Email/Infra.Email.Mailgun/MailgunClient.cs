@@ -1,5 +1,8 @@
+using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
 using Infra.Core.Extensions;
@@ -29,7 +32,7 @@ namespace Infra.Email.Mailgun
 
         public async Task<bool> SendAsync(MailParam mailParam)
         {
-            var apiBaseUrl = _settings.ApiBaseUrl.EndsWith("/") ? _settings.ApiBaseUrl : $"{_settings.ApiBaseUrl}/";
+            var apiBaseUrl = _settings.ApiBaseUrl.EndsWith("/", StringComparison.InvariantCulture) ? _settings.ApiBaseUrl : $"{_settings.ApiBaseUrl}/";
 
             try
             {
