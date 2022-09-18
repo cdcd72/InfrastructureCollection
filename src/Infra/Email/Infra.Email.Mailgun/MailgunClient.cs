@@ -38,7 +38,8 @@ namespace Infra.Email.Mailgun
 
                 client.BaseAddress = new Uri(apiBaseUrl);
 
-                var byteArray = new UTF8Encoding().GetBytes($"api:{apiKey}");
+                //var byteArray = new UTF8Encoding().GetBytes($"api:{apiKey}");
+                var byteArray = Encoding.UTF8.GetBytes($"api:{apiKey}");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
                 var content = GetRequestFormContent(mailParam);
