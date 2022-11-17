@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
 using Infra.Core.Extensions;

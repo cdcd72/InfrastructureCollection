@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 namespace Infra.Core.EventBus.Extensions
 {
     public static class TypeExtension

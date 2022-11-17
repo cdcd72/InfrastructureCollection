@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Infra.Core.Generators;
+﻿namespace Infra.Core.Generators;
 
 public static class RandomNumberGenerator
 {

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 #pragma warning disable CA2208
 
 namespace Infra.Email.Mailgun.Configuration.Validators

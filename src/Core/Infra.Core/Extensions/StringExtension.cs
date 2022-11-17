@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Security;
+﻿using System.Security;
 using System.Text;
 
 namespace Infra.Core.Extensions

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace Infra.Core.Storage.Abstractions
+﻿namespace Infra.Core.Storage.Abstractions
 {
     public interface IObjectStorage
     {

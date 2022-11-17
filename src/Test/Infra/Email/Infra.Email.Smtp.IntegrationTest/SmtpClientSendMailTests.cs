@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
 using NUnit.Framework;

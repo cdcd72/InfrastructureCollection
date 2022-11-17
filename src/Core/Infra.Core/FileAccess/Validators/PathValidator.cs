@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 namespace Infra.Core.FileAccess.Validators
 {
     public class PathValidator

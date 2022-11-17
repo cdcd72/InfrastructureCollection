@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Grpc.Core;
 using GrpcFileServer.Configuration;
 using GrpcFileServer.Configuration.Validators;
 using Infra.Core.Extensions;
 using GrpcFileService;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 #pragma warning disable 1998

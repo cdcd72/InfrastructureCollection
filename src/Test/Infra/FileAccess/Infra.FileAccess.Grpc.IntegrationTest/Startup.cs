@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Infra.Core.FileAccess.Abstractions;
+﻿using Infra.Core.FileAccess.Abstractions;
 using Infra.FileAccess.Grpc.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;

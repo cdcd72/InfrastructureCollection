@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Infra.Core.Email.Models;
 
 namespace Infra.Core.Email.Abstractions

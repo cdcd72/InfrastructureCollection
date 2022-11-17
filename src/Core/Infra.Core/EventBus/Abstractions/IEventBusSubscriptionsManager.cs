@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Infra.Core.EventBus.Events;
 using Infra.Core.EventBus.Models;
 

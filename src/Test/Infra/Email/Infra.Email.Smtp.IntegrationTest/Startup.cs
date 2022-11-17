@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Infra.Core.Email.Abstractions;
+﻿using Infra.Core.Email.Abstractions;
 using Infra.Email.Smtp.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;

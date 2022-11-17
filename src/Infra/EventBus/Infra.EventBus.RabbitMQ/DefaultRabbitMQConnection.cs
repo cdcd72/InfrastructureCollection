@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Net.Sockets;
 using Infra.Core.Extensions;
 using Infra.EventBus.RabbitMQ.Abstractions;

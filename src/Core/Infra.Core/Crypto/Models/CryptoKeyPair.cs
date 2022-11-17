@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Infra.Core.Crypto.Models;
+﻿namespace Infra.Core.Crypto.Models;
 
 public class CryptoKeyPair
 {

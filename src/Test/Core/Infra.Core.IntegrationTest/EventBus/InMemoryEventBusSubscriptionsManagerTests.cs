@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Infra.Core.EventBus;
 using Infra.Core.IntegrationTest.EventBus.Events;
 using Infra.Core.IntegrationTest.EventBus.Handlers;

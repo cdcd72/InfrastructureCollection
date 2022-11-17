@@ -1,9 +1,5 @@
-using System;
-using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
 using Infra.Core.FileAccess.Validators;

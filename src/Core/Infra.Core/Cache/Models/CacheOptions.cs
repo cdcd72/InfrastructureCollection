@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Infra.Core.Cache.Models;
+﻿namespace Infra.Core.Cache.Models;
 
 public class CacheOptions
 {

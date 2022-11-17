@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using Infra.Core.EventBus.Events;
 
 namespace Infra.Core.EventBus.Abstractions
