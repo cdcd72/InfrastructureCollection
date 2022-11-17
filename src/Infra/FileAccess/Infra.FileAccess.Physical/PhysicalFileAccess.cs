@@ -11,13 +11,13 @@ namespace Infra.FileAccess.Physical
 {
     public class PhysicalFileAccess : IFileAccess
     {
-        private readonly Settings _settings;
-        private readonly PathValidator _pathValidator;
+        private readonly Settings settings;
+        private readonly PathValidator pathValidator;
 
         public PhysicalFileAccess(IOptions<Settings> settings)
         {
-            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
-            _pathValidator = new PathValidator(_settings.Roots);
+            this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            pathValidator = new PathValidator(this.settings.Roots);
         }
 
         #region Sync Method
@@ -160,7 +160,7 @@ namespace Infra.FileAccess.Physical
 
         #region Private Method
 
-        private string GetVerifiedPath(string path) => _pathValidator.GetValidPath(path);
+        private string GetVerifiedPath(string path) => pathValidator.GetValidPath(path);
 
         #endregion
     }

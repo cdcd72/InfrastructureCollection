@@ -7,63 +7,63 @@ namespace Infra.Caching.Memory.IntegrationTest;
 
 public class MemoryCacheTests
 {
-    private readonly ICache _cache;
-    private readonly Encoding _encoding;
+    private readonly ICache cache;
+    private readonly Encoding encoding;
 
     public MemoryCacheTests()
     {
         var startup = new Startup();
 
-        _cache = startup.GetService<ICache>();
-        _encoding = Encoding.UTF8;
+        cache = startup.GetService<ICache>();
+        encoding = Encoding.UTF8;
     }
 
     #region Sync
 
     [Test]
-    public void SetSuccess() => _cache.Set("key", _encoding.GetBytes("value"));
+    public void SetSuccess() => cache.Set("key", encoding.GetBytes("value"));
 
     [Test]
     public void SetWithSlidingExpirationSuccess() =>
-        _cache.Set("key", _encoding.GetBytes("value"), new CacheOptions
+        cache.Set("key", encoding.GetBytes("value"), new CacheOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(5)
         });
 
     [Test]
     public void SetWithAbsoluteExpirationSuccess() =>
-        _cache.Set("key", _encoding.GetBytes("value"), new CacheOptions
+        cache.Set("key", encoding.GetBytes("value"), new CacheOptions
         {
             AbsoluteExpiration = DateTimeOffset.MaxValue
         });
 
     [Test]
     public void SetWithAbsoluteExpirationRelativeToNowSuccess() =>
-        _cache.Set("key", _encoding.GetBytes("value"), new CacheOptions
+        cache.Set("key", encoding.GetBytes("value"), new CacheOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
         });
 
     [Test]
-    public void SetStringSuccess() => _cache.SetString("key", "value");
+    public void SetStringSuccess() => cache.SetString("key", "value");
 
     [Test]
     public void SetStringWithSlidingExpirationSuccess() =>
-        _cache.SetString("key", "value", new CacheOptions
+        cache.SetString("key", "value", new CacheOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(5)
         });
 
     [Test]
     public void SetStringWithAbsoluteExpirationSuccess() =>
-        _cache.SetString("key", "value", new CacheOptions
+        cache.SetString("key", "value", new CacheOptions
         {
             AbsoluteExpiration = DateTimeOffset.MaxValue
         });
 
     [Test]
     public void SetStringWithAbsoluteExpirationRelativeToNowSuccess() =>
-        _cache.SetString("key", "value", new CacheOptions
+        cache.SetString("key", "value", new CacheOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
         });
@@ -74,14 +74,14 @@ public class MemoryCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.Set(key, _encoding.GetBytes(value));
+        cache.Set(key, encoding.GetBytes(value));
 
-        var cachedValue = _cache.Get(key);
+        var cachedValue = cache.Get(key);
 
         Assert.Multiple(() =>
         {
             Assert.That(cachedValue, Is.Not.Empty);
-            Assert.That(_encoding.GetString(cachedValue), Is.EqualTo(value));
+            Assert.That(encoding.GetString(cachedValue), Is.EqualTo(value));
         });
     }
 
@@ -91,9 +91,9 @@ public class MemoryCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.SetString(key, value);
+        cache.SetString(key, value);
 
-        var cachedValue = _cache.GetString(key);
+        var cachedValue = cache.GetString(key);
 
         Assert.Multiple(() =>
         {
@@ -108,16 +108,16 @@ public class MemoryCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.Set(key, _encoding.GetBytes(value));
+        cache.Set(key, encoding.GetBytes(value));
 
-        _cache.Remove(key);
+        cache.Remove(key);
 
-        Assert.That(_cache.Get(key), Is.Null);
+        Assert.That(cache.Get(key), Is.Null);
     }
 
     [Test]
     public void RefreshNotSupported()
-        => Assert.Throws<NotSupportedException>(() => _cache.Refresh("key"));
+        => Assert.Throws<NotSupportedException>(() => cache.Refresh("key"));
 
     #endregion
 
@@ -125,27 +125,27 @@ public class MemoryCacheTests
 
     [Test]
     public void SetAsyncNotSupported()
-        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.SetAsync("key", _encoding.GetBytes("value")));
+        => Assert.ThrowsAsync<NotSupportedException>(() => cache.SetAsync("key", encoding.GetBytes("value")));
 
     [Test]
     public void SetStringAsyncNotSupported()
-        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.SetStringAsync("key", "value"));
+        => Assert.ThrowsAsync<NotSupportedException>(() => cache.SetStringAsync("key", "value"));
 
     [Test]
     public void GetAsyncNotSupported()
-        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.GetAsync("key"));
+        => Assert.ThrowsAsync<NotSupportedException>(() => cache.GetAsync("key"));
 
     [Test]
     public void GetStringAsyncNotSupported()
-        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.GetStringAsync("key"));
+        => Assert.ThrowsAsync<NotSupportedException>(() => cache.GetStringAsync("key"));
 
     [Test]
     public void RemoveAsyncNotSupported()
-        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.RemoveAsync("key"));
+        => Assert.ThrowsAsync<NotSupportedException>(() => cache.RemoveAsync("key"));
 
     [Test]
     public void RefreshAsyncNotSupported()
-        => Assert.ThrowsAsync<NotSupportedException>(() => _cache.RefreshAsync("key"));
+        => Assert.ThrowsAsync<NotSupportedException>(() => cache.RefreshAsync("key"));
 
     #endregion
 }

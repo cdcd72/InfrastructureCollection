@@ -2,9 +2,9 @@
 
 public class CacheOptions
 {
-    public TimeSpan? SlidingExpiration { get; set; }
+    public TimeSpan? SlidingExpiration { get; init; }
 
-    public DateTimeOffset? AbsoluteExpiration { get; set; }
+    public DateTimeOffset? AbsoluteExpiration { get; init; }
 
-    public TimeSpan? AbsoluteExpirationRelativeToNow { get; set; }
+    public TimeSpan? AbsoluteExpirationRelativeToNow { get; init; }
 }

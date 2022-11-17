@@ -8,7 +8,7 @@ namespace Infra.Hash.IntegrationTest.Algorithm;
 
 public class Sha384Tests
 {
-    private readonly IHashAlgorithm _hasher;
+    private readonly IHashAlgorithm hasher;
 
     public Sha384Tests()
     {
@@ -16,7 +16,7 @@ public class Sha384Tests
 
         var hashFactory = startup.GetService<IHashFactory>();
 
-        _hasher = hashFactory.Create(new HashOptions
+        hasher = hashFactory.Create(new HashOptions
         {
             Type = HashType.Sha384
         });
@@ -27,7 +27,7 @@ public class Sha384Tests
     {
         const string text = "test";
 
-        var hashedText = _hasher.Hash(text);
+        var hashedText = hasher.Hash(text);
 
         Assert.That(hashedText, Is.Not.EqualTo(text));
     }
@@ -37,7 +37,7 @@ public class Sha384Tests
     {
         var bytes = Encoding.UTF8.GetBytes("test");
 
-        var hashedBytes = _hasher.Hash(bytes);
+        var hashedBytes = hasher.Hash(bytes);
 
         Assert.That(hashedBytes, Is.Not.Length.EqualTo(bytes.Length));
     }
@@ -47,9 +47,9 @@ public class Sha384Tests
     {
         const string text = "test";
 
-        var hashedText = _hasher.Hash(text);
+        var hashedText = hasher.Hash(text);
 
-        Assert.That(_hasher.Verify(text, hashedText), Is.True);
+        Assert.That(hasher.Verify(text, hashedText), Is.True);
     }
 
     [Test]
@@ -57,8 +57,8 @@ public class Sha384Tests
     {
         var bytes = Encoding.UTF8.GetBytes("test");
 
-        var hashedBytes = _hasher.Hash(bytes);
+        var hashedBytes = hasher.Hash(bytes);
 
-        Assert.That(_hasher.Verify(bytes, hashedBytes), Is.True);
+        Assert.That(hasher.Verify(bytes, hashedBytes), Is.True);
     }
 }

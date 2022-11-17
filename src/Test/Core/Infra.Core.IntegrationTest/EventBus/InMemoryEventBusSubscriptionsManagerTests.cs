@@ -53,7 +53,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             // Arrange
             var raised = false;
             var manager = new InMemoryEventBusSubscriptionsManager();
-            manager.OnEventRemoved += (o, e) => raised = true;
+            manager.OnEventRemoved += (_, _) => raised = true;
             manager.AddSubscription<TestIntegrationEvent, TestIntegrationEventHandler>();
 
             // Act

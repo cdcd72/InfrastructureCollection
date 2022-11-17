@@ -8,7 +8,7 @@ namespace Infra.Hash.IntegrationTest.HmacAlgorithm;
 
 public class HmacSha512Tests
 {
-    private readonly IHmacAlgorithm _hasher;
+    private readonly IHmacAlgorithm hasher;
 
     public HmacSha512Tests()
     {
@@ -16,7 +16,7 @@ public class HmacSha512Tests
 
         var hashFactory = startup.GetService<IHmacFactory>();
 
-        _hasher = hashFactory.Create(new HmacOptions
+        hasher = hashFactory.Create(new HmacOptions
         {
             Type = HmacType.HmacSha512
         });
@@ -27,7 +27,7 @@ public class HmacSha512Tests
     {
         const string text = "test";
 
-        var tuple = _hasher.Hash(text);
+        var tuple = hasher.Hash(text);
 
         Assert.That(tuple.hashedText, Is.Not.EqualTo(text));
     }
@@ -37,7 +37,7 @@ public class HmacSha512Tests
     {
         const string text = "test";
 
-        var hashedText = _hasher.Hash(text, Encoding.UTF8.GetBytes("zpw!AVkxEMar@S%nUKrFSG?6p$7S?$%@"));
+        var hashedText = hasher.Hash(text, Encoding.UTF8.GetBytes("zpw!AVkxEMar@S%nUKrFSG?6p$7S?$%@"));
 
         Assert.That(hashedText, Is.Not.EqualTo(text));
     }
@@ -47,7 +47,7 @@ public class HmacSha512Tests
     {
         var bytes = Encoding.UTF8.GetBytes("test");
 
-        var tuple = _hasher.Hash(bytes);
+        var tuple = hasher.Hash(bytes);
 
         Assert.That(tuple.hashedBytes, Is.Not.Length.EqualTo(bytes.Length));
     }
@@ -57,7 +57,7 @@ public class HmacSha512Tests
     {
         var bytes = Encoding.UTF8.GetBytes("test");
 
-        var hashedBytes = _hasher.Hash(bytes, Encoding.UTF8.GetBytes("zpw!AVkxEMar@S%nUKrFSG?6p$7S?$%@"));
+        var hashedBytes = hasher.Hash(bytes, Encoding.UTF8.GetBytes("zpw!AVkxEMar@S%nUKrFSG?6p$7S?$%@"));
 
         Assert.That(hashedBytes, Is.Not.Length.EqualTo(bytes.Length));
     }
@@ -67,9 +67,9 @@ public class HmacSha512Tests
     {
         const string text = "test";
 
-        var tuple = _hasher.Hash(text);
+        var tuple = hasher.Hash(text);
 
-        Assert.That(_hasher.Verify(text, tuple.hashedText, tuple.key), Is.True);
+        Assert.That(hasher.Verify(text, tuple.hashedText, tuple.key), Is.True);
     }
 
     [Test]
@@ -79,9 +79,9 @@ public class HmacSha512Tests
 
         var key = Encoding.UTF8.GetBytes("zpw!AVkxEMar@S%nUKrFSG?6p$7S?$%@");
 
-        var hashedText = _hasher.Hash(text, key);
+        var hashedText = hasher.Hash(text, key);
 
-        Assert.That(_hasher.Verify(text, hashedText, key), Is.True);
+        Assert.That(hasher.Verify(text, hashedText, key), Is.True);
     }
 
     [Test]
@@ -89,9 +89,9 @@ public class HmacSha512Tests
     {
         var bytes = Encoding.UTF8.GetBytes("test");
 
-        var tuple = _hasher.Hash(bytes);
+        var tuple = hasher.Hash(bytes);
 
-        Assert.That(_hasher.Verify(bytes, tuple.hashedBytes, tuple.key), Is.True);
+        Assert.That(hasher.Verify(bytes, tuple.hashedBytes, tuple.key), Is.True);
     }
 
     [Test]
@@ -101,8 +101,8 @@ public class HmacSha512Tests
 
         var key = Encoding.UTF8.GetBytes("zpw!AVkxEMar@S%nUKrFSG?6p$7S?$%@");
 
-        var hashedBytes = _hasher.Hash(bytes, key);
+        var hashedBytes = hasher.Hash(bytes, key);
 
-        Assert.That(_hasher.Verify(bytes, hashedBytes, key), Is.True);
+        Assert.That(hasher.Verify(bytes, hashedBytes, key), Is.True);
     }
 }

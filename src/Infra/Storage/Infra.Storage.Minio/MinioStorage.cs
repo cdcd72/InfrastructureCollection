@@ -9,35 +9,35 @@ namespace Infra.Storage.Minio;
 
 public class MinioStorage : IObjectStorage
 {
-    private readonly Settings _settings;
-    private readonly MinioClient _minioClient;
+    private readonly Settings settings;
+    private readonly MinioClient minioClient;
 
     public MinioStorage(IOptions<Settings> settings)
     {
-        _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
-        _minioClient = GetMinioClient(_settings);
+        this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+        minioClient = GetMinioClient(this.settings);
     }
 
     #region Bucket
 
     public async Task<bool> BucketExistsAsync(string name)
-        => await _minioClient.BucketExistsAsync(
+        => await minioClient.BucketExistsAsync(
             new BucketExistsArgs()
                 .WithBucket(name));
 
     public async Task MakeBucketAsync(string name)
-        => await _minioClient.MakeBucketAsync(
+        => await minioClient.MakeBucketAsync(
             new MakeBucketArgs()
                 .WithBucket(name));
 
     public async Task RemoveBucketAsync(string name)
-        => await _minioClient.RemoveBucketAsync(
+        => await minioClient.RemoveBucketAsync(
             new RemoveBucketArgs()
                 .WithBucket(name));
 
     public async Task<List<string>> ListBucketsAsync()
     {
-        var result = await _minioClient.ListBucketsAsync();
+        var result = await minioClient.ListBucketsAsync();
 
         return result.Buckets.Select(bucket => bucket.Name).ToList();
     }
@@ -50,7 +50,7 @@ public class MinioStorage : IObjectStorage
     {
         try
         {
-            await _minioClient.StatObjectAsync(
+            await minioClient.StatObjectAsync(
                 new StatObjectArgs()
                     .WithBucket(bucketName)
                     .WithObject(objectName));
@@ -64,7 +64,7 @@ public class MinioStorage : IObjectStorage
     }
 
     public async Task PutObjectAsync(string bucketName, string objectName, Stream data, long size)
-        => await _minioClient.PutObjectAsync(
+        => await minioClient.PutObjectAsync(
             new PutObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
@@ -72,7 +72,7 @@ public class MinioStorage : IObjectStorage
                 .WithObjectSize(size));
 
     public async Task RemoveObjectAsync(string bucketName, string objectName)
-        => await _minioClient.RemoveObjectAsync(
+        => await minioClient.RemoveObjectAsync(
             new RemoveObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName));
@@ -81,7 +81,7 @@ public class MinioStorage : IObjectStorage
     {
         Stream ms = new MemoryStream();
 
-        await _minioClient.GetObjectAsync(
+        await minioClient.GetObjectAsync(
             new GetObjectArgs()
                 .WithBucket(bucketName)
                 .WithObject(objectName)
@@ -94,7 +94,7 @@ public class MinioStorage : IObjectStorage
     {
         var result = new List<string>();
 
-        var observable = _minioClient.ListObjectsAsync(
+        var observable = minioClient.ListObjectsAsync(
             new ListObjectsArgs()
                 .WithBucket(bucketName)
                 .WithPrefix(prefix)

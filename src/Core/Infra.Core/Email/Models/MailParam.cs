@@ -5,46 +5,46 @@ namespace Infra.Core.Email.Models
         /// <summary>
         /// Subject
         /// </summary>
-        public string Subject { get; set; }
+        public string Subject { get; init; }
 
         /// <summary>
         /// Message（Html／Plaintext）
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; init; }
 
         /// <summary>
         /// Sender address
         /// </summary>
-        public string SenderAddress { get; set; }
+        public string SenderAddress { get; init; }
 
         /// <summary>
         /// Sender name
         /// </summary>
-        public string SenderName { get; set; }
+        public string SenderName { get; init; }
 
         /// <summary>
         /// Receiver addresses
         /// </summary>
-        public List<string> Mailto { get; set; }
+        public List<string> Mailto { get; init; }
 
         /// <summary>
         /// Carbon copy addresses
         /// </summary>
-        public List<string> Cc { get; set; }
+        public List<string> Cc { get; init; }
 
         /// <summary>
         /// Blind carbon copy addresses
         /// </summary>
-        public List<string> Bcc { get; set; }
+        public List<string> Bcc { get; init; }
 
         /// <summary>
         /// Attachment
         /// </summary>
-        public Dictionary<string, byte[]> Attachment { get; set; }
+        public Dictionary<string, byte[]> Attachment { get; init; }
 
         /// <summary>
         /// Html（true）／Plaintext（false）
         /// </summary>
-        public bool IsHtml { get; set; }
+        public bool IsHtml { get; init; }
     }
 }

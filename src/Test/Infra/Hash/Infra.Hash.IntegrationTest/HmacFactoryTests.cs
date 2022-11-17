@@ -7,18 +7,18 @@ namespace Infra.Hash.IntegrationTest;
 
 public class HmacFactoryTests
 {
-    private readonly IHmacFactory _hashFactory;
+    private readonly IHmacFactory hashFactory;
 
     public HmacFactoryTests()
     {
         var startup = new Startup();
 
-        _hashFactory = startup.GetService<IHmacFactory>();
+        hashFactory = startup.GetService<IHmacFactory>();
     }
 
     [Test]
     public void CreateHmacAlgorithmFail() =>
-        Assert.Throws<MissingMethodException>(() => _hashFactory.Create(new HmacOptions
+        Assert.Throws<MissingMethodException>(() => hashFactory.Create(new HmacOptions
         {
             Type = HmacType.UnKnown
         }));
@@ -26,7 +26,7 @@ public class HmacFactoryTests
     [Test]
     public void CreateHmacAlgorithmSuccess()
     {
-        var hasher = _hashFactory.Create(new HmacOptions
+        var hasher = hashFactory.Create(new HmacOptions
         {
             Type = HmacType.HmacSha512
         });

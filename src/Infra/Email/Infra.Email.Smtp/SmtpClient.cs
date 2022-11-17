@@ -11,28 +11,23 @@ namespace Infra.Email.Smtp
 {
     public class SmtpClient : IMailClient
     {
-        private readonly ILogger<SmtpClient> _logger;
-        private readonly Settings _settings;
+        private readonly ILogger<SmtpClient> logger;
+        private readonly Settings settings;
 
         public SmtpClient(
             ILogger<SmtpClient> logger,
             IOptions<Settings> settings)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
         }
 
-        public async Task<bool> SendAsync(MailParam mailParam)
+        public async Task SendAsync(MailParam mailParam)
         {
-            var host = _settings.Host;
-
-            // Check host isn't empty.
-            if (string.IsNullOrWhiteSpace(host))
-                return false;
-
-            var port = _settings.Port;
-            var account = _settings.Account;
-            var password = _settings.Password;
+            var host = settings.Host;
+            var port = settings.Port;
+            var account = settings.Account;
+            var password = settings.Password;
 
             // Get mail message.
             var message = GetMimeMessage(mailParam);
@@ -43,7 +38,7 @@ namespace Infra.Email.Smtp
             {
                 if (!string.IsNullOrWhiteSpace(account) && !string.IsNullOrWhiteSpace(password))
                 {
-                    await smtpClient.ConnectAsync(host, port, _settings.EnableSsl);
+                    await smtpClient.ConnectAsync(host, port, settings.EnableSsl);
                     await smtpClient.AuthenticateAsync(account, password);
                 }
                 else
@@ -55,15 +50,13 @@ namespace Infra.Email.Smtp
             }
             catch (Exception ex)
             {
-                _logger.Error($"Send mail error: {ex.Message}");
+                logger.Error($"Send mail error: {ex.Message}");
                 throw;
             }
             finally
             {
                 await smtpClient.DisconnectAsync(true);
             }
-
-            return true;
         }
 
         #region Private Method
@@ -82,15 +75,15 @@ namespace Infra.Email.Smtp
 
             if (mailParam.Mailto?.Count > 0)
                 // Add receivers
-                message.To.AddRange(mailParam.Mailto.Select(mailTo => MailboxAddress.Parse(mailTo)));
+                message.To.AddRange(mailParam.Mailto.Select(MailboxAddress.Parse));
 
             if (mailParam.Cc?.Count > 0)
                 // Add carbon copy receivers
-                message.Cc.AddRange(mailParam.Cc.Select(ccTo => MailboxAddress.Parse(ccTo)));
+                message.Cc.AddRange(mailParam.Cc.Select(MailboxAddress.Parse));
 
             if (mailParam.Bcc?.Count > 0)
                 // Add blind carbon copy receivers
-                message.Bcc.AddRange(mailParam.Bcc.Select(bccTo => MailboxAddress.Parse(bccTo)));
+                message.Bcc.AddRange(mailParam.Bcc.Select(MailboxAddress.Parse));
 
             // Set mail subject
             message.Subject = mailParam.Subject;
@@ -105,9 +98,8 @@ namespace Infra.Email.Smtp
 
             if (mailParam.Attachment?.Count > 0)
             {
-                foreach (var attachmentKey in mailParam.Attachment.Keys)
+                foreach (var attachmentName in mailParam.Attachment.Keys)
                 {
-                    var attachmentName = attachmentKey;
                     var attachmentBytes = mailParam.Attachment[attachmentName];
 
                     // Set attachment

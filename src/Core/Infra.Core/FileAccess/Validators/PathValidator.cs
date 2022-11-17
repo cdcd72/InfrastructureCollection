@@ -2,39 +2,38 @@ namespace Infra.Core.FileAccess.Validators
 {
     public class PathValidator
     {
-        private readonly string[] _rootPaths;
-        private readonly string[] _violationPathPatterns =
-            new string[] { $"..{Path.AltDirectorySeparatorChar}", $"..{Path.DirectorySeparatorChar}" };
+        private readonly string[] rootPaths;
+        private readonly string[] violationPathPatterns = { $"..{Path.AltDirectorySeparatorChar}", $"..{Path.DirectorySeparatorChar}" };
 
-        public PathValidator(params string[] rootPaths) => _rootPaths = rootPaths;
+        public PathValidator(params string[] rootPaths) => this.rootPaths = rootPaths;
 
         public bool IsValidPath(string path)
         {
-            if (_violationPathPatterns.Any(violationPathPattern => path.Contains(violationPathPattern)))
+            if (violationPathPatterns.Any(path.Contains))
                 return false;
 
             // Path error count
             var errorCount = 0;
 
-            foreach (var rootPath in _rootPaths)
+            foreach (var rootPath in rootPaths)
             {
-                var rootSegements = GetSegements(new FileInfo(rootPath).FullName);
-                var pathSegements = GetSegements(new FileInfo(path).FullName);
+                var rootSegments = GetSegments(new FileInfo(rootPath).FullName).ToArray();
+                var pathSegments = GetSegments(new FileInfo(path).FullName).ToArray();
 
-                if (rootSegements.Count() > pathSegements.Count())
+                if (rootSegments.Length > pathSegments.Length)
                 {
                     errorCount++;
                     continue;
                 }
 
-                var verifySegements = pathSegements.Take(rootSegements.Count());
+                var verifySegments = pathSegments.Take(rootSegments.Length);
 
-                if (!rootSegements.SequenceEqual(verifySegements))
+                if (!rootSegments.SequenceEqual(verifySegments))
                     errorCount++;
             }
 
             // Path error count less than root paths, mean at least one efficient path.
-            return errorCount != _rootPaths.Length;
+            return errorCount != rootPaths.Length;
         }
 
         public string GetValidPath(string path)
@@ -47,18 +46,17 @@ namespace Infra.Core.FileAccess.Validators
 
         #region Private Method
 
-        internal static IEnumerable<string> GetSegements(string path)
+        private static IEnumerable<string> GetSegments(string path)
         {
             var fi = new FileInfo(path);
 
             if (fi.Directory == null)
-                return new string[] { fi.FullName };
+                return new[] { fi.FullName };
 
             // Is directory
-            if (string.IsNullOrEmpty(fi.Name))
-                return GetSegements(fi.Directory.FullName);
-
-            return GetSegements(fi.Directory.FullName).Concat(new string[] { fi.Name });
+            return string.IsNullOrEmpty(fi.Name)
+                ? GetSegments(fi.Directory.FullName)
+                : GetSegments(fi.Directory.FullName).Concat(new[] { fi.Name });
         }
 
         #endregion

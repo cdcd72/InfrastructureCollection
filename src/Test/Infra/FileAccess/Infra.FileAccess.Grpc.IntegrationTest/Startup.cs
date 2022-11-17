@@ -36,7 +36,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
 
         private static IConfiguration GetConfiguration()
         {
-            var releaseJsonSource = new JsonConfigurationSource()
+            var releaseJsonSource = new JsonConfigurationSource
             {
                 FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
                 Path = "appsettings.json",

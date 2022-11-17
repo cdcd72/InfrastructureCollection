@@ -4,7 +4,7 @@ namespace Infra.Core.Crypto.Models;
 
 public class CryptoOptions
 {
-    public CryptoType Type { get; set; }
+    public CryptoType Type { get; init; }
 
-    public CryptoKeyPair KeyPair { get; set; }
+    public CryptoKeyPair KeyPair { get; init; }
 }

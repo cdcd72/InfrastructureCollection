@@ -2,9 +2,9 @@
 
 public class CryptoKeyPair
 {
-    public byte[] Key { get; init; }
+    public byte[] Key { get; private init; }
 
-    public byte[] Iv { get; init; }
+    public byte[] Iv { get; private init; }
 
     public static CryptoKeyPair Parse(string base64Key, string base64Iv) =>
         new()

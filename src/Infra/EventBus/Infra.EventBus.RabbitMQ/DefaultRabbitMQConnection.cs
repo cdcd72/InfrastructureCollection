@@ -12,31 +12,31 @@ using RabbitMQ.Client.Exceptions;
 
 namespace Infra.EventBus.RabbitMQ
 {
-    public class DefaultRabbitMQConnection : IRabbitMQConnection
+    public class DefaultRabbitMqConnection : IRabbitMqConnection
     {
-        private readonly ILogger<DefaultRabbitMQConnection> _logger;
-        private readonly ConnectionSettings _settings;
-        private readonly IConnectionFactory _connectionFactory;
-        private readonly object _syncRoot = new();
+        private readonly ILogger<DefaultRabbitMqConnection> logger;
+        private readonly ConnectionSettings settings;
+        private readonly IConnectionFactory connectionFactory;
+        private readonly object syncRoot = new();
 
-        private IConnection _connection;
-        private bool _disposed;
+        private IConnection connection;
+        private bool disposed;
 
         #region Properties
 
-        public bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
+        public bool IsConnected => connection is { IsOpen: true } && !disposed;
 
         #endregion
 
         #region Constructor
 
-        public DefaultRabbitMQConnection(
-            ILogger<DefaultRabbitMQConnection> logger,
+        public DefaultRabbitMqConnection(
+            ILogger<DefaultRabbitMqConnection> logger,
             IOptions<ConnectionSettings> settings)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settings = ConnectionSettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
-            _connectionFactory = GetConnectionFactory(_settings);
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.settings = ConnectionSettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            connectionFactory = GetConnectionFactory(this.settings);
         }
 
         #endregion
@@ -46,35 +46,35 @@ namespace Infra.EventBus.RabbitMQ
             if (!IsConnected)
                 throw new InvalidOperationException("No RabbitMQ connections are available to perform this action.");
 
-            return _connection.CreateModel();
+            return connection.CreateModel();
         }
 
         public bool TryConnect()
         {
-            _logger.Information("RabbitMQ client is trying to connect...");
+            logger.Information("RabbitMQ client is trying to connect...");
 
-            lock (_syncRoot)
+            lock (syncRoot)
             {
                 var policy = Policy.Handle<SocketException>()
                     .Or<BrokerUnreachableException>()
-                    .WaitAndRetry(_settings.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
-                        => _logger.Warning(ex, $"RabbitMQ client could not connect after {time.TotalSeconds:n1}s. ({ex.Message})"));
+                    .WaitAndRetry(settings.RetryCount, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), (ex, time)
+                        => logger.Warning(ex, $"RabbitMQ client could not connect after {time.TotalSeconds:n1}s. ({ex.Message})"));
 
-                policy.Execute(() => _connection = _connectionFactory.CreateConnection());
+                policy.Execute(() => connection = connectionFactory.CreateConnection());
 
                 if (IsConnected)
                 {
-                    _connection.ConnectionBlocked += OnConnectionBlocked;
-                    _connection.CallbackException += OnCallbackException;
-                    _connection.ConnectionShutdown += OnConnectionShutdown;
+                    connection.ConnectionBlocked += OnConnectionBlocked;
+                    connection.CallbackException += OnCallbackException;
+                    connection.ConnectionShutdown += OnConnectionShutdown;
 
-                    _logger.Information($"RabbitMQ client acquired a persistent connection to '{_connection.Endpoint.HostName}' and is subscribed to failure events.");
+                    logger.Information($"RabbitMQ client acquired a persistent connection to '{connection.Endpoint.HostName}' and is subscribed to failure events.");
 
                     return true;
                 }
                 else
                 {
-                    _logger.Critical("FATAL ERROR: RabbitMQ connections could not be created and opened.");
+                    logger.Critical("FATAL ERROR: RabbitMQ connections could not be created and opened.");
 
                     return false;
                 }
@@ -103,30 +103,30 @@ namespace Infra.EventBus.RabbitMQ
 
         private void OnConnectionBlocked(object sender, ConnectionBlockedEventArgs e)
         {
-            if (_disposed)
+            if (disposed)
                 return;
 
-            _logger.Warning("A RabbitMQ connection is blocked. Trying to re-connect...");
+            logger.Warning("A RabbitMQ connection is blocked. Trying to re-connect...");
 
             TryConnect();
         }
 
         private void OnCallbackException(object sender, CallbackExceptionEventArgs e)
         {
-            if (_disposed)
+            if (disposed)
                 return;
 
-            _logger.Warning("A RabbitMQ connection throw exception. Trying to re-connect...");
+            logger.Warning("A RabbitMQ connection throw exception. Trying to re-connect...");
 
             TryConnect();
         }
 
         private void OnConnectionShutdown(object sender, ShutdownEventArgs reason)
         {
-            if (_disposed)
+            if (disposed)
                 return;
 
-            _logger.Warning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
+            logger.Warning("A RabbitMQ connection is on shutdown. Trying to re-connect...");
 
             TryConnect();
         }
@@ -135,7 +135,7 @@ namespace Infra.EventBus.RabbitMQ
 
         #region Dispose
 
-        ~DefaultRabbitMQConnection() => Dispose(false);
+        ~DefaultRabbitMqConnection() => Dispose(false);
 
         public void Dispose()
         {
@@ -145,22 +145,22 @@ namespace Infra.EventBus.RabbitMQ
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)
+            if (disposed)
                 return;
 
             if (disposing)
             {
                 try
                 {
-                    _connection.Dispose();
+                    connection.Dispose();
                 }
                 catch (IOException ex)
                 {
-                    _logger.Critical($"{ex}");
+                    logger.Critical($"{ex}");
                 }
             }
 
-            _disposed = true;
+            disposed = true;
         }
 
         #endregion

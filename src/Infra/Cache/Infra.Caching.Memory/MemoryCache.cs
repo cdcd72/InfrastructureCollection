@@ -7,23 +7,23 @@ namespace Infra.Caching.Memory;
 
 public class MemoryCache : ICache
 {
-    private readonly IMemoryCache _cache;
+    private readonly IMemoryCache cache;
 
-    public MemoryCache(IMemoryCache cache) => _cache = cache;
+    public MemoryCache(IMemoryCache cache) => this.cache = cache;
 
     #region Sync Method
 
     public void Set(string key, byte[] value, CacheOptions cacheOptions)
-        => _cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
+        => cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
 
     public void SetString(string key, string value, CacheOptions cacheOptions)
-        => _cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
+        => cache.Set(key, value, cacheOptions?.ToMemoryCacheEntryOptions());
 
-    public byte[] Get(string key) => _cache.Get<byte[]>(key);
+    public byte[] Get(string key) => cache.Get<byte[]>(key);
 
-    public string GetString(string key) => _cache.Get<string>(key);
+    public string GetString(string key) => cache.Get<string>(key);
 
-    public void Remove(string key) => _cache.Remove(key);
+    public void Remove(string key) => cache.Remove(key);
 
     public void Refresh(string key) => throw new NotSupportedException();
 

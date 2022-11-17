@@ -2,7 +2,7 @@ using RabbitMQ.Client;
 
 namespace Infra.EventBus.RabbitMQ.Abstractions
 {
-    public interface IRabbitMQConnection : IDisposable
+    public interface IRabbitMqConnection : IDisposable
     {
         bool IsConnected { get; }
 

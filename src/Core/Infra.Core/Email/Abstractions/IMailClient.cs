@@ -4,6 +4,6 @@ namespace Infra.Core.Email.Abstractions
 {
     public interface IMailClient
     {
-        Task<bool> SendAsync(MailParam mailParam);
+        Task SendAsync(MailParam mailParam);
     }
 }
