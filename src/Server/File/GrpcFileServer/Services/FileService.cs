@@ -1,15 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Grpc.Core;
 using GrpcFileServer.Configuration;
 using GrpcFileServer.Configuration.Validators;
 using Infra.Core.Extensions;
 using GrpcFileService;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 #pragma warning disable 1998
@@ -18,15 +12,15 @@ namespace GrpcFileServer.Services
 {
     public class FileService : FileTransfer.FileTransferBase
     {
-        private readonly ILogger<FileService> _logger;
-        private readonly Settings _settings;
-        private readonly IFileAccess _fileAccess;
+        private readonly ILogger<FileService> logger;
+        private readonly Settings settings;
+        private readonly IFileAccess fileAccess;
 
         public FileService(ILogger<FileService> logger, IOptions<Settings> settings, IFileAccess fileAccess)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
-            _fileAccess = fileAccess;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            this.fileAccess = fileAccess;
         }
 
         public override async Task UploadFile(
@@ -39,13 +33,11 @@ namespace GrpcFileServer.Services
             FileStream fs = null;
             var startTime = DateTime.Now;
             var mark = string.Empty;
-            var rootDirectoryPath = _settings.Root;
-            var subDirectoryPath = string.Empty;
-            var fileName = string.Empty;
+            var rootDirectoryPath = settings.Root;
             var savePath = string.Empty;
 
-            if (!_fileAccess.DirectoryExists(rootDirectoryPath))
-                _fileAccess.CreateDirectory(rootDirectoryPath);
+            if (!fileAccess.DirectoryExists(rootDirectoryPath))
+                fileAccess.CreateDirectory(rootDirectoryPath);
 
             try
             {
@@ -58,21 +50,21 @@ namespace GrpcFileServer.Services
                     // All file transfer completed. (Block = -2)
                     if (reply.Block == -2)
                     {
-                        _logger.Information($"【{mark}】File upload completed. SpentTime:{DateTime.Now - startTime}");
+                        logger.Information($"【{mark}】File upload completed. SpentTime:{DateTime.Now - startTime}");
                         break;
                     }
                     // file transfer canceled. (Block = -1)
                     else if (reply.Block == -1)
                     {
-                        _logger.Information($"【{mark}】File【{reply.FileName}】upload canceled!");
+                        logger.Information($"【{mark}】File【{reply.FileName}】upload canceled!");
 
                         #region Clean file and reset variable
 
                         fileContents.Clear();
                         fs?.Close();
 
-                        if (!string.IsNullOrEmpty(savePath) && _fileAccess.FileExists(savePath))
-                            _fileAccess.DeleteFile(savePath);
+                        if (!string.IsNullOrEmpty(savePath) && fileAccess.FileExists(savePath))
+                            fileAccess.DeleteFile(savePath);
 
                         savePath = string.Empty;
 
@@ -112,23 +104,22 @@ namespace GrpcFileServer.Services
                             // reply.FileName value may be:
                             // 1. 123.txt
                             // 2. Data\\123.txt
-                            subDirectoryPath =
-                                Path.Combine(rootDirectoryPath, Path.GetDirectoryName(reply.FileName));
-                            fileName = Path.GetFileName(reply.FileName);
+                            var subDirectoryPath = Path.Combine(rootDirectoryPath, Path.GetDirectoryName(reply.FileName)!);
+                            var fileName = Path.GetFileName(reply.FileName);
 
-                            if (!_fileAccess.DirectoryExists(subDirectoryPath))
-                                _fileAccess.CreateDirectory(subDirectoryPath);
+                            if (!fileAccess.DirectoryExists(subDirectoryPath))
+                                fileAccess.CreateDirectory(subDirectoryPath);
 
-                            savePath = Path.Combine(subDirectoryPath, fileName);
+                            savePath = Path.Combine(subDirectoryPath, fileName!);
                             fs = new FileStream(savePath, FileMode.Create, FileAccess.ReadWrite);
-                            _logger.Information($"【{mark}】Currently upload file to {savePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                            logger.Information($"【{mark}】Currently upload file to {savePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
                         }
 
                         // Add current file chunk to list.
                         fileContents.Add(reply);
 
                         // Collect file chunks then write into file stream. (file chunk size decide by client code...)
-                        if (fileContents.Count >= _settings.ChunkBufferCount)
+                        if (fileContents.Count >= settings.ChunkBufferCount)
                         {
                             fileContents.OrderBy(c => c.Block).ToList().ForEach(c => c.Content.WriteTo(fs));
                             fileContents.Clear();
@@ -138,11 +129,12 @@ namespace GrpcFileServer.Services
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】File upload unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】File upload unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
             finally
             {
-                fs?.Dispose();
+                if (fs is not null)
+                    await fs.DisposeAsync();
             }
         }
 
@@ -151,15 +143,13 @@ namespace GrpcFileServer.Services
             IServerStreamWriter<DownloadFileResponse> responseStream,
             ServerCallContext context)
         {
-            var successFileNames = new List<string>();
-
             FileStream fs = null;
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var chunkSize = _settings.ChunkSize;
+            var chunkSize = settings.ChunkSize;
             var buffer = new byte[chunkSize];
             var fileName = request.FileName;
-            var filePath = Path.Combine(_settings.Root, fileName);
+            var filePath = Path.Combine(settings.Root, fileName);
             var reply = new DownloadFileResponse
             {
                 FileName = fileName,
@@ -168,9 +158,9 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently download file from {filePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently download file from {filePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                if (_fileAccess.FileExists(filePath))
+                if (fileAccess.FileExists(filePath))
                 {
                     fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, chunkSize, useAsync: true);
 
@@ -180,17 +170,17 @@ namespace GrpcFileServer.Services
                     {
                         if (context.CancellationToken.IsCancellationRequested)
                         {
-                            _logger.Information($"【{mark}】File【{filePath}】download canceled!");
+                            logger.Information($"【{mark}】File【{filePath}】download canceled!");
                             break;
                         }
 
-                        var readSise = fs.Read(buffer, 0, buffer.Length);
+                        var readSize = fs.Read(buffer, 0, buffer.Length);
 
                         // Transfer file chunk to client.
-                        if (readSise > 0)
+                        if (readSize > 0)
                         {
                             reply.Block = ++readTimes;
-                            reply.Content = Google.Protobuf.ByteString.CopyFrom(buffer, 0, readSise);
+                            reply.Content = Google.Protobuf.ByteString.CopyFrom(buffer, 0, readSize);
                             await responseStream.WriteAsync(reply);
                         }
                         // Transfer is completed.
@@ -199,16 +189,15 @@ namespace GrpcFileServer.Services
                             reply.Block = 0;
                             reply.Content = Google.Protobuf.ByteString.Empty;
                             await responseStream.WriteAsync(reply);
-                            successFileNames.Add(fileName);
                             break;
                         }
                     }
 
-                    fs?.Close();
+                    fs.Close();
                 }
                 else
                 {
-                    _logger.Information($"【{mark}】File【{filePath}】not exists!");
+                    logger.Information($"【{mark}】File【{filePath}】not exists!");
                     reply.Block = -1; // -1 means file not exists, like file transfer canceled situation.
                     await responseStream.WriteAsync(reply);
                 }
@@ -224,16 +213,17 @@ namespace GrpcFileServer.Services
                         Mark = mark
                     });
 
-                    _logger.Information($"【{mark}】File download completed. SpentTime:{DateTime.Now - startTime}");
+                    logger.Information($"【{mark}】File download completed. SpentTime:{DateTime.Now - startTime}");
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】File download unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】File download unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
             finally
             {
-                fs?.Dispose();
+                if (fs is not null)
+                    await fs.DisposeAsync();
             }
         }
 
@@ -243,7 +233,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_settings.Root, request.FileName);
+            var filePath = Path.Combine(settings.Root, request.FileName);
             var reply = new IsExistFileResponse
             {
                 Mark = mark
@@ -251,15 +241,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently check file {filePath} exist, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently check file {filePath} exist, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                reply.Status = _fileAccess.FileExists(filePath);
+                reply.Status = fileAccess.FileExists(filePath);
 
-                _logger.Information($"【{mark}】Check file exist completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Check file exist completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Check file exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Check file exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -271,7 +261,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_settings.Root, request.FileName);
+            var filePath = Path.Combine(settings.Root, request.FileName);
             var reply = new DeleteFileResponse
             {
                 Mark = mark
@@ -279,15 +269,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently delete file {filePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently delete file {filePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                _fileAccess.DeleteFile(filePath);
+                fileAccess.DeleteFile(filePath);
 
-                _logger.Information($"【{mark}】Delete file completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Delete file completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Delete file unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Delete file unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -299,7 +289,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var filePath = Path.Combine(_settings.Root, request.FileName);
+            var filePath = Path.Combine(settings.Root, request.FileName);
             var reply = new GetFileSizeResponse
             {
                 Mark = mark
@@ -307,15 +297,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently get file {filePath} size, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently get file {filePath} size, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                reply.Size = _fileAccess.GetFileSize(filePath);
+                reply.Size = fileAccess.GetFileSize(filePath);
 
-                _logger.Information($"【{mark}】Get file size completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Get file size completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Get file size unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Get file size unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -327,7 +317,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var rootDirectoryPath = _settings.Root;
+            var rootDirectoryPath = settings.Root;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new MoveFileResponse
@@ -337,15 +327,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently move file from {sourceFilePath} to {destinationFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently move file from {sourceFilePath} to {destinationFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                _fileAccess.MoveFile(sourceFilePath, destinationFilePath, request.Overwrite);
+                fileAccess.MoveFile(sourceFilePath, destinationFilePath, request.Overwrite);
 
-                _logger.Information($"【{mark}】Move file completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Move file completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Move file unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Move file unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -357,7 +347,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var rootDirectoryPath = _settings.Root;
+            var rootDirectoryPath = settings.Root;
             var sourceFilePath = Path.Combine(rootDirectoryPath, request.SourceFileName);
             var destinationFilePath = Path.Combine(rootDirectoryPath, request.DestinationFileName);
             var reply = new CopyFileResponse
@@ -367,15 +357,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently copy file from {sourceFilePath} to {destinationFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently copy file from {sourceFilePath} to {destinationFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                _fileAccess.CopyFile(sourceFilePath, destinationFilePath, request.Overwrite);
+                fileAccess.CopyFile(sourceFilePath, destinationFilePath, request.Overwrite);
 
-                _logger.Information($"【{mark}】Copy file completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Copy file completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Copy file unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Copy file unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;

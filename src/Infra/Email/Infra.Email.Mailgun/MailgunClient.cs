@@ -1,8 +1,5 @@
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using Infra.Core.Email.Abstractions;
 using Infra.Core.Email.Models;
 using Infra.Core.Extensions;
@@ -15,32 +12,31 @@ namespace Infra.Email.Mailgun
 {
     public class MailgunClient : IMailClient
     {
-        private readonly ILogger<MailgunClient> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly Settings _settings;
+        private readonly ILogger<MailgunClient> logger;
+        private readonly Settings settings;
+        private readonly IHttpClientFactory httpClientFactory;
 
         public MailgunClient(
             ILogger<MailgunClient> logger,
             IHttpClientFactory httpClientFactory,
-            IOptions<Settings> settings
-        )
+            IOptions<Settings> settings)
         {
-            _logger = logger;
-            _httpClientFactory = httpClientFactory;
-            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            this.logger = logger;
+            this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            this.httpClientFactory = httpClientFactory;
         }
 
-        public async Task<bool> SendAsync(MailParam mailParam)
+        public async Task SendAsync(MailParam mailParam)
         {
-            var apiBaseUrl = _settings.ApiBaseUrl.EndsWith("/", StringComparison.InvariantCulture) ? _settings.ApiBaseUrl : $"{_settings.ApiBaseUrl}/";
+            var apiBaseUrl = settings.ApiBaseUrl.EndsWith("/", StringComparison.InvariantCulture) ? settings.ApiBaseUrl : $"{settings.ApiBaseUrl}/";
 
             try
             {
-                var client = _httpClientFactory.CreateClient();
+                var client = httpClientFactory.CreateClient();
 
                 client.BaseAddress = new Uri(apiBaseUrl);
 
-                var byteArray = Encoding.UTF8.GetBytes($"api:{_settings.ApiKey}");
+                var byteArray = Encoding.UTF8.GetBytes($"api:{settings.ApiKey}");
 
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
@@ -50,11 +46,9 @@ namespace Infra.Email.Mailgun
             }
             catch (Exception ex)
             {
-                _logger.Error($"Send mail error: {ex.Message}");
+                logger.Error($"Send mail error: {ex.Message}");
                 throw;
             }
-
-            return true;
         }
 
         private static MultipartFormDataContent GetMailContent(MailParam mailParams)
@@ -66,14 +60,7 @@ namespace Infra.Email.Mailgun
             };
 
             // Set body content
-            if (mailParams.IsHtml)
-            {
-                content.Add(new StringContent(mailParams.Message), "html");
-            }
-            else
-            {
-                content.Add(new StringContent(mailParams.Message), "text");
-            }
+            content.Add(new StringContent(mailParams.Message), mailParams.IsHtml ? "html" : "text");
 
             // Set receivers
             if (mailParams.Mailto?.Count > 0)
@@ -105,9 +92,8 @@ namespace Infra.Email.Mailgun
             // Set attachment
             if (mailParams.Attachment?.Count > 0)
             {
-                foreach (var attachmentKey in mailParams.Attachment.Keys)
+                foreach (var attachmentName in mailParams.Attachment.Keys)
                 {
-                    var attachmentName = attachmentKey;
                     var attachmentBytes = mailParams.Attachment[attachmentName];
 
                     var fileContent = new ByteArrayContent(attachmentBytes);

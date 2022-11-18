@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Infra.Core.Email.Abstractions;
+﻿using Infra.Core.Email.Abstractions;
 using Infra.Email.Smtp.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -38,7 +36,7 @@ namespace Infra.Email.Smtp.IntegrationTest
 
         private static IConfiguration GetConfiguration()
         {
-            var releaseJsonSource = new JsonConfigurationSource()
+            var releaseJsonSource = new JsonConfigurationSource
             {
                 FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
                 Path = "appsettings.json",

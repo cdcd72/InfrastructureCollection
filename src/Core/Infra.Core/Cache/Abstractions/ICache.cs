@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Infra.Core.Cache.Models;
+﻿using Infra.Core.Cache.Models;
 
 #pragma warning disable CA1716
 

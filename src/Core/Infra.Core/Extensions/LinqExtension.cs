@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Infra.Core.Extensions
+﻿namespace Infra.Core.Extensions
 {
     public static class LinqExtension
     {

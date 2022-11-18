@@ -7,13 +7,13 @@ namespace Infra.Crypto.IntegrationTest;
 
 public class CryptoFactoryTests
 {
-    private readonly ICryptoFactory _cryptoFactory;
+    private readonly ICryptoFactory cryptoFactory;
 
     public CryptoFactoryTests()
     {
         var startup = new Startup();
 
-        _cryptoFactory = startup.GetService<ICryptoFactory>();
+        cryptoFactory = startup.GetService<ICryptoFactory>();
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class CryptoFactoryTests
         const string key = "wgaPBHA8ab7Jb6viQ34XZjXEKO2Rn7USYcTE6BnYv+Y=";
         const string iv = "Y0xnm45ygKFcSU62fmLBww==";
 
-        Assert.Throws<MissingMethodException>(() => _cryptoFactory.Create(new CryptoOptions
+        Assert.Throws<MissingMethodException>(() => cryptoFactory.Create(new CryptoOptions
         {
             Type = CryptoType.UnKnown,
             KeyPair = CryptoKeyPair.Parse(key, iv)
@@ -35,7 +35,7 @@ public class CryptoFactoryTests
         const string key = "wgaPBHA8ab7Jb6viQ34XZjXEKO2Rn7USYcTE6BnYv+Y=";
         const string iv = "Y0xnm45ygKFcSU62fmLBww==";
 
-        var crypto = _cryptoFactory.Create(new CryptoOptions
+        var crypto = cryptoFactory.Create(new CryptoOptions
         {
             Type = CryptoType.Aes,
             KeyPair = CryptoKeyPair.Parse(key, iv)

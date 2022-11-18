@@ -7,18 +7,18 @@ namespace Infra.Hash.IntegrationTest;
 
 public class HashFactoryTests
 {
-    private readonly IHashFactory _hashFactory;
+    private readonly IHashFactory hashFactory;
 
     public HashFactoryTests()
     {
         var startup = new Startup();
 
-        _hashFactory = startup.GetService<IHashFactory>();
+        hashFactory = startup.GetService<IHashFactory>();
     }
 
     [Test]
     public void CreateHashAlgorithmFail() =>
-        Assert.Throws<MissingMethodException>(() => _hashFactory.Create(new HashOptions
+        Assert.Throws<MissingMethodException>(() => hashFactory.Create(new HashOptions
         {
             Type = HashType.UnKnown
         }));
@@ -26,7 +26,7 @@ public class HashFactoryTests
     [Test]
     public void CreateHashAlgorithmSuccess()
     {
-        var hasher = _hashFactory.Create(new HashOptions
+        var hasher = hashFactory.Create(new HashOptions
         {
             Type = HashType.Sha512
         });

@@ -7,7 +7,7 @@ namespace Infra.Email.Mailgun.IntegrationTest
 {
     public class MailgunClientSendMailTests
     {
-        private readonly IMailClient _mailClient;
+        private readonly IMailClient mailClient;
 
         private static string CurrentDirectory =>
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
@@ -16,11 +16,11 @@ namespace Infra.Email.Mailgun.IntegrationTest
 
         private static string SenderName => "TestUser";
 
-        private static List<string> Mailto => new() { };
+        private static List<string> Mailto => new();
 
-        private static List<string> Ccto => new() { };
+        private static List<string> CcTo => new();
 
-        private static List<string> Bccto => new() { };
+        private static List<string> BccTo => new();
 
         private static string Message => $@"
     Environment.MachineName: {Environment.MachineName}
@@ -30,14 +30,14 @@ namespace Infra.Email.Mailgun.IntegrationTest
         {
             var startup = new Startup();
 
-            _mailClient = startup.GetService<IMailClient>();
+            mailClient = startup.GetService<IMailClient>();
         }
 
         [Test]
-        public async Task SendPlainTextMailSuccessAsync()
+        public async Task SendPlainTextMailSuccess()
         {
             // Arrange
-            var mailParam = new MailParam()
+            var mailParam = new MailParam
             {
                 SenderAddress = SenderAddress,
                 SenderName = SenderName,
@@ -48,17 +48,14 @@ namespace Infra.Email.Mailgun.IntegrationTest
             };
 
             // Act
-            var result = await _mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.IsTrue(result);
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public async Task SendHtmlMailSuccessAsync()
+        public async Task SendHtmlMailSuccess()
         {
             // Arrange
-            var mailParam = new MailParam()
+            var mailParam = new MailParam
             {
                 SenderAddress = SenderAddress,
                 SenderName = SenderName,
@@ -69,70 +66,61 @@ namespace Infra.Email.Mailgun.IntegrationTest
             };
 
             // Act
-            var result = await _mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.IsTrue(result);
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public async Task SendMailWithCcSuccessAsync()
+        public async Task SendMailWithCcSuccess()
         {
             // Arrange
-            var mailParam = new MailParam()
+            var mailParam = new MailParam
             {
                 SenderAddress = SenderAddress,
                 SenderName = SenderName,
                 Mailto = Mailto,
-                Cc = Ccto,
+                Cc = CcTo,
                 Subject = "Send mail with carbon copy success.",
                 Message = Message,
                 IsHtml = false
             };
 
             // Act
-            var result = await _mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.IsTrue(result);
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public async Task SendMailWithBccSuccessAsync()
+        public async Task SendMailWithBccSuccess()
         {
             // Arrange
-            var mailParam = new MailParam()
+            var mailParam = new MailParam
             {
                 SenderAddress = SenderAddress,
                 SenderName = SenderName,
                 Mailto = Mailto,
-                Bcc = Bccto,
+                Bcc = BccTo,
                 Subject = "Send mail with blind carbon copy success.",
                 Message = Message,
                 IsHtml = false
             };
 
             // Act
-            var result = await _mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.IsTrue(result);
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public async Task SendMailWithAttachmentSuccessAsync()
+        public async Task SendMailWithAttachmentSuccess()
         {
             // Arrange
             var filePath = Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg");
             var fileName = Path.GetFileName(filePath);
             var fileBytes = await File.ReadAllBytesAsync(filePath);
 
-            var attachmentDic = new Dictionary<string, byte[]>()
+            var attachmentDic = new Dictionary<string, byte[]>
             {
                 { fileName, fileBytes }
             };
 
-            var mailParam = new MailParam()
+            var mailParam = new MailParam
             {
                 SenderAddress = SenderAddress,
                 SenderName = SenderName,
@@ -144,10 +132,7 @@ namespace Infra.Email.Mailgun.IntegrationTest
             };
 
             // Act
-            var result = await _mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.IsTrue(result);
+            await mailClient.SendAsync(mailParam);
         }
     }
 }

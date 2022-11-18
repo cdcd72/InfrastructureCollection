@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Infra.Core.FileAccess.Abstractions;
+﻿using Infra.Core.FileAccess.Abstractions;
 using Infra.FileAccess.Physical.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -36,7 +34,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
         private static IConfiguration GetConfiguration()
         {
-            var releaseJsonSource = new JsonConfigurationSource()
+            var releaseJsonSource = new JsonConfigurationSource
             {
                 FileProvider = new PhysicalFileProvider(Directory.GetCurrentDirectory()),
                 Path = "appsettings.json",

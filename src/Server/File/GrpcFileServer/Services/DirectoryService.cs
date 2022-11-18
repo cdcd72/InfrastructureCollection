@@ -1,13 +1,9 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Grpc.Core;
 using GrpcFileServer.Configuration;
 using GrpcFileServer.Configuration.Validators;
 using Infra.Core.Extensions;
 using GrpcFileService;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 #pragma warning disable 1998
@@ -16,15 +12,15 @@ namespace GrpcFileServer.Services
 {
     public class DirectoryService : DirectoryTransfer.DirectoryTransferBase
     {
-        private readonly ILogger<FileService> _logger;
-        private readonly Settings _settings;
-        private readonly IFileAccess _fileAccess;
+        private readonly ILogger<FileService> logger;
+        private readonly Settings settings;
+        private readonly IFileAccess fileAccess;
 
         public DirectoryService(ILogger<FileService> logger, IOptions<Settings> settings, IFileAccess fileAccess)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
-            _fileAccess = fileAccess;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+            this.fileAccess = fileAccess;
         }
 
         public override async Task<CreateDirectoryResponse> CreateDirectory(
@@ -33,7 +29,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
             var reply = new CreateDirectoryResponse
             {
                 Mark = mark
@@ -41,15 +37,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently create directory {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently create directory {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                _fileAccess.CreateDirectory(directoryPath);
+                fileAccess.CreateDirectory(directoryPath);
 
-                _logger.Information($"【{mark}】Create directory completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Create directory completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Create directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Create directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -61,7 +57,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
             var reply = new IsExistDirectoryResponse
             {
                 Mark = mark
@@ -69,15 +65,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently check directory {directoryPath} exist, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently check directory {directoryPath} exist, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                reply.Status = _fileAccess.DirectoryExists(directoryPath);
+                reply.Status = fileAccess.DirectoryExists(directoryPath);
 
-                _logger.Information($"【{mark}】Check directory exist completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Check directory exist completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Check directory exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Check directory exist unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -89,7 +85,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
             var reply = new GetFilesResponse
             {
                 Mark = mark
@@ -97,16 +93,16 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently get files from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently get files from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
                 if (Enum.TryParse<SearchOption>(request.SearchOption, out var searchOption))
-                    reply.FileNames.AddRange(_fileAccess.GetFiles(directoryPath, request.SearchPattern, searchOption));
+                    reply.FileNames.AddRange(fileAccess.GetFiles(directoryPath, request.SearchPattern, searchOption));
 
-                _logger.Information($"【{mark}】Get files completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Get files completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Get files unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Get files unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -118,7 +114,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
             var reply = new DeleteDirectoryResponse
             {
                 Mark = mark
@@ -126,15 +122,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently delete directory {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently delete directory {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                _fileAccess.DeleteDirectory(directoryPath, request.Recursive);
+                fileAccess.DeleteDirectory(directoryPath, request.Recursive);
 
-                _logger.Information($"【{mark}】Delete directory completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Delete directory completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Delete directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Delete directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -146,7 +142,7 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
+            var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
             var reply = new GetSubDirectoriesResponse
             {
                 Mark = mark
@@ -154,16 +150,16 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently get subdirectories from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently get subdirectories from {directoryPath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
                 if (Enum.TryParse<SearchOption>(request.SearchOption, out var searchOption))
-                    reply.DirectoryNames.AddRange(_fileAccess.GetSubDirectories(directoryPath, request.SearchPattern, searchOption));
+                    reply.DirectoryNames.AddRange(fileAccess.GetSubDirectories(directoryPath, request.SearchPattern, searchOption));
 
-                _logger.Information($"【{mark}】Get subdirectories completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Get subdirectories completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Get subdirectories unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Get subdirectories unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;
@@ -175,8 +171,8 @@ namespace GrpcFileServer.Services
         {
             var startTime = DateTime.Now;
             var mark = request.Mark;
-            var directoryPath = Path.Combine(_settings.Root, request.DirectoryName);
-            var zipFilePath = Path.Combine(_settings.Root, request.ZipFileName);
+            var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
+            var zipFilePath = Path.Combine(settings.Root, request.ZipFileName);
             var reply = new DirectoryCompressResponse
             {
                 Mark = mark
@@ -184,15 +180,15 @@ namespace GrpcFileServer.Services
 
             try
             {
-                _logger.Information($"【{mark}】Currently compress directory {directoryPath} to {zipFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently compress directory {directoryPath} to {zipFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                _fileAccess.DirectoryCompress(directoryPath, zipFilePath);
+                fileAccess.DirectoryCompress(directoryPath, zipFilePath);
 
-                _logger.Information($"【{mark}】Compress directory completed. SpentTime:{DateTime.Now - startTime}");
+                logger.Information($"【{mark}】Compress directory completed. SpentTime:{DateTime.Now - startTime}");
             }
             catch (Exception ex)
             {
-                _logger.Error($"【{mark}】Compress directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
+                logger.Error($"【{mark}】Compress directory unexpected exception happened.({ex.GetType()}):{ex.Message}");
             }
 
             return reply;

@@ -1,4 +1,3 @@
-using System.IO;
 using System.Reflection;
 using Infra.Core.FileAccess.Validators;
 using NUnit.Framework;
@@ -60,14 +59,14 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
         {
             var pathValidator = new PathValidator(rootPath);
 
-            Assert.AreEqual(expected, pathValidator.IsValidPath(targetPath));
+            Assert.That(pathValidator.IsValidPath(targetPath), Is.EqualTo(expected));
         }
 
         private static void PathShouldBe(string rootPath, string targetPath, string expected)
         {
             var pathValidator = new PathValidator(rootPath);
 
-            Assert.AreEqual(expected, pathValidator.GetValidPath(targetPath));
+            Assert.That(pathValidator.GetValidPath(targetPath), Is.EqualTo(expected));
         }
 
         #endregion

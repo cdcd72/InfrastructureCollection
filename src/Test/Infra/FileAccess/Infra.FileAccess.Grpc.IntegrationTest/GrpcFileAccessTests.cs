@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using Infra.Core.FileAccess.Abstractions;
 using NUnit.Framework;
 
@@ -16,7 +13,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
     /// </summary>
     public class GrpcFileAccessTests
     {
-        private readonly IFileAccess _fileAccess;
+        private readonly IFileAccess fileAccess;
 
         #region Properties
 
@@ -28,13 +25,13 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var startup = new Startup();
 
-            _fileAccess = startup.GetService<IFileAccess>();
+            fileAccess = startup.GetService<IFileAccess>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         [SetUp]
-        public async Task SetUp() => await _fileAccess.CreateDirectoryAsync(TempPath);
+        public async Task SetUp() => await fileAccess.CreateDirectoryAsync(TempPath);
 
         #region Sync
 
@@ -45,7 +42,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.CreateDirectory(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CreateDirectory(directoryPath));
         }
 
         [Test]
@@ -53,7 +50,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.DirectoryExists(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DirectoryExists(directoryPath));
         }
 
         [Test]
@@ -61,7 +58,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetFiles(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFiles(directoryPath));
         }
 
         [Test]
@@ -69,7 +66,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetFiles(directoryPath, "*.txt"));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFiles(directoryPath, "*.txt"));
         }
 
         [Test]
@@ -77,7 +74,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories));
         }
 
         [Test]
@@ -85,7 +82,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.DeleteDirectory(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DeleteDirectory(directoryPath));
         }
 
         [Test]
@@ -93,7 +90,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetSubDirectories(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath));
         }
 
         [Test]
@@ -101,7 +98,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetSubDirectories(directoryPath, "Another*"));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath, "Another*"));
         }
 
         [Test]
@@ -109,7 +106,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories));
         }
 
         [Test]
@@ -118,7 +115,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.DirectoryCompress(directoryPath, zipFilePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DirectoryCompress(directoryPath, zipFilePath));
         }
 
         [Test]
@@ -126,7 +123,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetParentPath(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetParentPath(directoryPath));
         }
 
         [Test]
@@ -134,7 +131,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetCurrentDirectoryName(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetCurrentDirectoryName(directoryPath));
         }
 
         #endregion
@@ -144,7 +141,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "test.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.FileExists(filePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.FileExists(filePath));
         }
 
         [Test]
@@ -152,7 +149,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "utf8.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.SaveFile(filePath, "資料種類"));
+            Assert.Throws<NotSupportedException>(() => fileAccess.SaveFile(filePath, "資料種類"));
         }
 
         [Test]
@@ -160,7 +157,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "big5.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.SaveFile(filePath, "資料種類", Encoding.GetEncoding(950)));
+            Assert.Throws<NotSupportedException>(() => fileAccess.SaveFile(filePath, "資料種類", Encoding.GetEncoding(950)));
         }
 
         [Test]
@@ -168,7 +165,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "test.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.DeleteFile(filePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DeleteFile(filePath));
         }
 
         [Test]
@@ -176,7 +173,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "test.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.GetFileSize(filePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFileSize(filePath));
         }
 
         [Test]
@@ -184,7 +181,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "utf8.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.ReadTextFile(filePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadTextFile(filePath));
         }
 
         [Test]
@@ -193,7 +190,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var filePath = Path.Combine(TempPath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.ReadTextFile(filePath, encoding));
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadTextFile(filePath, encoding));
         }
 
         [Test]
@@ -202,7 +199,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var sourceFilePath = Path.Combine(TempPath, "test.txt");
             var destFilePath = Path.Combine(TempPath, "Move", "test.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.MoveFile(sourceFilePath, destFilePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.MoveFile(sourceFilePath, destFilePath));
         }
 
         [Test]
@@ -211,7 +208,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var sourceFilePath = Path.Combine(TempPath, "test.txt");
             var destFilePath = Path.Combine(TempPath, "Copy", "test.txt");
 
-            Assert.Throws<NotSupportedException>(() => _fileAccess.CopyFile(sourceFilePath, destFilePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CopyFile(sourceFilePath, destFilePath));
         }
 
         #endregion
@@ -225,9 +222,9 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(directoryPath);
 
-            Assert.IsTrue(await _fileAccess.DirectoryExistsAsync(directoryPath));
+            Assert.That(await fileAccess.DirectoryExistsAsync(directoryPath), Is.True);
         }
 
         [Test]
@@ -235,7 +232,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.IsFalse(await _fileAccess.DirectoryExistsAsync(directoryPath));
+            Assert.That(await fileAccess.DirectoryExistsAsync(directoryPath), Is.False);
         }
 
         [Test]
@@ -243,13 +240,13 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
 
-            var files = await _fileAccess.GetFilesAsync(directoryPath);
+            var files = await fileAccess.GetFilesAsync(directoryPath);
 
-            Assert.AreEqual(2, files.Length);
+            Assert.That(files, Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -257,13 +254,13 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
 
-            var files = await _fileAccess.GetFilesAsync(directoryPath, "*.txt");
+            var files = await fileAccess.GetFilesAsync(directoryPath, "*.txt");
 
-            Assert.AreEqual(1, files.Length);
+            Assert.That(files, Has.Length.EqualTo(1));
         }
 
         [Test]
@@ -272,15 +269,15 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var subDirectoryPath = Path.Combine(directoryPath, "SubCreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
-            await _fileAccess.CreateDirectoryAsync(subDirectoryPath);
-            await _fileAccess.SaveFileAsync(Path.Combine(subDirectoryPath, "temp_3.txt"), "content_3");
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await fileAccess.CreateDirectoryAsync(subDirectoryPath);
+            await fileAccess.SaveFileAsync(Path.Combine(subDirectoryPath, "temp_3.txt"), "content_3");
 
-            var files = await _fileAccess.GetFilesAsync(directoryPath, "*.txt", SearchOption.AllDirectories);
+            var files = await fileAccess.GetFilesAsync(directoryPath, "*.txt", SearchOption.AllDirectories);
 
-            Assert.AreEqual(2, files.Length);
+            Assert.That(files, Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -288,10 +285,10 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.DeleteDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.DeleteDirectoryAsync(directoryPath);
 
-            Assert.IsFalse(await _fileAccess.DirectoryExistsAsync(directoryPath));
+            Assert.That(await fileAccess.DirectoryExistsAsync(directoryPath), Is.False);
         }
 
         [Test]
@@ -299,13 +296,13 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
-            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
+            await fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
 
-            var subdirectories = await _fileAccess.GetSubDirectoriesAsync(directoryPath);
+            var subdirectories = await fileAccess.GetSubDirectoriesAsync(directoryPath);
 
-            Assert.AreEqual(2, subdirectories.Length);
+            Assert.That(subdirectories, Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -313,13 +310,13 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
-            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
+            await fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
 
-            var subdirectories = await _fileAccess.GetSubDirectoriesAsync(directoryPath, "Another*");
+            var subdirectories = await fileAccess.GetSubDirectoriesAsync(directoryPath, "Another*");
 
-            Assert.AreEqual(1, subdirectories.Length);
+            Assert.That(subdirectories, Has.Length.EqualTo(1));
         }
 
         [Test]
@@ -328,14 +325,14 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var anotherDirectoryPath = Path.Combine(directoryPath, "AnotherCreatedDirectory");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.CreateDirectoryAsync(anotherDirectoryPath);
-            await _fileAccess.CreateDirectoryAsync(Path.Combine(anotherDirectoryPath, "SubDirectory"));
-            await _fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(anotherDirectoryPath);
+            await fileAccess.CreateDirectoryAsync(Path.Combine(anotherDirectoryPath, "SubDirectory"));
+            await fileAccess.CreateDirectoryAsync(Path.Combine(directoryPath, "SubCreatedDirectory"));
 
-            var subdirectories = await _fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories);
+            var subdirectories = await fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories);
 
-            Assert.AreEqual(2, subdirectories.Length);
+            Assert.That(subdirectories, Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -344,12 +341,12 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
-            await _fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
-            await _fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath);
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath);
 
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(zipFilePath));
+            Assert.That(await fileAccess.FileExistsAsync(zipFilePath), Is.True);
         }
 
         [Test]
@@ -357,7 +354,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetParentPathAsync(directoryPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.GetParentPathAsync(directoryPath));
         }
 
         [Test]
@@ -365,7 +362,7 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.ThrowsAsync<NotSupportedException>(() => _fileAccess.GetCurrentDirectoryNameAsync(directoryPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.GetCurrentDirectoryNameAsync(directoryPath));
         }
 
         #endregion
@@ -375,9 +372,9 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "temp_1.txt");
 
-            await _fileAccess.SaveFileAsync(filePath, "content_1");
+            await fileAccess.SaveFileAsync(filePath, "content_1");
 
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+            Assert.That(await fileAccess.FileExistsAsync(filePath), Is.True);
         }
 
         [Test]
@@ -385,9 +382,9 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "utf8.txt");
 
-            await _fileAccess.SaveFileAsync(filePath, "資料種類");
+            await fileAccess.SaveFileAsync(filePath, "資料種類");
 
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+            Assert.That(await fileAccess.FileExistsAsync(filePath), Is.True);
         }
 
         [Test]
@@ -395,9 +392,9 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "big5.txt");
 
-            await _fileAccess.SaveFileAsync(filePath, "資料種類", Encoding.GetEncoding(950));
+            await fileAccess.SaveFileAsync(filePath, "資料種類", Encoding.GetEncoding(950));
 
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
+            Assert.That(await fileAccess.FileExistsAsync(filePath), Is.True);
         }
 
         [Test]
@@ -405,10 +402,10 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "test.txt");
 
-            await _fileAccess.SaveFileAsync(filePath, "資料種類");
-            await _fileAccess.DeleteFileAsync(filePath);
+            await fileAccess.SaveFileAsync(filePath, "資料種類");
+            await fileAccess.DeleteFileAsync(filePath);
 
-            Assert.IsFalse(await _fileAccess.FileExistsAsync(filePath));
+            Assert.That(await fileAccess.FileExistsAsync(filePath), Is.False);
         }
 
         [Test]
@@ -418,9 +415,9 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
 
             var filePath = Path.Combine(TempPath, "utf8.txt");
 
-            await _fileAccess.SaveFileAsync(filePath, content);
+            await fileAccess.SaveFileAsync(filePath, content);
 
-            Assert.AreEqual(content, await _fileAccess.ReadTextFileAsync(filePath));
+            Assert.That(await fileAccess.ReadTextFileAsync(filePath), Is.EqualTo(content));
         }
 
         [Test]
@@ -431,9 +428,9 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var filePath = Path.Combine(TempPath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            await _fileAccess.SaveFileAsync(filePath, content, encoding);
+            await fileAccess.SaveFileAsync(filePath, content, encoding);
 
-            Assert.AreEqual(content, await _fileAccess.ReadTextFileAsync(filePath, encoding));
+            Assert.That(await fileAccess.ReadTextFileAsync(filePath, encoding), Is.EqualTo(content));
         }
 
         [Test]
@@ -441,11 +438,11 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         {
             var filePath = Path.Combine(TempPath, "temp.txt");
 
-            await _fileAccess.SaveFileAsync(filePath, "have_a_nice_day_!_1");
+            await fileAccess.SaveFileAsync(filePath, "have_a_nice_day_!_1");
 
-            var fileSize = await _fileAccess.GetFileSizeAsync(filePath);
+            var fileSize = await fileAccess.GetFileSizeAsync(filePath);
 
-            Assert.IsTrue(fileSize > 0);
+            Assert.That(fileSize, Is.GreaterThan(0));
         }
 
         [Test]
@@ -456,13 +453,16 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var filePath = Path.Combine(directoryPath, "temp.txt");
             var subFilePath = Path.Combine(subDirectoryPath, "temp.txt");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.CreateDirectoryAsync(subDirectoryPath);
-            await _fileAccess.SaveFileAsync(filePath, "資料種類");
-            await _fileAccess.MoveFileAsync(filePath, subFilePath);
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(subDirectoryPath);
+            await fileAccess.SaveFileAsync(filePath, "資料種類");
+            await fileAccess.MoveFileAsync(filePath, subFilePath);
 
-            Assert.IsFalse(await _fileAccess.FileExistsAsync(filePath));
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(subFilePath));
+            Assert.Multiple(async () =>
+            {
+                Assert.That(await fileAccess.FileExistsAsync(filePath), Is.False);
+                Assert.That(await fileAccess.FileExistsAsync(subFilePath), Is.True);
+            });
         }
 
         [Test]
@@ -473,18 +473,21 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var filePath = Path.Combine(directoryPath, "temp.txt");
             var subFilePath = Path.Combine(subDirectoryPath, "temp.txt");
 
-            await _fileAccess.CreateDirectoryAsync(directoryPath);
-            await _fileAccess.CreateDirectoryAsync(subDirectoryPath);
-            await _fileAccess.SaveFileAsync(filePath, "資料種類");
-            await _fileAccess.CopyFileAsync(filePath, subFilePath);
+            await fileAccess.CreateDirectoryAsync(directoryPath);
+            await fileAccess.CreateDirectoryAsync(subDirectoryPath);
+            await fileAccess.SaveFileAsync(filePath, "資料種類");
+            await fileAccess.CopyFileAsync(filePath, subFilePath);
 
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(filePath));
-            Assert.IsTrue(await _fileAccess.FileExistsAsync(subFilePath));
+            Assert.Multiple(async () =>
+            {
+                Assert.That(await fileAccess.FileExistsAsync(filePath), Is.True);
+                Assert.That(await fileAccess.FileExistsAsync(subFilePath), Is.True);
+            });
         }
 
         #endregion
 
         [TearDown]
-        public async Task TearDown() => await _fileAccess.DeleteDirectoryAsync(TempPath);
+        public async Task TearDown() => await fileAccess.DeleteDirectoryAsync(TempPath);
     }
 }

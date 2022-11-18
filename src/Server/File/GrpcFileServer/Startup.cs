@@ -1,12 +1,6 @@
 using GrpcFileServer.Services;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.FileAccess.Physical;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using NLog.Web;
 using GrpcFileServerConfig = GrpcFileServer.Configuration;
 using PhysicalFileAccessConfig = Infra.FileAccess.Physical.Configuration;

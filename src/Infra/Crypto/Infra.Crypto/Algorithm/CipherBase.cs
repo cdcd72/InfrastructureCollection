@@ -10,9 +10,6 @@ public class CipherBase
 
     internal byte[] Cipher(byte[] bytes)
     {
-        if (cryptoTransform is null)
-            throw new ArgumentException(nameof(cryptoTransform));
-
         using var ms = new MemoryStream();
         using var cs = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write);
         cs.Write(bytes, 0, bytes.Length);

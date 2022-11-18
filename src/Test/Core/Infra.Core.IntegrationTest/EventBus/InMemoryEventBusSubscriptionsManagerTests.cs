@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Infra.Core.EventBus;
 using Infra.Core.IntegrationTest.EventBus.Events;
 using Infra.Core.IntegrationTest.EventBus.Handlers;
@@ -19,7 +17,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             var result = manager.IsEmpty;
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test]
@@ -32,7 +30,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             manager.AddSubscription<TestIntegrationEvent, TestIntegrationEventHandler>();
 
             // Assert
-            Assert.IsTrue(manager.HasSubscriptionsForEvent<TestIntegrationEvent>());
+            Assert.That(manager.HasSubscriptionsForEvent<TestIntegrationEvent>(), Is.True);
         }
 
         [Test]
@@ -46,7 +44,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             manager.RemoveSubscription<TestIntegrationEvent, TestIntegrationEventHandler>();
 
             // Assert
-            Assert.IsFalse(manager.HasSubscriptionsForEvent<TestIntegrationEvent>());
+            Assert.That(manager.HasSubscriptionsForEvent<TestIntegrationEvent>(), Is.False);
         }
 
         [Test]
@@ -55,14 +53,14 @@ namespace Infra.Core.IntegrationTest.EventBus
             // Arrange
             var raised = false;
             var manager = new InMemoryEventBusSubscriptionsManager();
-            manager.OnEventRemoved += (o, e) => raised = true;
+            manager.OnEventRemoved += (_, _) => raised = true;
             manager.AddSubscription<TestIntegrationEvent, TestIntegrationEventHandler>();
 
             // Act
             manager.RemoveSubscription<TestIntegrationEvent, TestIntegrationEventHandler>();
 
             // Assert
-            Assert.True(raised);
+            Assert.That(raised, Is.True);
         }
 
         [Test]
@@ -77,7 +75,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             var handlers = manager.GetHandlersForEvent<TestIntegrationEvent>();
 
             // Assert
-            Assert.AreEqual(2, handlers.Count());
+            Assert.That(handlers.Count(), Is.EqualTo(2));
         }
 
         [Test]
@@ -92,7 +90,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             manager.Clear();
 
             // Assert
-            Assert.IsTrue(manager.IsEmpty);
+            Assert.That(manager.IsEmpty, Is.True);
         }
 
         [Test]
@@ -107,7 +105,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             var eventType = manager.GetEventTypeByName(eventName);
 
             // Assert
-            Assert.AreEqual(eventName, eventType.Name);
+            Assert.That(eventType.Name, Is.EqualTo(eventName));
         }
 
         [Test]
@@ -120,7 +118,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             manager.RemoveSubscription<TestIntegrationEvent, TestIntegrationEventHandler>();
 
             // Assert
-            Assert.IsFalse(manager.HasSubscriptionsForEvent<TestIntegrationEvent>());
+            Assert.That(manager.HasSubscriptionsForEvent<TestIntegrationEvent>(), Is.False);
         }
 
         [Test]
@@ -148,7 +146,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             manager.AddDynamicSubscription<TestDynamicIntegrationEventHandler>(eventName);
 
             // Assert
-            Assert.IsTrue(manager.HasSubscriptionsForEvent(eventName));
+            Assert.That(manager.HasSubscriptionsForEvent(eventName), Is.True);
         }
 
         [Test]
@@ -163,7 +161,7 @@ namespace Infra.Core.IntegrationTest.EventBus
             manager.RemoveDynamicSubscription<TestDynamicIntegrationEventHandler>(eventName);
 
             // Assert
-            Assert.IsFalse(manager.HasSubscriptionsForEvent(eventName));
+            Assert.That(manager.HasSubscriptionsForEvent(eventName), Is.False);
         }
     }
 }

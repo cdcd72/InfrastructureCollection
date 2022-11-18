@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Infra.Core.EventBus.Abstractions;
 using Infra.Core.EventBus.Events;
 using Infra.Core.EventBus.Models;

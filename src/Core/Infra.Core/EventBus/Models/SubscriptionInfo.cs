@@ -1,5 +1,3 @@
-using System;
-
 namespace Infra.Core.EventBus.Models
 {
     public class SubscriptionInfo

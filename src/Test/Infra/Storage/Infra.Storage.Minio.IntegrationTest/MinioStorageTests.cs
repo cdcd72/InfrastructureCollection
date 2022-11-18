@@ -6,7 +6,7 @@ namespace Infra.Storage.Minio.IntegrationTest;
 
 public class MinioStorageTests
 {
-    private readonly IObjectStorage _storage;
+    private readonly IObjectStorage storage;
 
     #region Properties
 
@@ -19,7 +19,7 @@ public class MinioStorageTests
     {
         var startup = new Startup();
 
-        _storage = startup.GetService<IObjectStorage>();
+        storage = startup.GetService<IObjectStorage>();
     }
 
     #region Bucket
@@ -29,7 +29,7 @@ public class MinioStorageTests
     {
         const string bucketName = "temp";
 
-        Assert.That(await _storage.BucketExistsAsync(bucketName), Is.False);
+        Assert.That(await storage.BucketExistsAsync(bucketName), Is.False);
     }
 
     [Test]
@@ -37,12 +37,12 @@ public class MinioStorageTests
     {
         const string bucketName = "temp";
 
-        await _storage.MakeBucketAsync(bucketName);
+        await storage.MakeBucketAsync(bucketName);
 
-        Assert.That(await _storage.BucketExistsAsync(bucketName), Is.True);
+        Assert.That(await storage.BucketExistsAsync(bucketName), Is.True);
 
         // Recovery
-        await _storage.RemoveBucketAsync(bucketName);
+        await storage.RemoveBucketAsync(bucketName);
     }
 
     [Test]
@@ -50,11 +50,11 @@ public class MinioStorageTests
     {
         const string bucketName = "temp";
 
-        await _storage.MakeBucketAsync(bucketName);
+        await storage.MakeBucketAsync(bucketName);
 
-        await _storage.RemoveBucketAsync(bucketName);
+        await storage.RemoveBucketAsync(bucketName);
 
-        Assert.That(await _storage.BucketExistsAsync(bucketName), Is.False);
+        Assert.That(await storage.BucketExistsAsync(bucketName), Is.False);
     }
 
     [Test]
@@ -63,16 +63,16 @@ public class MinioStorageTests
         const string bucketName1 = "temp1";
         const string bucketName2 = "temp2";
 
-        await _storage.MakeBucketAsync(bucketName1);
-        await _storage.MakeBucketAsync(bucketName2);
+        await storage.MakeBucketAsync(bucketName1);
+        await storage.MakeBucketAsync(bucketName2);
 
-        var bucketNames = await _storage.ListBucketsAsync();
+        var bucketNames = await storage.ListBucketsAsync();
 
         Assert.That(bucketNames, Has.Count.EqualTo(2));
 
         // Recovery
-        await _storage.RemoveBucketAsync(bucketName1);
-        await _storage.RemoveBucketAsync(bucketName2);
+        await storage.RemoveBucketAsync(bucketName1);
+        await storage.RemoveBucketAsync(bucketName2);
     }
 
     #endregion
@@ -85,7 +85,7 @@ public class MinioStorageTests
         const string bucketName = "temp";
         const string objectName = "object";
 
-        Assert.That(await _storage.ObjectExistsAsync(bucketName, objectName), Is.False);
+        Assert.That(await storage.ObjectExistsAsync(bucketName, objectName), Is.False);
     }
 
     [Test]
@@ -94,18 +94,18 @@ public class MinioStorageTests
         const string bucketName = "temp";
         const string objectName = "object";
 
-        await _storage.MakeBucketAsync(bucketName);
+        await storage.MakeBucketAsync(bucketName);
 
         var bytes =
             await File.ReadAllBytesAsync(Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg"));
 
-        await _storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
+        await storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
 
-        Assert.That(await _storage.ObjectExistsAsync(bucketName, objectName), Is.True);
+        Assert.That(await storage.ObjectExistsAsync(bucketName, objectName), Is.True);
 
         // Recovery
-        await _storage.RemoveObjectAsync(bucketName, objectName);
-        await _storage.RemoveBucketAsync(bucketName);
+        await storage.RemoveObjectAsync(bucketName, objectName);
+        await storage.RemoveBucketAsync(bucketName);
     }
 
     [Test]
@@ -114,19 +114,19 @@ public class MinioStorageTests
         const string bucketName = "temp";
         const string objectName = "object";
 
-        await _storage.MakeBucketAsync(bucketName);
+        await storage.MakeBucketAsync(bucketName);
 
         var bytes =
             await File.ReadAllBytesAsync(Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg"));
 
-        await _storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
+        await storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
 
-        await _storage.RemoveObjectAsync(bucketName, objectName);
+        await storage.RemoveObjectAsync(bucketName, objectName);
 
-        Assert.That(await _storage.ObjectExistsAsync(bucketName, objectName), Is.False);
+        Assert.That(await storage.ObjectExistsAsync(bucketName, objectName), Is.False);
 
         // Recovery
-        await _storage.RemoveBucketAsync(bucketName);
+        await storage.RemoveBucketAsync(bucketName);
     }
 
     [Test]
@@ -135,20 +135,20 @@ public class MinioStorageTests
         const string bucketName = "temp";
         const string objectName = "object";
 
-        await _storage.MakeBucketAsync(bucketName);
+        await storage.MakeBucketAsync(bucketName);
 
         var bytes =
             await File.ReadAllBytesAsync(Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg"));
 
-        await _storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
+        await storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
 
-        var stream = await _storage.GetObjectAsync(bucketName, objectName);
+        var stream = await storage.GetObjectAsync(bucketName, objectName);
 
         Assert.That(stream, Has.Length.EqualTo(bytes.Length));
 
         // Recovery
-        await _storage.RemoveObjectAsync(bucketName, objectName);
-        await _storage.RemoveBucketAsync(bucketName);
+        await storage.RemoveObjectAsync(bucketName, objectName);
+        await storage.RemoveBucketAsync(bucketName);
     }
 
     [Test]
@@ -157,18 +157,18 @@ public class MinioStorageTests
         const string bucketName = "temp";
         const string objectName = "object";
 
-        await _storage.MakeBucketAsync(bucketName);
+        await storage.MakeBucketAsync(bucketName);
 
         var bytes =
             await File.ReadAllBytesAsync(Path.Combine(CurrentDirectory, "TestData", "Files", "test.jpg"));
 
-        await _storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
+        await storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
 
-        Assert.That(_storage.ListObjects(bucketName), Has.Count.EqualTo(1));
+        Assert.That(storage.ListObjects(bucketName), Has.Count.EqualTo(1));
 
         // Recovery
-        await _storage.RemoveObjectAsync(bucketName, objectName);
-        await _storage.RemoveBucketAsync(bucketName);
+        await storage.RemoveObjectAsync(bucketName, objectName);
+        await storage.RemoveBucketAsync(bucketName);
     }
 
     #endregion

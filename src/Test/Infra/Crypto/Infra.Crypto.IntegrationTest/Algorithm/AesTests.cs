@@ -9,7 +9,7 @@ namespace Infra.Crypto.IntegrationTest.Algorithm;
 
 public class AesTests
 {
-    private readonly ICryptoAlgorithm _crypto;
+    private readonly ICryptoAlgorithm crypto;
 
     public AesTests()
     {
@@ -19,7 +19,7 @@ public class AesTests
         const string key = "wgaPBHA8ab7Jb6viQ34XZjXEKO2Rn7USYcTE6BnYv+Y=";
         const string iv = "Y0xnm45ygKFcSU62fmLBww==";
 
-        _crypto = cryptoFactory.Create(new CryptoOptions
+        crypto = cryptoFactory.Create(new CryptoOptions
         {
             Type = CryptoType.Aes,
             KeyPair = CryptoKeyPair.Parse(key, iv)
@@ -33,7 +33,7 @@ public class AesTests
     {
         const string plainText = "test";
 
-        var encryptedText = _crypto.Encrypt(plainText);
+        var encryptedText = crypto.Encrypt(plainText);
 
         Assert.That(encryptedText, Is.Not.EqualTo(plainText));
     }
@@ -45,7 +45,7 @@ public class AesTests
 
         var plainBytes = Encoding.UTF8.GetBytes(plainText);
 
-        var encryptedBytes = _crypto.Encrypt(plainBytes);
+        var encryptedBytes = crypto.Encrypt(plainBytes);
 
         Assert.That(encryptedBytes, Has.Length.Not.EqualTo(plainBytes.Length));
     }
@@ -59,9 +59,9 @@ public class AesTests
     {
         const string plainText = "test";
 
-        var encryptedText = _crypto.Encrypt(plainText);
+        var encryptedText = crypto.Encrypt(plainText);
 
-        Assert.That(_crypto.Decrypt(encryptedText), Is.EqualTo(plainText));
+        Assert.That(crypto.Decrypt(encryptedText), Is.EqualTo(plainText));
     }
 
     [Test]
@@ -71,9 +71,9 @@ public class AesTests
 
         var plainBytes = Encoding.UTF8.GetBytes(plainText);
 
-        var encryptedBytes = _crypto.Encrypt(plainBytes);
+        var encryptedBytes = crypto.Encrypt(plainBytes);
 
-        var decryptedBytes = _crypto.Decrypt(encryptedBytes);
+        var decryptedBytes = crypto.Decrypt(encryptedBytes);
 
         Assert.That(decryptedBytes, Has.Length.EqualTo(plainBytes.Length));
     }

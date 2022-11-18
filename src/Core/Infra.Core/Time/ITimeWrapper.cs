@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Infra.Core.Time
+﻿namespace Infra.Core.Time
 {
     public interface ITimeWrapper
     {

@@ -7,63 +7,63 @@ namespace Infra.Caching.Redis.IntegrationTest;
 
 public class RedisCacheTests
 {
-    private readonly ICache _cache;
-    private readonly Encoding _encoding;
+    private readonly ICache cache;
+    private readonly Encoding encoding;
 
     public RedisCacheTests()
     {
         var startup = new Startup();
 
-        _cache = startup.GetService<ICache>();
-        _encoding = Encoding.UTF8;
+        cache = startup.GetService<ICache>();
+        encoding = Encoding.UTF8;
     }
 
     #region Sync
 
     [Test]
-    public void SetSuccess() => _cache.Set("key", _encoding.GetBytes("value"));
+    public void SetSuccess() => cache.Set("key", encoding.GetBytes("value"));
 
     [Test]
     public void SetWithSlidingExpirationSuccess() =>
-        _cache.Set("key", _encoding.GetBytes("value"), new CacheOptions
+        cache.Set("key", encoding.GetBytes("value"), new CacheOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(5)
         });
 
     [Test]
     public void SetWithAbsoluteExpirationSuccess() =>
-        _cache.Set("key", _encoding.GetBytes("value"), new CacheOptions
+        cache.Set("key", encoding.GetBytes("value"), new CacheOptions
         {
             AbsoluteExpiration = DateTimeOffset.MaxValue
         });
 
     [Test]
     public void SetWithAbsoluteExpirationRelativeToNowSuccess() =>
-        _cache.Set("key", _encoding.GetBytes("value"), new CacheOptions
+        cache.Set("key", encoding.GetBytes("value"), new CacheOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
         });
 
     [Test]
-    public void SetStringSuccess() => _cache.SetString("key", "value");
+    public void SetStringSuccess() => cache.SetString("key", "value");
 
     [Test]
     public void SetStringWithSlidingExpirationSuccess() =>
-        _cache.SetString("key", "value", new CacheOptions
+        cache.SetString("key", "value", new CacheOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(5)
         });
 
     [Test]
     public void SetStringWithAbsoluteExpirationSuccess() =>
-        _cache.SetString("key", "value", new CacheOptions
+        cache.SetString("key", "value", new CacheOptions
         {
             AbsoluteExpiration = DateTimeOffset.MaxValue
         });
 
     [Test]
     public void SetStringWithAbsoluteExpirationRelativeToNowSuccess() =>
-        _cache.SetString("key", "value", new CacheOptions
+        cache.SetString("key", "value", new CacheOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
         });
@@ -74,14 +74,14 @@ public class RedisCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.Set(key, _encoding.GetBytes(value));
+        cache.Set(key, encoding.GetBytes(value));
 
-        var cachedValue = _cache.Get(key);
+        var cachedValue = cache.Get(key);
 
         Assert.Multiple(() =>
         {
             Assert.That(cachedValue, Is.Not.Empty);
-            Assert.That(_encoding.GetString(cachedValue), Is.EqualTo(value));
+            Assert.That(encoding.GetString(cachedValue), Is.EqualTo(value));
         });
     }
 
@@ -91,9 +91,9 @@ public class RedisCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.SetString(key, value);
+        cache.SetString(key, value);
 
-        var cachedValue = _cache.GetString(key);
+        var cachedValue = cache.GetString(key);
 
         Assert.Multiple(() =>
         {
@@ -108,11 +108,11 @@ public class RedisCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.Set(key, _encoding.GetBytes(value));
+        cache.Set(key, encoding.GetBytes(value));
 
-        _cache.Remove(key);
+        cache.Remove(key);
 
-        Assert.That(_cache.Get(key), Is.Null);
+        Assert.That(cache.Get(key), Is.Null);
     }
 
     [Test]
@@ -121,8 +121,8 @@ public class RedisCacheTests
         const string key = "key";
         const string value = "value";
 
-        _cache.Set(key, _encoding.GetBytes(value));
-        _cache.Refresh(key);
+        cache.Set(key, encoding.GetBytes(value));
+        cache.Refresh(key);
     }
 
     #endregion
@@ -130,79 +130,79 @@ public class RedisCacheTests
     #region Async
 
     [Test]
-    public async Task SetSuccessAsync() => await _cache.SetAsync("key", _encoding.GetBytes("value"));
+    public async Task SetAsyncSuccess() => await cache.SetAsync("key", encoding.GetBytes("value"));
 
     [Test]
-    public async Task SetWithSlidingExpirationSuccessAsync() =>
-        await _cache.SetAsync("key", _encoding.GetBytes("value"), new CacheOptions
+    public async Task SetAsyncWithSlidingExpirationSuccess() =>
+        await cache.SetAsync("key", encoding.GetBytes("value"), new CacheOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(5)
         });
 
     [Test]
-    public async Task SetWithAbsoluteExpirationSuccessAsync() =>
-        await _cache.SetAsync("key", _encoding.GetBytes("value"), new CacheOptions
+    public async Task SetAsyncWithAbsoluteExpirationSuccess() =>
+        await cache.SetAsync("key", encoding.GetBytes("value"), new CacheOptions
         {
             AbsoluteExpiration = DateTimeOffset.MaxValue
         });
 
     [Test]
-    public async Task SetWithAbsoluteExpirationRelativeToNowSuccessAsync() =>
-        await _cache.SetAsync("key", _encoding.GetBytes("value"), new CacheOptions
+    public async Task SetAsyncWithAbsoluteExpirationRelativeToNowSuccess() =>
+        await cache.SetAsync("key", encoding.GetBytes("value"), new CacheOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
         });
 
     [Test]
-    public async Task SetStringSuccessAsync() => await _cache.SetStringAsync("key", "value");
+    public async Task SetStringAsyncSuccess() => await cache.SetStringAsync("key", "value");
 
     [Test]
-    public async Task SetStringWithSlidingExpirationSuccessAsync() =>
-        await _cache.SetStringAsync("key", "value", new CacheOptions
+    public async Task SetStringAsyncWithSlidingExpirationSuccess() =>
+        await cache.SetStringAsync("key", "value", new CacheOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(5)
         });
 
     [Test]
-    public async Task SetStringWithAbsoluteExpirationSuccessAsync() =>
-        await _cache.SetStringAsync("key", "value", new CacheOptions
+    public async Task SetStringAsyncWithAbsoluteExpirationSuccess() =>
+        await cache.SetStringAsync("key", "value", new CacheOptions
         {
             AbsoluteExpiration = DateTimeOffset.MaxValue
         });
 
     [Test]
-    public async Task SetStringWithAbsoluteExpirationRelativeToNowSuccessAsync() =>
-        await _cache.SetStringAsync("key", "value", new CacheOptions
+    public async Task SetStringAsyncWithAbsoluteExpirationRelativeToNowSuccess() =>
+        await cache.SetStringAsync("key", "value", new CacheOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(8)
         });
 
     [Test]
-    public async Task GetSuccessAsync()
+    public async Task GetAsyncSuccess()
     {
         const string key = "key";
         const string value = "value";
 
-        await _cache.SetAsync(key, _encoding.GetBytes(value));
+        await cache.SetAsync(key, encoding.GetBytes(value));
 
-        var cachedValue = await _cache.GetAsync(key);
+        var cachedValue = await cache.GetAsync(key);
 
         Assert.Multiple(() =>
         {
             Assert.That(cachedValue, Is.Not.Empty);
-            Assert.That(_encoding.GetString(cachedValue), Is.EqualTo(value));
+            Assert.That(encoding.GetString(cachedValue), Is.EqualTo(value));
         });
     }
 
     [Test]
-    public async Task GetStringSuccessAsync()
+    public async Task GetStringAsyncSuccess()
     {
         const string key = "key";
         const string value = "value";
 
-        await _cache.SetStringAsync(key, value);
+        await cache.SetStringAsync(key, value);
 
-        var cachedValue = await _cache.GetStringAsync(key);
+        var cachedValue = await cache.GetStringAsync(key);
 
         Assert.Multiple(() =>
         {
@@ -212,26 +212,26 @@ public class RedisCacheTests
     }
 
     [Test]
-    public async Task RemoveSuccessAsync()
+    public async Task RemoveAsyncSuccess()
     {
         const string key = "key";
         const string value = "value";
 
-        await _cache.SetAsync(key, _encoding.GetBytes(value));
+        await cache.SetAsync(key, encoding.GetBytes(value));
 
-        await _cache.RemoveAsync(key);
+        await cache.RemoveAsync(key);
 
-        Assert.That(await _cache.GetAsync(key), Is.Null);
+        Assert.That(await cache.GetAsync(key), Is.Null);
     }
 
     [Test]
-    public async Task RefreshSuccessAsync()
+    public async Task RefreshAsyncSuccess()
     {
         const string key = "key";
         const string value = "value";
 
-        await _cache.SetAsync(key, _encoding.GetBytes(value));
-        await _cache.RefreshAsync(key);
+        await cache.SetAsync(key, encoding.GetBytes(value));
+        await cache.RefreshAsync(key);
     }
 
     #endregion

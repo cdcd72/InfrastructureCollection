@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 #pragma warning disable CA2208
 
 namespace Infra.Email.Mailgun.Configuration.Validators
 {
-    public class SettingsValidator
+    public static class SettingsValidator
     {
         public static bool TryValidate(Settings settings, out AggregateException validationExceptions)
         {
-            if (settings is null)
-                throw new ArgumentNullException(nameof(settings));
+            if (settings is null) throw new ArgumentNullException(nameof(settings));
 
             var exceptions = new List<Exception>();
 
