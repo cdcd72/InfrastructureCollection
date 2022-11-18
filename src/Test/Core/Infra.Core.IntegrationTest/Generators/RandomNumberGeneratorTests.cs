@@ -6,6 +6,10 @@ namespace Infra.Core.IntegrationTest.Generators;
 public class RandomNumberGeneratorTests
 {
     [Test]
+    public void RandomFailWithArgumentOutOfRange()
+        => Assert.Throws<ArgumentOutOfRangeException>(() => RandomNumberGenerator.Next(-1));
+
+    [Test]
     public void RandomSuccess()
     {
         const int max = 10;
@@ -20,9 +24,12 @@ public class RandomNumberGeneratorTests
             index++;
         }
 
-        Assert.IsTrue(pass);
+        Assert.That(pass, Is.True);
     }
 
+    [Test]
+    public void RandomRangeFailWithArgumentOutOfRange()
+        => Assert.Throws<ArgumentOutOfRangeException>(() => RandomNumberGenerator.Next(10, 0));
 
     [Test]
     public void RandomRangeSuccess()
@@ -40,6 +47,6 @@ public class RandomNumberGeneratorTests
             pass = randomNumber is <= max and >= min;
             index++;
         }
-        Assert.IsTrue(pass);
+        Assert.That(pass, Is.True);
     }
 }

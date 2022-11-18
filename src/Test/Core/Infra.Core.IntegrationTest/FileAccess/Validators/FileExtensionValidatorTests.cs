@@ -16,236 +16,236 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
         #endregion
 
         [Test]
-        public void Should_True_Validate_JPG() => Assert.IsTrue(IsValidFileExtensionByBytes("1.jpg"));
+        public void Should_True_Validate_JPG() => Assert.That(IsValidFileExtensionByBytes("1.jpg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_JPG() => Assert.IsTrue(IsValidFileExtensionByFileStream("1.jpg"));
+        public void Should_True_Validate_FS_JPG() => Assert.That(IsValidFileExtensionByFileStream("1.jpg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_JPG_ffd8ffdb() => Assert.IsTrue(IsValidFileExtensionByBytes("37.jpg"));
+        public void Should_True_Validate_JPG_ffd8ffdb() => Assert.That(IsValidFileExtensionByBytes("37.jpg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_JPG_ffd8ffdb() => Assert.IsTrue(IsValidFileExtensionByFileStream("37.jpg"));
+        public void Should_True_Validate_FS_JPG_ffd8ffdb() => Assert.That(IsValidFileExtensionByFileStream("37.jpg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_7Z() => Assert.IsTrue(IsValidFileExtensionByBytes("2.7z"));
+        public void Should_True_Validate_7Z() => Assert.That(IsValidFileExtensionByBytes("2.7z"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_7Z() => Assert.IsTrue(IsValidFileExtensionByFileStream("2.7z"));
+        public void Should_True_Validate_FS_7Z() => Assert.That(IsValidFileExtensionByFileStream("2.7z"), Is.True);
 
 
         [Test]
-        public void Should_True_Validate_BMP() => Assert.IsTrue(IsValidFileExtensionByBytes("3.bmp"));
+        public void Should_True_Validate_BMP() => Assert.That(IsValidFileExtensionByBytes("3.bmp"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_BMP() => Assert.IsTrue(IsValidFileExtensionByFileStream("3.bmp"));
+        public void Should_True_Validate_FS_BMP() => Assert.That(IsValidFileExtensionByFileStream("3.bmp"), Is.True);
 
         [Test]
-        public void Should_True_Validate_TIFF() => Assert.IsTrue(IsValidFileExtensionByBytes("4.tif"));
+        public void Should_True_Validate_TIFF() => Assert.That(IsValidFileExtensionByBytes("4.tif"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_TIFF() => Assert.IsTrue(IsValidFileExtensionByFileStream("4.tif"));
+        public void Should_True_Validate_FS_TIFF() => Assert.That(IsValidFileExtensionByFileStream("4.tif"), Is.True);
 
         [Test]
-        public void Should_True_Validate_RTF() => Assert.IsTrue(IsValidFileExtensionByBytes("5.rtf"));
+        public void Should_True_Validate_RTF() => Assert.That(IsValidFileExtensionByBytes("5.rtf"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_RTF() => Assert.IsTrue(IsValidFileExtensionByFileStream("5.rtf"));
+        public void Should_True_Validate_FS_RTF() => Assert.That(IsValidFileExtensionByFileStream("5.rtf"), Is.True);
 
 
         [Test]
-        public void Should_True_Validate_PPT() => Assert.IsTrue(IsValidFileExtensionByBytes("6.ppt"));
+        public void Should_True_Validate_PPT() => Assert.That(IsValidFileExtensionByBytes("6.ppt"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_PPT() => Assert.IsTrue(IsValidFileExtensionByFileStream("6.ppt"));
+        public void Should_True_Validate_FS_PPT() => Assert.That(IsValidFileExtensionByFileStream("6.ppt"), Is.True);
 
 
         [Test]
-        public void Should_True_Validate_PPTX() => Assert.IsTrue(IsValidFileExtensionByBytes("7.pptx"));
+        public void Should_True_Validate_PPTX() => Assert.That(IsValidFileExtensionByBytes("7.pptx"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_PPTX() => Assert.IsTrue(IsValidFileExtensionByFileStream("7.pptx"));
+        public void Should_True_Validate_FS_PPTX() => Assert.That(IsValidFileExtensionByFileStream("7.pptx"), Is.True);
 
         [Test]
-        public void Should_True_Validate_DOC() => Assert.IsTrue(IsValidFileExtensionByBytes("8.doc"));
+        public void Should_True_Validate_DOC() => Assert.That(IsValidFileExtensionByBytes("8.doc"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_DOC() => Assert.IsTrue(IsValidFileExtensionByFileStream("8.doc"));
+        public void Should_True_Validate_FS_DOC() => Assert.That(IsValidFileExtensionByFileStream("8.doc"), Is.True);
 
         [Test]
-        public void Should_True_Validate_DOCX() => Assert.IsTrue(IsValidFileExtensionByBytes("9.docx"));
+        public void Should_True_Validate_DOCX() => Assert.That(IsValidFileExtensionByBytes("9.docx"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_DOCX() => Assert.IsTrue(IsValidFileExtensionByFileStream("9.docx"));
+        public void Should_True_Validate_FS_DOCX() => Assert.That(IsValidFileExtensionByFileStream("9.docx"), Is.True);
 
         [Test]
-        public void Should_True_Validate_ODT() => Assert.IsTrue(IsValidFileExtensionByBytes("10.odt"));
+        public void Should_True_Validate_ODT() => Assert.That(IsValidFileExtensionByBytes("10.odt"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_ODT() => Assert.IsTrue(IsValidFileExtensionByFileStream("10.odt"));
+        public void Should_True_Validate_FS_ODT() => Assert.That(IsValidFileExtensionByFileStream("10.odt"), Is.True);
 
         [Test]
-        public void Should_True_Validate_ODS() => Assert.IsTrue(IsValidFileExtensionByBytes("11.ods"));
+        public void Should_True_Validate_ODS() => Assert.That(IsValidFileExtensionByBytes("11.ods"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_ODS() => Assert.IsTrue(IsValidFileExtensionByFileStream("11.ods"));
+        public void Should_True_Validate_FS_ODS() => Assert.That(IsValidFileExtensionByFileStream("11.ods"), Is.True);
 
         [Test]
-        public void Should_True_Validate_XLSX() => Assert.IsTrue(IsValidFileExtensionByBytes("12.xlsx"));
+        public void Should_True_Validate_XLSX() => Assert.That(IsValidFileExtensionByBytes("12.xlsx"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_XLSX() => Assert.IsTrue(IsValidFileExtensionByFileStream("12.xlsx"));
+        public void Should_True_Validate_FS_XLSX() => Assert.That(IsValidFileExtensionByFileStream("12.xlsx"), Is.True);
 
         [Test]
-        public void Should_True_Validate_XLS() => Assert.IsTrue(IsValidFileExtensionByBytes("13.xls"));
+        public void Should_True_Validate_XLS() => Assert.That(IsValidFileExtensionByBytes("13.xls"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_XLS() => Assert.IsTrue(IsValidFileExtensionByFileStream("13.xls"));
+        public void Should_True_Validate_FS_XLS() => Assert.That(IsValidFileExtensionByFileStream("13.xls"), Is.True);
 
         [Test]
-        public void Should_False_Validate_DAT() => Assert.IsFalse(IsValidFileExtensionByBytes("14.dat"));
+        public void Should_False_Validate_DAT() => Assert.That(IsValidFileExtensionByBytes("14.dat"), Is.False);
 
         [Test]
-        public void Should_False_Validate_FS_DAT() => Assert.IsFalse(IsValidFileExtensionByFileStream("14.dat"));
+        public void Should_False_Validate_FS_DAT() => Assert.That(IsValidFileExtensionByFileStream("14.dat"), Is.False);
 
         [Test]
-        public void Should_True_Validate_AVI() => Assert.IsTrue(IsValidFileExtensionByBytes("15.avi"));
+        public void Should_True_Validate_AVI() => Assert.That(IsValidFileExtensionByBytes("15.avi"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_AVI() => Assert.IsTrue(IsValidFileExtensionByFileStream("15.avi"));
+        public void Should_True_Validate_FS_AVI() => Assert.That(IsValidFileExtensionByFileStream("15.avi"), Is.True);
 
         [Test]
-        public void Should_True_Validate_MOV() => Assert.IsTrue(IsValidFileExtensionByBytes("16.mov"));
+        public void Should_True_Validate_MOV() => Assert.That(IsValidFileExtensionByBytes("16.mov"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_MOV() => Assert.IsTrue(IsValidFileExtensionByFileStream("16.mov"));
+        public void Should_True_Validate_FS_MOV() => Assert.That(IsValidFileExtensionByFileStream("16.mov"), Is.True);
 
 
         [Test]
-        public void Should_True_Validate_WMV() => Assert.IsTrue(IsValidFileExtensionByBytes("17.wmv"));
+        public void Should_True_Validate_WMV() => Assert.That(IsValidFileExtensionByBytes("17.wmv"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_WMV() => Assert.IsTrue(IsValidFileExtensionByFileStream("17.wmv"));
+        public void Should_True_Validate_FS_WMV() => Assert.That(IsValidFileExtensionByFileStream("17.wmv"), Is.True);
 
         [Test]
-        public void Should_True_Validate_JPEG() => Assert.IsTrue(IsValidFileExtensionByBytes("18.jpeg"));
+        public void Should_True_Validate_JPEG() => Assert.That(IsValidFileExtensionByBytes("18.jpeg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_JPEG() => Assert.IsTrue(IsValidFileExtensionByFileStream("18.jpeg"));
+        public void Should_True_Validate_FS_JPEG() => Assert.That(IsValidFileExtensionByFileStream("18.jpeg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_TXT() => Assert.IsTrue(IsValidFileExtensionByBytes("19.txt"));
+        public void Should_True_Validate_TXT() => Assert.That(IsValidFileExtensionByBytes("19.txt"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_TXT() => Assert.IsTrue(IsValidFileExtensionByFileStream("19.txt"));
+        public void Should_True_Validate_FS_TXT() => Assert.That(IsValidFileExtensionByFileStream("19.txt"), Is.True);
 
         [Test]
-        public void Should_True_Validate_GIF() => Assert.IsTrue(IsValidFileExtensionByBytes("20.gif"));
+        public void Should_True_Validate_GIF() => Assert.That(IsValidFileExtensionByBytes("20.gif"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_GIF() => Assert.IsTrue(IsValidFileExtensionByFileStream("20.gif"));
+        public void Should_True_Validate_FS_GIF() => Assert.That(IsValidFileExtensionByFileStream("20.gif"), Is.True);
 
         [Test]
-        public void Should_True_Validate_RM() => Assert.IsTrue(IsValidFileExtensionByBytes("21.rm"));
+        public void Should_True_Validate_RM() => Assert.That(IsValidFileExtensionByBytes("21.rm"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_RM() => Assert.IsTrue(IsValidFileExtensionByFileStream("21.rm"));
+        public void Should_True_Validate_FS_RM() => Assert.That(IsValidFileExtensionByFileStream("21.rm"), Is.True);
 
         [Test]
-        public void Should_True_Validate_PNG() => Assert.IsTrue(IsValidFileExtensionByBytes("22.png"));
+        public void Should_True_Validate_PNG() => Assert.That(IsValidFileExtensionByBytes("22.png"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_PNG() => Assert.IsTrue(IsValidFileExtensionByFileStream("22.png"));
+        public void Should_True_Validate_FS_PNG() => Assert.That(IsValidFileExtensionByFileStream("22.png"), Is.True);
 
         [Test]
-        public void Should_True_Validate_PDF() => Assert.IsTrue(IsValidFileExtensionByBytes("23.pdf"));
+        public void Should_True_Validate_PDF() => Assert.That(IsValidFileExtensionByBytes("23.pdf"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_PDF() => Assert.IsTrue(IsValidFileExtensionByFileStream("23.pdf"));
+        public void Should_True_Validate_FS_PDF() => Assert.That(IsValidFileExtensionByFileStream("23.pdf"), Is.True);
 
         [Test]
-        public void Should_True_Validate_ODP() => Assert.IsTrue(IsValidFileExtensionByBytes("24.odp"));
+        public void Should_True_Validate_ODP() => Assert.That(IsValidFileExtensionByBytes("24.odp"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_ODP() => Assert.IsTrue(IsValidFileExtensionByFileStream("24.odp"));
+        public void Should_True_Validate_FS_ODP() => Assert.That(IsValidFileExtensionByFileStream("24.odp"), Is.True);
 
         [Test]
-        public void Should_True_Validate_WAV() => Assert.IsTrue(IsValidFileExtensionByBytes("25.wav"));
+        public void Should_True_Validate_WAV() => Assert.That(IsValidFileExtensionByBytes("25.wav"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_WAV() => Assert.IsTrue(IsValidFileExtensionByFileStream("25.wav"));
+        public void Should_True_Validate_FS_WAV() => Assert.That(IsValidFileExtensionByFileStream("25.wav"), Is.True);
 
         [Test]
-        public void Should_True_Validate_ODG() => Assert.IsTrue(IsValidFileExtensionByBytes("26.odg"));
+        public void Should_True_Validate_ODG() => Assert.That(IsValidFileExtensionByBytes("26.odg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_ODG() => Assert.IsTrue(IsValidFileExtensionByFileStream("26.odg"));
+        public void Should_True_Validate_FS_ODG() => Assert.That(IsValidFileExtensionByFileStream("26.odg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_3GP() => Assert.IsTrue(IsValidFileExtensionByBytes("27.3gp"));
+        public void Should_True_Validate_3GP() => Assert.That(IsValidFileExtensionByBytes("27.3gp"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_3GP() => Assert.IsTrue(IsValidFileExtensionByFileStream("27.3gp"));
+        public void Should_True_Validate_FS_3GP() => Assert.That(IsValidFileExtensionByFileStream("27.3gp"), Is.True);
 
         [Test]
-        public void Should_True_Validate_M4V() => Assert.IsTrue(IsValidFileExtensionByBytes("28.m4v"));
+        public void Should_True_Validate_M4V() => Assert.That(IsValidFileExtensionByBytes("28.m4v"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_M4V() => Assert.IsTrue(IsValidFileExtensionByFileStream("28.m4v"));
+        public void Should_True_Validate_FS_M4V() => Assert.That(IsValidFileExtensionByFileStream("28.m4v"), Is.True);
 
         [Test]
-        public void Should_True_Validate_MKV() => Assert.IsTrue(IsValidFileExtensionByBytes("29.mkv"));
+        public void Should_True_Validate_MKV() => Assert.That(IsValidFileExtensionByBytes("29.mkv"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_MKV() => Assert.IsTrue(IsValidFileExtensionByFileStream("29.mkv"));
+        public void Should_True_Validate_FS_MKV() => Assert.That(IsValidFileExtensionByFileStream("29.mkv"), Is.True);
 
         [Test]
-        public void Should_True_Validate_MP4() => Assert.IsTrue(IsValidFileExtensionByBytes("30.mp4"));
+        public void Should_True_Validate_MP4() => Assert.That(IsValidFileExtensionByBytes("30.mp4"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_MP4() => Assert.IsTrue(IsValidFileExtensionByFileStream("30.mp4"));
+        public void Should_True_Validate_FS_MP4() => Assert.That(IsValidFileExtensionByFileStream("30.mp4"), Is.True);
 
         [Test]
-        public void Should_True_Validate_MPG() => Assert.IsTrue(IsValidFileExtensionByBytes("31.mpg"));
+        public void Should_True_Validate_MPG() => Assert.That(IsValidFileExtensionByBytes("31.mpg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_MPG() => Assert.IsTrue(IsValidFileExtensionByFileStream("31.mpg"));
+        public void Should_True_Validate_FS_MPG() => Assert.That(IsValidFileExtensionByFileStream("31.mpg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_RAR() => Assert.IsTrue(IsValidFileExtensionByBytes("32.rar"));
+        public void Should_True_Validate_RAR() => Assert.That(IsValidFileExtensionByBytes("32.rar"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_RAR() => Assert.IsTrue(IsValidFileExtensionByFileStream("32.rar"));
+        public void Should_True_Validate_FS_RAR() => Assert.That(IsValidFileExtensionByFileStream("32.rar"), Is.True);
 
         [Test]
-        public void Should_True_Validate_MP3() => Assert.IsTrue(IsValidFileExtensionByBytes("33.mp3"));
+        public void Should_True_Validate_MP3() => Assert.That(IsValidFileExtensionByBytes("33.mp3"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_MP3() => Assert.IsTrue(IsValidFileExtensionByFileStream("33.mp3"));
+        public void Should_True_Validate_FS_MP3() => Assert.That(IsValidFileExtensionByFileStream("33.mp3"), Is.True);
 
         [Test]
-        public void Should_True_Validate_TIF() => Assert.IsTrue(IsValidFileExtensionByBytes("34.tif"));
+        public void Should_True_Validate_TIF() => Assert.That(IsValidFileExtensionByBytes("34.tif"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_TIF() => Assert.IsTrue(IsValidFileExtensionByFileStream("34.tif"));
+        public void Should_True_Validate_FS_TIF() => Assert.That(IsValidFileExtensionByFileStream("34.tif"), Is.True);
 
         [Test]
-        public void Should_True_Validate_MPEG() => Assert.IsTrue(IsValidFileExtensionByBytes("35.mpeg"));
+        public void Should_True_Validate_MPEG() => Assert.That(IsValidFileExtensionByBytes("35.mpeg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_MPEG() => Assert.IsTrue(IsValidFileExtensionByFileStream("35.mpeg"));
+        public void Should_True_Validate_FS_MPEG() => Assert.That(IsValidFileExtensionByFileStream("35.mpeg"), Is.True);
 
         [Test]
-        public void Should_True_Validate_ZIP() => Assert.IsTrue(IsValidFileExtensionByBytes("36.zip"));
+        public void Should_True_Validate_ZIP() => Assert.That(IsValidFileExtensionByBytes("36.zip"), Is.True);
 
         [Test]
-        public void Should_True_Validate_FS_ZIP() => Assert.IsTrue(IsValidFileExtensionByFileStream("36.zip"));
+        public void Should_True_Validate_FS_ZIP() => Assert.That(IsValidFileExtensionByFileStream("36.zip"), Is.True);
 
         [Test]
-        public void Should_False_Validate_MSI() => Assert.IsFalse(IsValidFileExtensionByBytes("38.msi"));
+        public void Should_False_Validate_MSI() => Assert.That(IsValidFileExtensionByBytes("38.msi"), Is.False);
 
         [Test]
-        public void Should_False_Validate_FS_MSI() => Assert.IsFalse(IsValidFileExtensionByFileStream("38.msi"));
+        public void Should_False_Validate_FS_MSI() => Assert.That(IsValidFileExtensionByFileStream("38.msi"), Is.False);
 
         #region Private Method
 

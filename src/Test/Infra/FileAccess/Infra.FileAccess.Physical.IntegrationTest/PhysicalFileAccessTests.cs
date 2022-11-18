@@ -41,7 +41,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.CreateDirectory(directoryPath);
 
-            Assert.IsTrue(fileAccess.DirectoryExists(directoryPath));
+            Assert.That(fileAccess.DirectoryExists(directoryPath), Is.True);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
 
-            Assert.IsFalse(fileAccess.DirectoryExists(directoryPath));
+            Assert.That(fileAccess.DirectoryExists(directoryPath), Is.False);
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.SaveFile(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
             fileAccess.SaveFile(Path.Combine(directoryPath, "temp_2.log"), "content_2");
 
-            Assert.AreEqual(2, fileAccess.GetFiles(directoryPath).Length);
+            Assert.That(fileAccess.GetFiles(directoryPath), Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -73,7 +73,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.SaveFile(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
             fileAccess.SaveFile(Path.Combine(directoryPath, "temp_2.log"), "content_2");
 
-            Assert.AreEqual(1, fileAccess.GetFiles(directoryPath, "*.txt").Length);
+            Assert.That(fileAccess.GetFiles(directoryPath, "*.txt"), Has.Length.EqualTo(1));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.CreateDirectory(subDirectoryPath);
             fileAccess.SaveFile(Path.Combine(subDirectoryPath, "temp_3.txt"), "content_3");
 
-            Assert.AreEqual(2, fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories).Length);
+            Assert.That(fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories), Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.CreateDirectory(directoryPath);
             fileAccess.DeleteDirectory(directoryPath);
 
-            Assert.IsFalse(fileAccess.DirectoryExists(directoryPath));
+            Assert.That(fileAccess.DirectoryExists(directoryPath), Is.False);
         }
 
         [Test]
@@ -111,7 +111,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.CreateDirectory(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
             fileAccess.CreateDirectory(Path.Combine(directoryPath, "SubCreatedDirectory"));
 
-            Assert.AreEqual(2, fileAccess.GetSubDirectories(directoryPath).Length);
+            Assert.That(fileAccess.GetSubDirectories(directoryPath), Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.CreateDirectory(Path.Combine(directoryPath, "AnotherCreatedDirectory"));
             fileAccess.CreateDirectory(Path.Combine(directoryPath, "SubCreatedDirectory"));
 
-            Assert.AreEqual(1, fileAccess.GetSubDirectories(directoryPath, "Another*").Length);
+            Assert.That(fileAccess.GetSubDirectories(directoryPath, "Another*"), Has.Length.EqualTo(1));
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.CreateDirectory(Path.Combine(anotherDirectoryPath, "SubDirectory"));
             fileAccess.CreateDirectory(Path.Combine(directoryPath, "SubCreatedDirectory"));
 
-            Assert.AreEqual(2, fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories).Length);
+            Assert.That(fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories), Has.Length.EqualTo(2));
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.SaveFile(Path.Combine(directoryPath, "temp_2.log"), "content_2");
             fileAccess.DirectoryCompress(directoryPath, zipFilePath);
 
-            Assert.IsTrue(fileAccess.FileExists(zipFilePath));
+            Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
         }
 
         [Test]
@@ -161,7 +161,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.CreateDirectory(directoryPath);
 
-            Assert.AreEqual(TempPath, fileAccess.GetParentPath(directoryPath));
+            Assert.That(fileAccess.GetParentPath(directoryPath), Is.EqualTo(TempPath));
         }
 
         [Test]
@@ -173,7 +173,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.CreateDirectory(directoryPath);
 
-            Assert.AreEqual(directoryName, fileAccess.GetCurrentDirectoryName(directoryPath));
+            Assert.That(fileAccess.GetCurrentDirectoryName(directoryPath), Is.EqualTo(directoryName));
         }
 
         #endregion
@@ -185,7 +185,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.SaveFile(filePath, "content_1");
 
-            Assert.IsTrue(fileAccess.FileExists(filePath));
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.SaveFile(filePath, "資料種類");
 
-            Assert.IsTrue(fileAccess.FileExists(filePath));
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
         [Test]
@@ -205,7 +205,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.SaveFile(filePath, "資料種類", Encoding.GetEncoding(950));
 
-            Assert.IsTrue(fileAccess.FileExists(filePath));
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
         [Test]
@@ -216,7 +216,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.SaveFile(filePath, "資料種類");
             fileAccess.DeleteFile(filePath);
 
-            Assert.IsFalse(fileAccess.FileExists(filePath));
+            Assert.That(fileAccess.FileExists(filePath), Is.False);
         }
 
         [Test]
@@ -228,7 +228,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.SaveFile(filePath, content);
 
-            Assert.AreEqual(content, fileAccess.ReadTextFile(filePath));
+            Assert.That(fileAccess.ReadTextFile(filePath), Is.EqualTo(content));
         }
 
         [Test]
@@ -241,7 +241,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.SaveFile(filePath, content, encoding);
 
-            Assert.AreEqual(content, fileAccess.ReadTextFile(filePath, encoding));
+            Assert.That(fileAccess.ReadTextFile(filePath, encoding), Is.EqualTo(content));
         }
 
         [Test]
@@ -251,7 +251,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             fileAccess.SaveFile(filePath, "have_a_nice_day_!_1");
 
-            Assert.IsTrue(fileAccess.GetFileSize(filePath) > 0);
+            Assert.That(fileAccess.GetFileSize(filePath), Is.GreaterThan(0));
         }
 
         [Test]
@@ -267,8 +267,11 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.SaveFile(filePath, "資料種類");
             fileAccess.MoveFile(filePath, subFilePath);
 
-            Assert.IsFalse(fileAccess.FileExists(filePath));
-            Assert.IsTrue(fileAccess.FileExists(subFilePath));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fileAccess.FileExists(filePath), Is.False);
+                Assert.That(fileAccess.FileExists(subFilePath), Is.True);
+            });
         }
 
         [Test]
@@ -284,8 +287,11 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.SaveFile(filePath, "資料種類");
             fileAccess.CopyFile(filePath, subFilePath);
 
-            Assert.IsTrue(fileAccess.FileExists(filePath));
-            Assert.IsTrue(fileAccess.FileExists(subFilePath));
+            Assert.Multiple(() =>
+            {
+                Assert.That(fileAccess.FileExists(filePath), Is.True);
+                Assert.That(fileAccess.FileExists(subFilePath), Is.True);
+            });
         }
 
         #endregion
@@ -408,7 +414,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             await fileAccess.SaveFileAsync(filePath, "資料種類");
 
-            Assert.IsTrue(fileAccess.FileExists(filePath));
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
         [Test]
@@ -418,7 +424,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             await fileAccess.SaveFileAsync(filePath, "資料種類", Encoding.GetEncoding(950));
 
-            Assert.IsTrue(fileAccess.FileExists(filePath));
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
         [Test]
@@ -446,7 +452,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             await fileAccess.SaveFileAsync(filePath, content);
 
-            Assert.AreEqual(content, fileAccess.ReadTextFile(filePath));
+            Assert.That(fileAccess.ReadTextFile(filePath), Is.EqualTo(content));
         }
 
         [Test]
@@ -459,7 +465,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             await fileAccess.SaveFileAsync(filePath, content, encoding);
 
-            Assert.AreEqual(content, fileAccess.ReadTextFile(filePath, encoding));
+            Assert.That(fileAccess.ReadTextFile(filePath, encoding), Is.EqualTo(content));
         }
 
         [Test]

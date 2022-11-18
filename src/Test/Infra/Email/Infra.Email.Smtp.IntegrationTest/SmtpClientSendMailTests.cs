@@ -45,7 +45,7 @@ namespace Infra.Email.Smtp.IntegrationTest
         }
 
         [Test]
-        public void SendPlainTextMailSuccess()
+        public async Task SendPlainTextMailSuccess()
         {
             // Arrange
             var mailParam = new MailParam
@@ -59,14 +59,11 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var task = mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public void SendHtmlMailSuccess()
+        public async Task SendHtmlMailSuccess()
         {
             // Arrange
             var mailParam = new MailParam
@@ -80,14 +77,11 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var task = mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public void SendMailWithCcSuccess()
+        public async Task SendMailWithCcSuccess()
         {
             // Arrange
             var mailParam = new MailParam
@@ -102,14 +96,11 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var task = mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
-        public void SendMailWithBccSuccess()
+        public async Task SendMailWithBccSuccess()
         {
             // Arrange
             var mailParam = new MailParam
@@ -124,10 +115,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var task = mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+            await mailClient.SendAsync(mailParam);
         }
 
         [Test]
@@ -155,10 +143,7 @@ namespace Infra.Email.Smtp.IntegrationTest
             };
 
             // Act
-            var task = mailClient.SendAsync(mailParam);
-
-            // Assert
-            Assert.That(task.Status, Is.EqualTo(TaskStatus.RanToCompletion));
+            await mailClient.SendAsync(mailParam);
         }
     }
 }
