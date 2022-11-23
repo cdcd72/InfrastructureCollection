@@ -28,7 +28,7 @@ namespace Infra.Email.Mailgun
 
         public async Task SendAsync(MailParam mailParam)
         {
-            var apiBaseUrl = settings.ApiBaseUrl.EndsWith("/", StringComparison.InvariantCulture) ? settings.ApiBaseUrl : $"{settings.ApiBaseUrl}/";
+            var apiBaseUrl = settings.ApiBaseUrl.EndsWith("/", StringComparison.Ordinal) ? settings.ApiBaseUrl : $"{settings.ApiBaseUrl}/";
 
             try
             {
