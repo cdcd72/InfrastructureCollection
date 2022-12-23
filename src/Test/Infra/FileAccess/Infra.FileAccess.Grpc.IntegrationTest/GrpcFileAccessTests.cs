@@ -211,6 +211,64 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             Assert.Throws<NotSupportedException>(() => fileAccess.CopyFile(sourceFilePath, destFilePath));
         }
 
+        [Test]
+        public void AppendUtf8AllLinesNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllLines(filePath, new[] {content}));
+        }
+
+        [Test]
+        public void AppendBig5AllLinesNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllLines(filePath, new[] {content}, encoding));
+        }
+
+        [Test]
+        public void ReadUtf8AllLinesNotSupported()
+        {
+            AppendUtf8AllLinesNotSupported();
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(TempPath, "utf8.txt")));
+        }
+
+        [Test]
+        public void ReadBig5AllLinesNotSupported()
+        {
+            AppendBig5AllLinesNotSupported();
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(TempPath, "big5.txt")));
+        }
+
+        [Test]
+        public void AppendUtf8AllTextNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllText(filePath, content));
+        }
+
+        [Test]
+        public void AppendBig5AllTextNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllText(filePath, content, encoding));
+        }
+
         #endregion
 
         #region Async
@@ -483,6 +541,64 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
                 Assert.That(await fileAccess.FileExistsAsync(filePath), Is.True);
                 Assert.That(await fileAccess.FileExistsAsync(subFilePath), Is.True);
             });
+        }
+
+        [Test]
+        public void AppendUtf8AllLinesAsyncNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllLinesAsync(filePath, new[] {content}));
+        }
+
+        [Test]
+        public void AppendBig5AllLinesAsyncNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllLinesAsync(filePath, new[] {content}, encoding));
+        }
+
+        [Test]
+        public void ReadUtf8AllLinesAsyncNotSupported()
+        {
+            AppendUtf8AllLinesAsyncNotSupported();
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(TempPath, "utf8.txt")));
+        }
+
+        [Test]
+        public void ReadBig5AllLinesAsyncNotSupported()
+        {
+            AppendBig5AllLinesAsyncNotSupported();
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(TempPath, "big5.txt")));
+        }
+
+        [Test]
+        public void AppendUtf8AllTextAsyncNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(filePath, content));
+        }
+
+        [Test]
+        public void AppendBig5AllTextAsyncNotSupported()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(filePath, content, encoding));
         }
 
         #endregion

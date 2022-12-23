@@ -49,6 +49,18 @@ public interface IFileAccess
 
     void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true);
 
+    void AppendAllLines(string path, IEnumerable<string> contents);
+
+    void AppendAllLines(string path, IEnumerable<string> contents, Encoding encoding);
+
+    string[] ReadAllLines(string path);
+
+    string[] ReadAllLines(string path, Encoding encoding);
+
+    void AppendAllText(string path, string content);
+
+    void AppendAllText(string path, string content, Encoding encoding);
+
     #endregion
 
     #region Async Method
@@ -94,6 +106,18 @@ public interface IFileAccess
     Task MoveFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     Task CopyFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task<string[]> ReadAllLinesAsync(string path, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task AppendAllTextAsync(string path, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     #endregion
 }

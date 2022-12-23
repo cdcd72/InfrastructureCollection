@@ -294,6 +294,76 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             });
         }
 
+        [Test]
+        public void AppendUtf8AllLinesSuccess()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            fileAccess.AppendAllLines(filePath, new[] {content});
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public void AppendBig5AllLinesSuccess()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            fileAccess.AppendAllLines(filePath, new[] {content}, encoding);
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public void ReadUtf8AllLinesSuccess()
+        {
+            AppendUtf8AllLinesSuccess();
+
+            var lines = fileAccess.ReadAllLines(Path.Combine(TempPath, "utf8.txt"));
+
+            Assert.That(lines, Has.Length.EqualTo(1));
+        }
+
+        [Test]
+        public void ReadBig5AllLinesSuccess()
+        {
+            AppendBig5AllLinesSuccess();
+
+            var lines = fileAccess.ReadAllLines(Path.Combine(TempPath, "big5.txt"));
+
+            Assert.That(lines, Has.Length.EqualTo(1));
+        }
+
+        [Test]
+        public void AppendUtf8AllTextSuccess()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            fileAccess.AppendAllText(filePath, content);
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public void AppendBig5AllTextSuccess()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            fileAccess.AppendAllText(filePath, content, encoding);
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
         #endregion
 
         #region Async
@@ -484,6 +554,76 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             var destFilePath = Path.Combine(TempPath, "Copy", "test.txt");
 
             Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CopyFileAsync(sourceFilePath, destFilePath));
+        }
+
+        [Test]
+        public async Task AppendUtf8AllLinesSuccessAsync()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            await fileAccess.AppendAllLinesAsync(filePath, new[] {content});
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public async Task AppendBig5AllLinesSuccessAsync()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            await fileAccess.AppendAllLinesAsync(filePath, new[] {content}, encoding);
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public async Task ReadUtf8AllLinesSuccessAsync()
+        {
+            await AppendUtf8AllLinesSuccessAsync();
+
+            var lines = await fileAccess.ReadAllLinesAsync(Path.Combine(TempPath, "utf8.txt"));
+
+            Assert.That(lines, Has.Length.EqualTo(1));
+        }
+
+        [Test]
+        public async Task ReadBig5AllLinesSuccessAsync()
+        {
+            await AppendBig5AllLinesSuccessAsync();
+
+            var lines = await fileAccess.ReadAllLinesAsync(Path.Combine(TempPath, "big5.txt"));
+
+            Assert.That(lines, Has.Length.EqualTo(1));
+        }
+
+        [Test]
+        public async Task AppendUtf8AllTextSuccessAsync()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            await fileAccess.AppendAllTextAsync(filePath, content);
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public async Task AppendBig5AllTextSuccessAsync()
+        {
+            const string content = "資料種類";
+
+            var filePath = Path.Combine(TempPath, "big5.txt");
+            var encoding = Encoding.GetEncoding(950);
+
+            await fileAccess.AppendAllTextAsync(filePath, content, encoding);
+
+            Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
         #endregion

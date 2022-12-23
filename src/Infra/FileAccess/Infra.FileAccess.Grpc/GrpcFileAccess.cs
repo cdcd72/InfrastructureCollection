@@ -74,6 +74,18 @@ namespace Infra.FileAccess.Grpc
 
         public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotSupportedException();
 
+        public void AppendAllLines(string path, IEnumerable<string> contents) => throw new NotSupportedException();
+
+        public void AppendAllLines(string path, IEnumerable<string> contents, Encoding encoding) => throw new NotSupportedException();
+
+        public string[] ReadAllLines(string path) => throw new NotSupportedException();
+
+        public string[] ReadAllLines(string path, Encoding encoding) => throw new NotSupportedException();
+
+        public void AppendAllText(string path, string content) => throw new NotSupportedException();
+
+        public void AppendAllText(string path, string content, Encoding encoding) => throw new NotSupportedException();
+
         #endregion
 
         #region Async Method
@@ -861,6 +873,24 @@ namespace Infra.FileAccess.Grpc
                 await channel?.ShutdownAsync()!;
             }
         }
+
+        public Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<string[]> ReadAllLinesAsync(string path, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task AppendAllTextAsync(string path, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
 
         #endregion
 
