@@ -1,9 +1,8 @@
-﻿namespace Infra.Core.Time
-{
-    public interface ITimeWrapper
-    {
-        DateTime Now { get; }
+﻿namespace Infra.Core.Time;
 
-        DateTime UtcNow { get; }
-    }
+public interface ITimeWrapper
+{
+    DateTime Now { get; }
+
+    DateTime UtcNow { get; }
 }

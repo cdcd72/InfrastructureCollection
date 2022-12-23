@@ -1,64 +1,63 @@
-namespace Infra.Core.FileAccess.Validators
+namespace Infra.Core.FileAccess.Validators;
+
+public class PathValidator
 {
-    public class PathValidator
+    private readonly string[] rootPaths;
+    private readonly string[] violationPathPatterns = { $"..{Path.AltDirectorySeparatorChar}", $"..{Path.DirectorySeparatorChar}" };
+
+    public PathValidator(params string[] rootPaths) => this.rootPaths = rootPaths;
+
+    public bool IsValidPath(string path)
     {
-        private readonly string[] rootPaths;
-        private readonly string[] violationPathPatterns = { $"..{Path.AltDirectorySeparatorChar}", $"..{Path.DirectorySeparatorChar}" };
+        if (violationPathPatterns.Any(path.Contains))
+            return false;
 
-        public PathValidator(params string[] rootPaths) => this.rootPaths = rootPaths;
+        // Path error count
+        var errorCount = 0;
 
-        public bool IsValidPath(string path)
+        foreach (var rootPath in rootPaths)
         {
-            if (violationPathPatterns.Any(path.Contains))
-                return false;
+            var rootSegments = GetSegments(new FileInfo(rootPath).FullName).ToArray();
+            var pathSegments = GetSegments(new FileInfo(path).FullName).ToArray();
 
-            // Path error count
-            var errorCount = 0;
-
-            foreach (var rootPath in rootPaths)
+            if (rootSegments.Length > pathSegments.Length)
             {
-                var rootSegments = GetSegments(new FileInfo(rootPath).FullName).ToArray();
-                var pathSegments = GetSegments(new FileInfo(path).FullName).ToArray();
-
-                if (rootSegments.Length > pathSegments.Length)
-                {
-                    errorCount++;
-                    continue;
-                }
-
-                var verifySegments = pathSegments.Take(rootSegments.Length);
-
-                if (!rootSegments.SequenceEqual(verifySegments))
-                    errorCount++;
+                errorCount++;
+                continue;
             }
 
-            // Path error count less than root paths, mean at least one efficient path.
-            return errorCount != rootPaths.Length;
+            var verifySegments = pathSegments.Take(rootSegments.Length);
+
+            if (!rootSegments.SequenceEqual(verifySegments))
+                errorCount++;
         }
 
-        public string GetValidPath(string path)
-        {
-            if (!IsValidPath(path))
-                throw new IOException($"Try to access error path! {path}");
-
-            return path;
-        }
-
-        #region Private Method
-
-        private static IEnumerable<string> GetSegments(string path)
-        {
-            var fi = new FileInfo(path);
-
-            if (fi.Directory == null)
-                return new[] { fi.FullName };
-
-            // Is directory
-            return string.IsNullOrEmpty(fi.Name)
-                ? GetSegments(fi.Directory.FullName)
-                : GetSegments(fi.Directory.FullName).Concat(new[] { fi.Name });
-        }
-
-        #endregion
+        // Path error count less than root paths, mean at least one efficient path.
+        return errorCount != rootPaths.Length;
     }
+
+    public string GetValidPath(string path)
+    {
+        if (!IsValidPath(path))
+            throw new IOException($"Try to access error path! {path}");
+
+        return path;
+    }
+
+    #region Private Method
+
+    private static IEnumerable<string> GetSegments(string path)
+    {
+        var fi = new FileInfo(path);
+
+        if (fi.Directory == null)
+            return new[] { fi.FullName };
+
+        // Is directory
+        return string.IsNullOrEmpty(fi.Name)
+            ? GetSegments(fi.Directory.FullName)
+            : GetSegments(fi.Directory.FullName).Concat(new[] { fi.Name });
+    }
+
+    #endregion
 }

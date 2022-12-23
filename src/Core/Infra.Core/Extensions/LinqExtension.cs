@@ -1,18 +1,17 @@
-﻿namespace Infra.Core.Extensions
+﻿namespace Infra.Core.Extensions;
+
+public static class LinqExtension
 {
-    public static class LinqExtension
+    public static IEnumerable<TSource> Distinct<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
     {
-		public static IEnumerable<TSource> Distinct<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-		{
-			var seenKeys = new HashSet<TKey>();
+        var seenKeys = new HashSet<TKey>();
 
-			foreach (var element in source)
-			{
-				var elementValue = keySelector(element);
+        foreach (var element in source)
+        {
+            var elementValue = keySelector(element);
 
-				if (seenKeys.Add(elementValue))
-					yield return element;
-			}
-		}
-	}
+            if (seenKeys.Add(elementValue))
+                yield return element;
+        }
+    }
 }

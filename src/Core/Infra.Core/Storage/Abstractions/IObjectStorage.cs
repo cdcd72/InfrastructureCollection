@@ -1,31 +1,30 @@
-﻿namespace Infra.Core.Storage.Abstractions
+﻿namespace Infra.Core.Storage.Abstractions;
+
+public interface IObjectStorage
 {
-    public interface IObjectStorage
-    {
-        #region Bucket
+    #region Bucket
 
-        Task<bool> BucketExistsAsync(string name);
+    Task<bool> BucketExistsAsync(string name);
 
-        Task MakeBucketAsync(string name);
+    Task MakeBucketAsync(string name);
 
-        Task RemoveBucketAsync(string name);
+    Task RemoveBucketAsync(string name);
 
-        Task<List<string>> ListBucketsAsync();
+    Task<List<string>> ListBucketsAsync();
 
-        #endregion
+    #endregion
 
-        #region Object
+    #region Object
 
-        Task<bool> ObjectExistsAsync(string bucketName, string objectName);
+    Task<bool> ObjectExistsAsync(string bucketName, string objectName);
 
-        Task PutObjectAsync(string bucketName, string objectName, Stream data, long size);
+    Task PutObjectAsync(string bucketName, string objectName, Stream data, long size);
 
-        Task RemoveObjectAsync(string bucketName, string objectName);
+    Task RemoveObjectAsync(string bucketName, string objectName);
 
-        Task<Stream> GetObjectAsync(string bucketName, string objectName);
+    Task<Stream> GetObjectAsync(string bucketName, string objectName);
 
-        List<string> ListObjects(string bucketName, string prefix = null, bool recursive = true);
+    List<string> ListObjects(string bucketName, string prefix = null, bool recursive = true);
 
-        #endregion
-    }
+    #endregion
 }
