@@ -364,6 +364,88 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             Assert.That(fileAccess.FileExists(filePath), Is.True);
         }
 
+        [Test]
+        public void CompressFilesWithFilePathSuccess()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            fileAccess.SaveFile(filePath1, "資料種類");
+            fileAccess.SaveFile(filePath2, "資料種類");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            fileAccess.CompressFiles(files, zipFilePath);
+
+            Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public void CompressFilesWithFileBytesSuccess()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            fileAccess.SaveFile(filePath1, "資料種類");
+            fileAccess.SaveFile(filePath2, "資料種類");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), fileAccess.ReadFile(filePath1) },
+                { Path.GetFileName(filePath2), fileAccess.ReadFile(filePath2) }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            fileAccess.CompressFiles(files, zipFilePath);
+
+            Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public void CompressFilesAndReturnBytesWithFilePathSuccess()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            fileAccess.SaveFile(filePath1, "資料種類");
+            fileAccess.SaveFile(filePath2, "資料種類");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+
+            var zipFileBytes = fileAccess.CompressFiles(files);
+
+            Assert.That(zipFileBytes, Is.Not.Empty);
+        }
+
+        [Test]
+        public void CompressFilesAndReturnBytesWithFileBytesSuccess()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            fileAccess.SaveFile(filePath1, "資料種類");
+            fileAccess.SaveFile(filePath2, "資料種類");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), fileAccess.ReadFile(filePath1) },
+                { Path.GetFileName(filePath2), fileAccess.ReadFile(filePath2) }
+            };
+
+            var zipFileBytes = fileAccess.CompressFiles(files);
+
+            Assert.That(zipFileBytes, Is.Not.Empty);
+        }
+
         #endregion
 
         #region Async
@@ -443,12 +525,17 @@ namespace Infra.FileAccess.Physical.IntegrationTest
         }
 
         [Test]
-        public void DirectoryCompressAsyncNotSupported()
+        public async Task DirectoryCompressSuccessAsync()
         {
             var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
             var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
-            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath));
+            fileAccess.CreateDirectory(directoryPath);
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_1.txt"), "content_1");
+            await fileAccess.SaveFileAsync(Path.Combine(directoryPath, "temp_2.log"), "content_2");
+            await fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath);
+
+            Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
         }
 
         [Test]
@@ -522,7 +609,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             await fileAccess.SaveFileAsync(filePath, content);
 
-            Assert.That(fileAccess.ReadTextFile(filePath), Is.EqualTo(content));
+            Assert.That(await fileAccess.ReadTextFileAsync(filePath), Is.EqualTo(content));
         }
 
         [Test]
@@ -535,7 +622,7 @@ namespace Infra.FileAccess.Physical.IntegrationTest
 
             await fileAccess.SaveFileAsync(filePath, content, encoding);
 
-            Assert.That(fileAccess.ReadTextFile(filePath, encoding), Is.EqualTo(content));
+            Assert.That(await fileAccess.ReadTextFileAsync(filePath, encoding), Is.EqualTo(content));
         }
 
         [Test]
@@ -624,6 +711,88 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             await fileAccess.AppendAllTextAsync(filePath, content, encoding);
 
             Assert.That(fileAccess.FileExists(filePath), Is.True);
+        }
+
+        [Test]
+        public async Task CompressFilesWithFilePathSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            await fileAccess.CompressFilesAsync(files, zipFilePath);
+
+            Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public async Task CompressFilesWithFileBytesSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), await fileAccess.ReadFileAsync(filePath1) },
+                { Path.GetFileName(filePath2), await fileAccess.ReadFileAsync(filePath2) }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            await fileAccess.CompressFilesAsync(files, zipFilePath);
+
+            Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public async Task CompressFilesAndReturnBytesWithFilePathSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+
+            var zipFileBytes = await fileAccess.CompressFilesAsync(files);
+
+            Assert.That(zipFileBytes, Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task CompressFilesAndReturnBytesWithFileBytesSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), await fileAccess.ReadFileAsync(filePath1) },
+                { Path.GetFileName(filePath2), await fileAccess.ReadFileAsync(filePath2) }
+            };
+
+            var zipFileBytes = await fileAccess.CompressFilesAsync(files);
+
+            Assert.That(zipFileBytes, Is.Not.Empty);
         }
 
         #endregion

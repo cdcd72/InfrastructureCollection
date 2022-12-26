@@ -19,7 +19,7 @@ public interface IFileAccess
 
     string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default);
 
-    void DirectoryCompress(string directoryPath, string zipFilePath);
+    void DirectoryCompress(string directoryPath, string zipFilePath, int compressionLevel = 6);
 
     string GetParentPath(string directoryPath);
 
@@ -61,6 +61,14 @@ public interface IFileAccess
 
     void AppendAllText(string path, string content, Encoding encoding);
 
+    void CompressFiles(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6);
+
+    void CompressFiles(Dictionary<string, byte[]> files, string zipFilePath, int compressionLevel = 6);
+
+    byte[] CompressFiles(Dictionary<string, string> files, int compressionLevel = 6);
+
+    byte[] CompressFiles(Dictionary<string, byte[]> files, int compressionLevel = 6);
+
     #endregion
 
     #region Async Method
@@ -77,7 +85,7 @@ public interface IFileAccess
 
     Task<string[]> GetSubDirectoriesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task DirectoryCompressAsync(string directoryPath, string zipFilePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
@@ -118,6 +126,14 @@ public interface IFileAccess
     Task AppendAllTextAsync(string path, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task CompressFilesAsync(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task CompressFilesAsync(Dictionary<string, byte[]> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task<byte[]> CompressFilesAsync(Dictionary<string, string> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task<byte[]> CompressFilesAsync(Dictionary<string, byte[]> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     #endregion
 }

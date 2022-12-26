@@ -173,6 +173,7 @@ namespace GrpcFileServer.Services
             var mark = request.Mark;
             var directoryPath = Path.Combine(settings.Root, request.DirectoryName);
             var zipFilePath = Path.Combine(settings.Root, request.ZipFileName);
+            var compressionLevel = request.CompressionLevel;
             var reply = new DirectoryCompressResponse
             {
                 Mark = mark
@@ -180,9 +181,9 @@ namespace GrpcFileServer.Services
 
             try
             {
-                logger.Information($"【{mark}】Currently compress directory {directoryPath} to {zipFilePath}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
+                logger.Information($"【{mark}】Currently compress directory {directoryPath} to {zipFilePath} with compression level {compressionLevel}, UtcNow:{DateTime.UtcNow:HH:mm:ss:ffff}");
 
-                fileAccess.DirectoryCompress(directoryPath, zipFilePath);
+                fileAccess.DirectoryCompress(directoryPath, zipFilePath, compressionLevel);
 
                 logger.Information($"【{mark}】Compress directory completed. SpentTime:{DateTime.Now - startTime}");
             }

@@ -161,6 +161,14 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         }
 
         [Test]
+        public void SaveFileWithBytesNotSupported()
+        {
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.SaveFile(filePath, Array.Empty<byte>()));
+        }
+
+        [Test]
         public void DeleteFileNotSupported()
         {
             var filePath = Path.Combine(TempPath, "test.txt");
@@ -191,6 +199,14 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var encoding = Encoding.GetEncoding(950);
 
             Assert.Throws<NotSupportedException>(() => fileAccess.ReadTextFile(filePath, encoding));
+        }
+
+        [Test]
+        public void ReadFileNotSupported()
+        {
+            var filePath = Path.Combine(TempPath, "utf8.txt");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadFile(filePath));
         }
 
         [Test]
@@ -249,6 +265,14 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         }
 
         [Test]
+        public void ReadAllLinesWithEncodingNotSupported()
+        {
+            AppendUtf8AllLinesNotSupported();
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(TempPath, "utf8.txt"), Encoding.UTF8));
+        }
+
+        [Test]
         public void AppendUtf8AllTextNotSupported()
         {
             const string content = "資料種類";
@@ -267,6 +291,68 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var encoding = Encoding.GetEncoding(950);
 
             Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllText(filePath, content, encoding));
+        }
+
+        [Test]
+        public void CompressFilesWithFilePathNotSupported()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files, zipFilePath));
+        }
+
+        [Test]
+        public void CompressFilesWithFileBytesNotSupported()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), Array.Empty<byte>() },
+                { Path.GetFileName(filePath2), Array.Empty<byte>() }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files, zipFilePath));
+        }
+
+        [Test]
+        public void CompressFilesAndReturnBytesWithFilePathNotSupported()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files));
+        }
+
+        [Test]
+        public void CompressFilesAndReturnBytesWithFileBytesNotSupported()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), Array.Empty<byte>() },
+                { Path.GetFileName(filePath2), Array.Empty<byte>() }
+            };
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files));
         }
 
         #endregion
@@ -581,6 +667,14 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
         }
 
         [Test]
+        public void ReadAllLinesAsyncWithEncodingNotSupported()
+        {
+            AppendUtf8AllLinesAsyncNotSupported();
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(TempPath, "utf8.txt"), Encoding.UTF8));
+        }
+
+        [Test]
         public void AppendUtf8AllTextAsyncNotSupported()
         {
             const string content = "資料種類";
@@ -599,6 +693,80 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var encoding = Encoding.GetEncoding(950);
 
             Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(filePath, content, encoding));
+        }
+
+        [Test]
+        public async Task CompressFilesWithFilePathSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files, zipFilePath));
+        }
+
+        [Test]
+        public async Task CompressFilesWithFileBytesSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), await fileAccess.ReadFileAsync(filePath1) },
+                { Path.GetFileName(filePath2), await fileAccess.ReadFileAsync(filePath2) }
+            };
+            var zipFilePath = Path.Combine(TempPath, "compress.zip");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files, zipFilePath));
+        }
+
+        [Test]
+        public async Task CompressFilesAndReturnBytesWithFilePathSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, string>
+            {
+                { Path.GetFileName(filePath1), filePath1 },
+                { Path.GetFileName(filePath2), filePath2 }
+            };
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files));
+        }
+
+        [Test]
+        public async Task CompressFilesAndReturnBytesWithFileBytesSuccessAsync()
+        {
+            var filePath1 = Path.Combine(TempPath, "utf8.txt");
+            var filePath2 = Path.Combine(TempPath, "utf8-2.txt");
+
+            await fileAccess.SaveFileAsync(filePath1, "資料種類");
+            await fileAccess.SaveFileAsync(filePath2, "資料種類");
+
+            var files = new Dictionary<string, byte[]>
+            {
+                { Path.GetFileName(filePath1), await fileAccess.ReadFileAsync(filePath1) },
+                { Path.GetFileName(filePath2), await fileAccess.ReadFileAsync(filePath2) }
+            };
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files));
         }
 
         #endregion

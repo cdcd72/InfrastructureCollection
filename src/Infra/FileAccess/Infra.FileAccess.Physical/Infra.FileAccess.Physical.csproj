@@ -9,4 +9,8 @@
     <ProjectReference Include="..\..\..\Core\Infra.Core\Infra.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DotNetZip" Version="1.16.0" />
+  </ItemGroup>
+
 </Project>

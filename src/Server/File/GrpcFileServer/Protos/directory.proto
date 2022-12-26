@@ -69,7 +69,8 @@ message GetSubDirectoriesResponse {
 message DirectoryCompressRequest {
   string directory_name = 1;
   string zip_file_name = 2;
-  string mark = 3;
+  int32 compression_level = 3;
+  string mark = 4;
 }
 
 message DirectoryCompressResponse {

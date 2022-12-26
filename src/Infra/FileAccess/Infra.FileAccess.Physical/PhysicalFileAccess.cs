@@ -1,10 +1,10 @@
-using System.IO.Compression;
 using System.Text;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Models;
 using Infra.Core.FileAccess.Validators;
 using Infra.FileAccess.Physical.Configuration;
 using Infra.FileAccess.Physical.Configuration.Validators;
+using Ionic.Zlib;
 using Microsoft.Extensions.Options;
 
 namespace Infra.FileAccess.Physical
@@ -39,8 +39,22 @@ namespace Infra.FileAccess.Physical
         public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default)
             => Directory.GetDirectories(GetVerifiedPath(directoryPath), searchPattern, searchOption);
 
-        public void DirectoryCompress(string directoryPath, string zipFilePath)
-            => ZipFile.CreateFromDirectory(GetVerifiedPath(directoryPath), GetVerifiedPath(zipFilePath), CompressionLevel.Optimal, false);
+        public void DirectoryCompress(string directoryPath, string zipFilePath, int compressionLevel = 6)
+        {
+            directoryPath = GetVerifiedPath(directoryPath);
+            zipFilePath = GetVerifiedPath(zipFilePath);
+
+            using var ms = new MemoryStream();
+
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+                zip.AddDirectory(directoryPath);
+                zip.Save(ms);
+            }
+
+            SaveFile(zipFilePath, ms.ToArray());
+        }
 
         public string GetParentPath(string directoryPath)
             => Directory.GetParent(GetVerifiedPath(directoryPath))?.FullName;
@@ -117,6 +131,52 @@ namespace Infra.FileAccess.Physical
             File.AppendAllText(path, content, encoding);
         }
 
+        public void CompressFiles(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6)
+            => SaveFile(zipFilePath, CompressFiles(files, compressionLevel));
+
+        public void CompressFiles(Dictionary<string, byte[]> files, string zipFilePath, int compressionLevel = 6)
+            => SaveFile(zipFilePath, CompressFiles(files, compressionLevel));
+
+        public byte[] CompressFiles(Dictionary<string, string> files, int compressionLevel = 6)
+        {
+            using var ms = new MemoryStream();
+
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+
+                foreach (var (compressName, path) in files)
+                {
+                    var fileBytes = ReadFile(path);
+
+                    zip.AddEntry(compressName, fileBytes);
+                }
+
+                zip.Save(ms);
+            }
+
+            return ms.ToArray();
+        }
+
+        public byte[] CompressFiles(Dictionary<string, byte[]> files, int compressionLevel = 6)
+        {
+            using var ms = new MemoryStream();
+
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+
+                foreach (var (compressName, fileBytes) in files)
+                {
+                    zip.AddEntry(compressName, fileBytes);
+                }
+
+                zip.Save(ms);
+            }
+
+            return ms.ToArray();
+        }
+
         #endregion
 
         #region Async Method
@@ -138,8 +198,22 @@ namespace Infra.FileAccess.Physical
         public Task<string[]> GetSubDirectoriesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task DirectoryCompressAsync(string directoryPath, string zipFilePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => throw new NotSupportedException();
+        public async Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            directoryPath = GetVerifiedPath(directoryPath);
+            zipFilePath = GetVerifiedPath(zipFilePath);
+
+            await using var ms = new MemoryStream();
+
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+                zip.AddDirectory(directoryPath);
+                zip.Save(ms);
+            }
+
+            await SaveFileAsync(zipFilePath, ms.ToArray(), progressCallBack, cancellationToken);
+        }
 
         public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
@@ -214,6 +288,52 @@ namespace Infra.FileAccess.Physical
             path = GetVerifiedPath(path);
 
             await File.AppendAllTextAsync(path, content, encoding, cancellationToken);
+        }
+
+        public async Task CompressFilesAsync(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await SaveFileAsync(zipFilePath, await CompressFilesAsync(files, compressionLevel, progressCallBack, cancellationToken), progressCallBack, cancellationToken);
+
+        public async Task CompressFilesAsync(Dictionary<string, byte[]> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await SaveFileAsync(zipFilePath, await CompressFilesAsync(files, compressionLevel, progressCallBack, cancellationToken), progressCallBack, cancellationToken);
+
+        public async Task<byte[]> CompressFilesAsync(Dictionary<string, string> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            await using var ms = new MemoryStream();
+
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+
+                foreach (var (compressName, path) in files)
+                {
+                    var fileBytes = await ReadFileAsync(path, progressCallBack, cancellationToken);
+
+                    zip.AddEntry(compressName, fileBytes);
+                }
+
+                zip.Save(ms);
+            }
+
+            return ms.ToArray();
+        }
+
+        public async Task<byte[]> CompressFilesAsync(Dictionary<string, byte[]> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            await using var ms = new MemoryStream();
+
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+
+                foreach (var (compressName, fileBytes) in files)
+                {
+                    zip.AddEntry(compressName, fileBytes);
+                }
+
+                zip.Save(ms);
+            }
+
+            return ms.ToArray();
         }
 
         #endregion

@@ -44,7 +44,7 @@ namespace Infra.FileAccess.Grpc
 
         public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotSupportedException();
 
-        public void DirectoryCompress(string directoryPath, string zipFilePath) => throw new NotSupportedException();
+        public void DirectoryCompress(string directoryPath, string zipFilePath, int compressionLevel = 6) => throw new NotSupportedException();
 
         public string GetParentPath(string directoryPath) => throw new NotSupportedException();
 
@@ -85,6 +85,14 @@ namespace Infra.FileAccess.Grpc
         public void AppendAllText(string path, string content) => throw new NotSupportedException();
 
         public void AppendAllText(string path, string content, Encoding encoding) => throw new NotSupportedException();
+
+        public void CompressFiles(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6) => throw new NotSupportedException();
+
+        public void CompressFiles(Dictionary<string, byte[]> files, string zipFilePath, int compressionLevel = 6) => throw new NotSupportedException();
+
+        public byte[] CompressFiles(Dictionary<string, string> files, int compressionLevel = 6) => throw new NotSupportedException();
+
+        public byte[] CompressFiles(Dictionary<string, byte[]> files, int compressionLevel = 6) => throw new NotSupportedException();
 
         #endregion
 
@@ -348,7 +356,7 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
-        public async Task DirectoryCompressAsync(string directoryPath, string zipFilePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public async Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
             var mark = $"{Guid.NewGuid()}";
             var startTime = DateTime.Now;
@@ -363,6 +371,7 @@ namespace Infra.FileAccess.Grpc
                 {
                     DirectoryName = directoryName,
                     ZipFileName = zipFileName,
+                    CompressionLevel = compressionLevel,
                     Mark = mark
                 };
 
@@ -890,6 +899,18 @@ namespace Infra.FileAccess.Grpc
             => throw new NotSupportedException();
 
         public Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task CompressFilesAsync(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task CompressFilesAsync(Dictionary<string, byte[]> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<byte[]> CompressFilesAsync(Dictionary<string, string> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<byte[]> CompressFilesAsync(Dictionary<string, byte[]> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
         #endregion
