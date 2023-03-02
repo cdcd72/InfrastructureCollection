@@ -53,7 +53,7 @@ public static class ServiceCollectionExtension
             {
                 client.BaseAddress = new Uri(serviceSetting.Url);
                 if (serviceSetting.Timeout.HasValue)
-                    client.Timeout = TimeSpan.FromMinutes(serviceSetting.Timeout.Value);
+                    client.Timeout = TimeSpan.FromSeconds(serviceSetting.Timeout.Value);
             });
         }
 
