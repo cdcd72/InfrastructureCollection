@@ -7,32 +7,15 @@ namespace Infra.Core.Extensions;
 
 public static class StringExtension
 {
-    private static string[] DefaultExcludeStringsForLogForging =>
-        new string[] { "%0a", "%0d", "%0A", "%0D", "\r", "\n" };
+    private static string[] DefaultExcludeStringsForLogForging => new[] { "%0a", "%0d", "%0A", "%0D", "\r", "\n" };
 
-    public static bool ToBoolean(this string value)
-    {
-        if (!bool.TryParse(value, out var flag))
-            flag = false;
+    public static bool ToBoolean(this string value) => bool.TryParse(value, out var result) && result;
 
-        return flag;
-    }
+    public static int ToInt(this string value) => int.TryParse(value, out var result) ? result : 0;
 
-    public static int ToInt(this string value)
-    {
-        if (!int.TryParse(value, out var number))
-            number = 0;
+    public static long ToLong(this string value) => long.TryParse(value, out var result) ? result : 0;
 
-        return number;
-    }
-
-    public static long ToLong(this string value)
-    {
-        if (!long.TryParse(value, out var number))
-            number = 0;
-
-        return number;
-    }
+    public static double ToDouble(this string value) => double.TryParse(value, out var result) ? result : 0.0;
 
     public static SecureString ToSecureString(this string rawString)
     {
