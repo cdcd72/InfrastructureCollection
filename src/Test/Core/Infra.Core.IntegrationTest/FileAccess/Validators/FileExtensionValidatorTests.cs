@@ -247,6 +247,12 @@ namespace Infra.Core.IntegrationTest.FileAccess.Validators
         [Test]
         public void Should_False_Validate_FS_MSI() => Assert.That(IsValidFileExtensionByFileStream("38.msi"), Is.False);
 
+        [Test]
+        public void Should_True_Validate_HTML() => Assert.That(IsValidFileExtensionByBytes("39.html"), Is.True);
+
+        [Test]
+        public void Should_True_Validate_FS_HTML() => Assert.That(IsValidFileExtensionByFileStream("39.html"), Is.True);
+
         #region Private Method
 
         private static bool IsValidFileExtensionByBytes(string fileName)

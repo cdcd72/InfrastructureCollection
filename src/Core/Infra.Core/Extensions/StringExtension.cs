@@ -1,5 +1,8 @@
 ﻿using System.Security;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Web;
 using System.Xml;
 
@@ -62,4 +65,22 @@ public static class StringExtension
     public static string UrlEncode(this string value) => HttpUtility.UrlEncode(value);
 
     public static string UrlDecode(this string value) => HttpUtility.UrlDecode(value);
+
+    public static T FromJson<T>(this string json, TextEncoderSettings encoderSettings = null)
+    {
+        if (encoderSettings is null)
+        {
+            encoderSettings = new TextEncoderSettings();
+
+            // https://github.com/dotnet/runtime/issues/2374
+            encoderSettings.AllowRange(UnicodeRanges.All);
+        }
+
+        return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(encoderSettings)
+        });
+    }
+
+    public static string AddNewLine(this string value) => $"{value}{Environment.NewLine}";
 }

@@ -247,6 +247,11 @@ public static class FileExtensionValidator
                 ".MSI",
                 new List<(byte[], int, int, byte[])>{ (new byte[] { 0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1 }, 0, 0, Array.Empty<byte>())
                 }
+            },
+            {
+                ".HTML",
+                new List<(byte[], int, int, byte[])>{ (new byte[] { 0x3C, 0x21, 0x44, 0x4F, 0x43, 0x54, 0x59, 0x50, 0x45, 0x20, 0x68, 0x74, 0x6D, 0x6C, 0x3E }, 0, 0, Array.Empty<byte>())
+                }
             }
         };
 

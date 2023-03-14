@@ -1,4 +1,4 @@
-﻿namespace Infra.Core.Time;
+﻿namespace Infra.Core.Time.Abstractions;
 
 public interface ITimeWrapper
 {

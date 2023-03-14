@@ -1,4 +1,5 @@
 ﻿using Infra.Core.Time;
+using Infra.Core.Time.Abstractions;
 
 namespace Infra.Time
 {
