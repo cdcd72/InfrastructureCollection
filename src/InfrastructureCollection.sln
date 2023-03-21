@@ -96,6 +96,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Email.Mailgun", "Infr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Email.Mailgun.IntegrationTest", "Test\Infra\Email\Infra.Email.Mailgun.IntegrationTest\Infra.Email.Mailgun.IntegrationTest.csproj", "{F2D2F495-118C-46ED-89B0-2A9C8090B2D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Ftp", "Infra\FileAccess\Infra.FileAccess.Ftp\Infra.FileAccess.Ftp.csproj", "{B4AB42A5-AA16-47CA-B454-530335896EFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Sftp", "Infra\FileAccess\Infra.FileAccess.Sftp\Infra.FileAccess.Sftp.csproj", "{DF8E9814-D59C-4BAC-B923-4A32003C243B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Ftp.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Ftp.IntegrationTest\Infra.FileAccess.Ftp.IntegrationTest.csproj", "{572AE08C-0238-4500-8147-F2F89192B427}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Sftp.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Sftp.IntegrationTest\Infra.FileAccess.Sftp.IntegrationTest.csproj", "{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +202,22 @@ Global
 		{F2D2F495-118C-46ED-89B0-2A9C8090B2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2D2F495-118C-46ED-89B0-2A9C8090B2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2D2F495-118C-46ED-89B0-2A9C8090B2D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4AB42A5-AA16-47CA-B454-530335896EFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4AB42A5-AA16-47CA-B454-530335896EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4AB42A5-AA16-47CA-B454-530335896EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4AB42A5-AA16-47CA-B454-530335896EFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF8E9814-D59C-4BAC-B923-4A32003C243B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF8E9814-D59C-4BAC-B923-4A32003C243B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF8E9814-D59C-4BAC-B923-4A32003C243B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF8E9814-D59C-4BAC-B923-4A32003C243B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{572AE08C-0238-4500-8147-F2F89192B427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{572AE08C-0238-4500-8147-F2F89192B427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{572AE08C-0238-4500-8147-F2F89192B427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{572AE08C-0238-4500-8147-F2F89192B427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -239,6 +263,10 @@ Global
 		{226DF4A4-1FDF-4F7D-A2D3-87CBCA84D6AD} = {F29F6A7B-1788-4DCC-9944-045108E88B2A}
 		{2D3D20F4-1CD5-41B3-8ED1-58AFDF7C7D4A} = {B49B0BE5-FB17-425B-8F35-1142DB608B6A}
 		{F2D2F495-118C-46ED-89B0-2A9C8090B2D4} = {5E14A820-9AAD-4476-9049-320AE8F31064}
+		{B4AB42A5-AA16-47CA-B454-530335896EFB} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
+		{DF8E9814-D59C-4BAC-B923-4A32003C243B} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
+		{572AE08C-0238-4500-8147-F2F89192B427} = {D60FC046-4051-449D-AA8F-609062CB4116}
+		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88} = {D60FC046-4051-449D-AA8F-609062CB4116}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
