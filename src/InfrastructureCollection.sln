@@ -104,6 +104,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Ftp.Integr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.FileAccess.Sftp.IntegrationTest", "Test\Infra\FileAccess\Infra.FileAccess.Sftp.IntegrationTest\Infra.FileAccess.Sftp.IntegrationTest.csproj", "{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BarCode", "BarCode", "{697BE340-E08E-4B7B-A0D6-BF8CA3BBC3B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.BarCode.QRCode", "Infra\Infra.BarCode.QRCode\Infra.BarCode.QRCode.csproj", "{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -218,6 +222,10 @@ Global
 		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -267,6 +275,8 @@ Global
 		{DF8E9814-D59C-4BAC-B923-4A32003C243B} = {CA8E5424-FD59-46E9-829C-CA74DA7D5E3A}
 		{572AE08C-0238-4500-8147-F2F89192B427} = {D60FC046-4051-449D-AA8F-609062CB4116}
 		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88} = {D60FC046-4051-449D-AA8F-609062CB4116}
+		{697BE340-E08E-4B7B-A0D6-BF8CA3BBC3B7} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
+		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC} = {697BE340-E08E-4B7B-A0D6-BF8CA3BBC3B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
