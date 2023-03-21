@@ -49,17 +49,17 @@ public interface IFileAccess
 
     void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true);
 
-    void AppendAllLines(string path, IEnumerable<string> contents);
+    void AppendAllLines(string filePath, IEnumerable<string> contents);
 
-    void AppendAllLines(string path, IEnumerable<string> contents, Encoding encoding);
+    void AppendAllLines(string filePath, IEnumerable<string> contents, Encoding encoding);
 
-    string[] ReadAllLines(string path);
+    string[] ReadAllLines(string filePath);
 
-    string[] ReadAllLines(string path, Encoding encoding);
+    string[] ReadAllLines(string filePath, Encoding encoding);
 
-    void AppendAllText(string path, string content);
+    void AppendAllText(string filePath, string content);
 
-    void AppendAllText(string path, string content, Encoding encoding);
+    void AppendAllText(string filePath, string content, Encoding encoding);
 
     void CompressFiles(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6);
 
@@ -115,17 +115,17 @@ public interface IFileAccess
 
     Task CopyFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task AppendAllLinesAsync(string filePath, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task AppendAllLinesAsync(string filePath, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task<string[]> ReadAllLinesAsync(string path, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task<string[]> ReadAllLinesAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task<string[]> ReadAllLinesAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task AppendAllTextAsync(string path, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task AppendAllTextAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
-    Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+    Task AppendAllTextAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     Task CompressFilesAsync(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 

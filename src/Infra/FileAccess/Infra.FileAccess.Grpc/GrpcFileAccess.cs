@@ -74,17 +74,17 @@ namespace Infra.FileAccess.Grpc
 
         public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true) => throw new NotSupportedException();
 
-        public void AppendAllLines(string path, IEnumerable<string> contents) => throw new NotSupportedException();
+        public void AppendAllLines(string filePath, IEnumerable<string> contents) => throw new NotSupportedException();
 
-        public void AppendAllLines(string path, IEnumerable<string> contents, Encoding encoding) => throw new NotSupportedException();
+        public void AppendAllLines(string filePath, IEnumerable<string> contents, Encoding encoding) => throw new NotSupportedException();
 
-        public string[] ReadAllLines(string path) => throw new NotSupportedException();
+        public string[] ReadAllLines(string filePath) => throw new NotSupportedException();
 
-        public string[] ReadAllLines(string path, Encoding encoding) => throw new NotSupportedException();
+        public string[] ReadAllLines(string filePath, Encoding encoding) => throw new NotSupportedException();
 
-        public void AppendAllText(string path, string content) => throw new NotSupportedException();
+        public void AppendAllText(string filePath, string content) => throw new NotSupportedException();
 
-        public void AppendAllText(string path, string content, Encoding encoding) => throw new NotSupportedException();
+        public void AppendAllText(string filePath, string content, Encoding encoding) => throw new NotSupportedException();
 
         public void CompressFiles(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6) => throw new NotSupportedException();
 
@@ -883,22 +883,22 @@ namespace Infra.FileAccess.Grpc
             }
         }
 
-        public Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task AppendAllLinesAsync(string filePath, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task AppendAllLinesAsync(string filePath, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task<string[]> ReadAllLinesAsync(string path, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task<string[]> ReadAllLinesAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task<string[]> ReadAllLinesAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task AppendAllTextAsync(string path, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task AppendAllTextAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task AppendAllTextAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
         public Task CompressFilesAsync(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)

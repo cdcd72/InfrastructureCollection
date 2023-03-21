@@ -101,34 +101,34 @@ namespace Infra.FileAccess.Physical
         public void CopyFile(string sourceFilePath, string destFilePath, bool overwrite = true)
             => File.Copy(GetVerifiedPath(sourceFilePath), GetVerifiedPath(destFilePath), overwrite);
 
-        public void AppendAllLines(string path, IEnumerable<string> contents)
-            => AppendAllLines(path, contents, Encoding.UTF8);
+        public void AppendAllLines(string filePath, IEnumerable<string> contents)
+            => AppendAllLines(filePath, contents, Encoding.UTF8);
 
-        public void AppendAllLines(string path, IEnumerable<string> contents, Encoding encoding)
+        public void AppendAllLines(string filePath, IEnumerable<string> contents, Encoding encoding)
         {
-            path = GetVerifiedPath(path);
+            filePath = GetVerifiedPath(filePath);
 
-            File.AppendAllLines(path, contents, encoding);
+            File.AppendAllLines(filePath, contents, encoding);
         }
 
-        public string[] ReadAllLines(string path)
-            => ReadAllLines(path, Encoding.UTF8);
+        public string[] ReadAllLines(string filePath)
+            => ReadAllLines(filePath, Encoding.UTF8);
 
-        public string[] ReadAllLines(string path, Encoding encoding)
+        public string[] ReadAllLines(string filePath, Encoding encoding)
         {
-            path = GetVerifiedPath(path);
+            filePath = GetVerifiedPath(filePath);
 
-            return File.ReadAllLines(path, encoding);
+            return File.ReadAllLines(filePath, encoding);
         }
 
-        public void AppendAllText(string path, string content)
-            => AppendAllText(path, content, Encoding.UTF8);
+        public void AppendAllText(string filePath, string content)
+            => AppendAllText(filePath, content, Encoding.UTF8);
 
-        public void AppendAllText(string path, string content, Encoding encoding)
+        public void AppendAllText(string filePath, string content, Encoding encoding)
         {
-            path = GetVerifiedPath(path);
+            filePath = GetVerifiedPath(filePath);
 
-            File.AppendAllText(path, content, encoding);
+            File.AppendAllText(filePath, content, encoding);
         }
 
         public void CompressFiles(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6)
@@ -260,34 +260,34 @@ namespace Infra.FileAccess.Physical
         public Task CopyFileAsync(string sourceFilePath, string destFilePath, bool overwrite = true, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public async Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await AppendAllLinesAsync(path, contents, Encoding.UTF8, progressCallBack, cancellationToken);
+        public async Task AppendAllLinesAsync(string filePath, IEnumerable<string> contents, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await AppendAllLinesAsync(filePath, contents, Encoding.UTF8, progressCallBack, cancellationToken);
 
-        public async Task AppendAllLinesAsync(string path, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public async Task AppendAllLinesAsync(string filePath, IEnumerable<string> contents, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
-            path = GetVerifiedPath(path);
+            filePath = GetVerifiedPath(filePath);
 
-            await File.AppendAllLinesAsync(path, contents, encoding, cancellationToken);
+            await File.AppendAllLinesAsync(filePath, contents, encoding, cancellationToken);
         }
 
-        public async Task<string[]> ReadAllLinesAsync(string path, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await ReadAllLinesAsync(path, Encoding.UTF8, progressCallBack, cancellationToken);
+        public async Task<string[]> ReadAllLinesAsync(string filePath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await ReadAllLinesAsync(filePath, Encoding.UTF8, progressCallBack, cancellationToken);
 
-        public async Task<string[]> ReadAllLinesAsync(string path, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public async Task<string[]> ReadAllLinesAsync(string filePath, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
-            path = GetVerifiedPath(path);
+            filePath = GetVerifiedPath(filePath);
 
-            return await File.ReadAllLinesAsync(path, encoding, cancellationToken);
+            return await File.ReadAllLinesAsync(filePath, encoding, cancellationToken);
         }
 
-        public async Task AppendAllTextAsync(string path, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
-            => await AppendAllTextAsync(path, content, Encoding.UTF8, progressCallBack, cancellationToken);
+        public async Task AppendAllTextAsync(string filePath, string content, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+            => await AppendAllTextAsync(filePath, content, Encoding.UTF8, progressCallBack, cancellationToken);
 
-        public async Task AppendAllTextAsync(string path, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public async Task AppendAllTextAsync(string filePath, string content, Encoding encoding, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
-            path = GetVerifiedPath(path);
+            filePath = GetVerifiedPath(filePath);
 
-            await File.AppendAllTextAsync(path, content, encoding, cancellationToken);
+            await File.AppendAllTextAsync(filePath, content, encoding, cancellationToken);
         }
 
         public async Task CompressFilesAsync(Dictionary<string, string> files, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
