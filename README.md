@@ -29,6 +29,10 @@ The practice may not be the best, but I hope to get better and better!
 - FileAccess
   - [Infra.FileAccess.Physical](src/Infra/FileAccess/Infra.FileAccess.Physical)
   - [Infra.FileAccess.Grpc](src/Infra/FileAccess/Infra.FileAccess.Grpc) :point_right: [Demo](https://github.com/cdcd72/Grpc.FileTransfer.Demo)
+  - [Infra.FileAccess.Ftp](src/Infra/FileAccess/Infra.FileAccess.Ftp)
+    - Implement with [FluentFTP](https://github.com/robinrodricks/FluentFTP)
+  - [Infra.FileAccess.Sftp](src/Infra/FileAccess/Infra.FileAccess.Sftp)
+    - Implement with [SSH.NET](https://github.com/sshnet/SSH.NET)
 - Hash
   - [Infra.Hash](src/Infra/Hash/Infra.Hash)
 - Storage
