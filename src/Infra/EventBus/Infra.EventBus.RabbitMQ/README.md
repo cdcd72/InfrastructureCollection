@@ -36,24 +36,20 @@ Implement event bus mechanism with RabbitMQ.
 
 > 註冊事件匯流排
 
-2. Register event bus from Startup.cs
+2. Register event bus
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
+    // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
+    builder.Services
+        .Configure<ConnectionSettings>(settings => builder.Configuration.GetSection(ConnectionSettings.SectionName).Bind(settings))
+        .Configure<Settings>(settings => builder.Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-        // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
-        services.Configure<ConnectionSettings>(settings => Configuration.GetSection(ConnectionSettings.SectionName).Bind(settings))
-                .Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
-
-        // Register event bus
-        RegisterEventBus(services);
-    }
+    // Register event bus
+    RegisterEventBus(builder.Services);
     ```
 
     ```csharp
-    private static void RegisterEventBus(IServiceCollection services)
+    void RegisterEventBus(IServiceCollection services)
     {
         // Add RabbitMQ connection
         services.AddSingleton<IRabbitMqConnection, DefaultRabbitMqConnection>();
@@ -68,32 +64,22 @@ Implement event bus mechanism with RabbitMQ.
 
 > 訂閱事件
 
-1. Subscribe event from Startup.cs
+1. Subscribe event
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
-
-        // Add event handlers
-        services.AddTransient<TriggeredIntegrationEventHandler>();
-    }
+    // Add event handlers
+    builder.Services.AddTransient<TriggeredIntegrationEventHandler>();
     ```
 
     ```csharp
-    public void Configure(IApplicationBuilder app)
-    {
-        // ...
-
-        // Configure event bus
-        ConfigureEventBus(app);
-    }
+    // Configure event bus
+    ConfigureEventBus(app);
     ```
 
     ```csharp
-    private static void ConfigureEventBus(IApplicationBuilder app)
+    void ConfigureEventBus(WebApplication app)
     {
-        var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+        var eventBus = app.Services.GetRequiredService<IEventBus>();
 
         // Subscribing to TriggeredIntegrationEvent with TriggeredIntegrationEventHandler.
         eventBus.Subscribe<TriggeredIntegrationEvent, TriggeredIntegrationEventHandler>();

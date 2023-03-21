@@ -7,18 +7,13 @@ Implement memory cache mechanism with Microsoft.Extensions.Caching.Memory.
 
 > 新增記憶體快取實例至 DI 容器中。
 
-1. Add memory cache instance to DI container from Startup.cs
+1. Add memory cache instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
+    builder.Services.AddMemoryCache();
 
-        services.AddMemoryCache();
-
-        // MemoryCache namespace from Infra.Caching.Memory, not from Microsoft.Extensions.Caching.Memory!
-        services.AddSingleton<ICache, MemoryCache>();
-    }
+    // MemoryCache namespace from Infra.Caching.Memory, not from Microsoft.Extensions.Caching.Memory!
+    builder.Services.AddSingleton<ICache, MemoryCache>();
     ```
 
 > 注入 ICache 來使用記憶體快取。

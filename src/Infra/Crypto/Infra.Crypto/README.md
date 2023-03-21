@@ -7,15 +7,10 @@ Implement encryption and decryption mechanism.
 
 > 新增加密工廠實例至 DI 容器中。
 
-1. Add crypto factory instance to DI container from Startup.cs
+1. Add crypto factory instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
-
-        services.AddSingleton<ICryptoFactory, CryptoFactory>();
-    }
+    builder.Services.AddSingleton<ICryptoFactory, CryptoFactory>();
     ```
 
 > 注入 ICryptoFactory 並建立 ICryptoAlgorithm 來加解密資料。

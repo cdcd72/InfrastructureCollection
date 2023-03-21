@@ -7,19 +7,14 @@ Implement hash mechanism.
 
 > 新增雜湊工廠實例至 DI 容器中。
 
-1. Add hash factory instance to DI container from Startup.cs
+1. Add hash factory instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
+    builder.Services.AddSingleton<IHashFactory, HashFactory>();
 
-        services.AddSingleton<IHashFactory, HashFactory>();
-   
-        // or Hash-based Message Authentication Code, HMAC
-        
-        services.AddSingleton<IHmacFactory, HmacFactory>();
-    }
+    // or Hash-based Message Authentication Code, HMAC
+
+    builder.Services.AddSingleton<IHmacFactory, HmacFactory>();
     ```
 
 > 注入 IHashFactory (or IHmacAlgorithm) 並建立 IHashAlgorithm (or IHmacFactory) 來雜湊資料。

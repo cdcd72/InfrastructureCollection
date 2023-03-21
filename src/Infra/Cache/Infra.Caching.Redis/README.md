@@ -23,21 +23,16 @@ Implement distributed cache mechanism with Microsoft.Extensions.Caching.StackExc
 
 > 新增 Redis 快取實例至 DI 容器中。
 
-2. Add redis cache instance to DI container from Startup.cs
+2. Add redis cache instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
+    builder.Services.AddStackExchangeRedisCache(options =>
     {
-        // ...
+        options.InstanceName = builder.Configuration.GetValue<string>("Cache:Redis:InstanceName");
+        options.Configuration = builder.Configuration.GetValue<string>("Cache:Redis:Configuration");
+    });
 
-        services.AddStackExchangeRedisCache(options =>
-        {
-            options.InstanceName = Configuration.GetValue<string>("Cache:Redis:InstanceName");
-            options.Configuration = Configuration.GetValue<string>("Cache:Redis:Configuration");
-        });
-
-        services.AddSingleton<ICache, RedisCache>();
-    }
+    builder.Services.AddSingleton<ICache, RedisCache>();
     ```
 
 > 注入 ICache 來使用分散式快取。

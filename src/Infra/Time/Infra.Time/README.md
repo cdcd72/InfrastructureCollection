@@ -7,15 +7,10 @@ Implement time wrapper.
 
 > 新增時間包裝器實例至 DI 容器中。
 
-1. Add time wrapper instance to DI container from Startup.cs
+1. Add time wrapper instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
-
-        services.AddSingleton<ITimeWrapper, TimeWrapper>();
-    }
+    builder.Services.AddSingleton<ITimeWrapper, TimeWrapper>();
     ```
 
 > 注入 ITimeWrapper 來使用時間包裝器。

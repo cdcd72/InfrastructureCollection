@@ -21,18 +21,13 @@ Implement physical file access mechanism.
 
 > 新增實體檔案存取實例至 DI 容器中。
 
-2. Add physical file access instance to DI container from Startup.cs
+2. Add physical file access instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
+    // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
+    builder.Services.Configure<Settings>(settings => builder.Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-        // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
-        services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
-
-        services.AddSingleton<IFileAccess, PhysicalFileAccess>();
-    }
+    builder.Services.AddSingleton<IFileAccess, PhysicalFileAccess>();
     ```
 
 > 注入 IFileAccess 來使用實體檔案存取。

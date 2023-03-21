@@ -29,20 +29,15 @@ Implement ftp file access mechanism with FluentFTP.
 
 > 新增 FTP 檔案存取實例至 DI 容器中。
 
-2. Add Ftp file access instance to DI container from Startup.cs
+2. Add Ftp file access instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
+    builder.Services.AddLogging();
 
-        services.AddLogging();
+    // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
+    builder.Services.Configure<Settings>(settings => builder.Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-        // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
-    services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
-
-        services.AddSingleton<IFileAccess, FtpFileAccess>();
-    }
+    builder.Services.AddSingleton<IFileAccess, FtpFileAccess>();
     ```
 
 > 注入 `IFileAccess` 來使用 FTP 檔案存取。

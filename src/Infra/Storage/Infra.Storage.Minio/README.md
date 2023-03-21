@@ -29,18 +29,13 @@ Implement object storage mechanism with Minio.
 
 > 新增 Minio 儲存實例至 DI 容器中。
 
-2. Add minio storage instance to DI container from Startup.cs
+2. Add minio storage instance to DI container
 
     ```csharp
-    public void ConfigureServices(IServiceCollection services)
-    {
-        // ...
+    // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
+    builder.Services.Configure<Settings>(settings => builder.Configuration.GetSection(Settings.SectionName).Bind(settings));
 
-        // Section name from settings is defaulted, you can change your prefer naming, but field structure must be the same!
-        services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
-
-        services.AddSingleton<IObjectStorage, MinioStorage>();
-    }
+    builder.Services.AddSingleton<IObjectStorage, MinioStorage>();
     ```
 
 > 注入 IObjectStorage 來操作物件。
