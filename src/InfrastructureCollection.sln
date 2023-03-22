@@ -108,6 +108,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BarCode", "BarCode", "{697B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.BarCode.QRCode", "Infra\Infra.BarCode.QRCode\Infra.BarCode.QRCode.csproj", "{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BarCode", "BarCode", "{0C07DD57-1FDD-4445-83AC-5F3D7ABDF985}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.BarCode.QRCode.IntegrationTest", "Test\Infra\BarCode\Infra.BarCode.QRCode.IntegrationTest\Infra.BarCode.QRCode.IntegrationTest.csproj", "{2C38B0DE-24C2-420F-A76B-D2EA65439BBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -226,6 +230,10 @@ Global
 		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C38B0DE-24C2-420F-A76B-D2EA65439BBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C38B0DE-24C2-420F-A76B-D2EA65439BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C38B0DE-24C2-420F-A76B-D2EA65439BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C38B0DE-24C2-420F-A76B-D2EA65439BBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -277,6 +285,8 @@ Global
 		{1F65B2CB-7EDB-44FC-A894-FB4F7D44ED88} = {D60FC046-4051-449D-AA8F-609062CB4116}
 		{697BE340-E08E-4B7B-A0D6-BF8CA3BBC3B7} = {BBCE6B07-AD22-44BE-BB64-775BF7118C50}
 		{D6D37EE6-7912-4A4C-8DE8-DA8AAEFB01FC} = {697BE340-E08E-4B7B-A0D6-BF8CA3BBC3B7}
+		{0C07DD57-1FDD-4445-83AC-5F3D7ABDF985} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
+		{2C38B0DE-24C2-420F-A76B-D2EA65439BBB} = {0C07DD57-1FDD-4445-83AC-5F3D7ABDF985}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
