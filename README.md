@@ -10,6 +10,9 @@ The practice may not be the best, but I hope to get better and better!
 
 > All infrastructure are base on **[Infra.Core](src/Core/Infra.Core)**.
 
+- BarCode
+  - [Infra.BarCode.QRCode](src/Infra/BarCode/Infra.BarCode.QRCode)
+    - Implement with [ZXing.Net](https://github.com/micjahn/ZXing.Net)
 - Cache
   - [Infra.Caching.Memory](src/Infra/Cache/Infra.Caching.Memory)
     - Implement with [Microsoft.Extensions.Caching.Memory](https://www.nuget.org/packages/Microsoft.Extensions.Caching.Memory)
