@@ -17,6 +17,6 @@ Implement hash mechanism.
     builder.Services.AddSingleton<IHmacFactory, HmacFactory>();
     ```
 
-> 注入 IHashFactory (or IHmacAlgorithm) 並建立 IHashAlgorithm (or IHmacFactory) 來雜湊資料。
+> 注入 `IHashFactory` (or `IHmacAlgorithm`) 並建立 `IHashAlgorithm` (or `IHmacFactory`) 來雜湊資料。
 
-2. Create IHashAlgorithm(or IHmacAlgorithm) with injected IHashFactory(or IHmacFactory) to hash your data.
+2. Create `IHashAlgorithm`(or `IHmacAlgorithm`) with injected `IHashFactory`(or `IHmacFactory`) to hash your data.

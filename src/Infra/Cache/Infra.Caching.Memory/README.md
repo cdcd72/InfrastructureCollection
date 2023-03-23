@@ -16,6 +16,6 @@ Implement memory cache mechanism with Microsoft.Extensions.Caching.Memory.
     builder.Services.AddSingleton<ICache, MemoryCache>();
     ```
 
-> 注入 ICache 來使用記憶體快取。
+> 注入 `ICache` 來使用記憶體快取。
 
-2. Inject ICache to use memory cache.
+2. Inject `ICache` to use memory cache.

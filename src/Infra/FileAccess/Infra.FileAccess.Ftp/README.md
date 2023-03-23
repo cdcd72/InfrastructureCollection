@@ -42,4 +42,4 @@ Implement ftp file access mechanism with FluentFTP.
 
 > 注入 `IFileAccess` 來使用 FTP 檔案存取。
 
-3. Inject IFileAccess to use ftp file access.
+3. Inject `IFileAccess` to use ftp file access.

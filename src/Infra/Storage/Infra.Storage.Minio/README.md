@@ -38,6 +38,6 @@ Implement object storage mechanism with Minio.
     builder.Services.AddSingleton<IObjectStorage, MinioStorage>();
     ```
 
-> 注入 IObjectStorage 來操作物件。
+> 注入 `IObjectStorage` 來操作物件。
 
-3. Inject IObjectStorage to operate object.
+3. Inject `IObjectStorage` to operate object.

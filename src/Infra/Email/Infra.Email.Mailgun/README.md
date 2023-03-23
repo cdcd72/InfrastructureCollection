@@ -36,6 +36,6 @@ Implement send mail mechanism with Mailgun API.
     builder.Services.AddSingleton<IMailClient, MailgunClient>();
     ```
 
-> 注入 IMailClient 來送信。
+> 注入 `IMailClient` 來送信。
 
-3. Inject IMailClient to send mail.
+3. Inject `IMailClient` to send mail.

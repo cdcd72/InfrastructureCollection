@@ -30,6 +30,6 @@ Implement physical file access mechanism.
     builder.Services.AddSingleton<IFileAccess, PhysicalFileAccess>();
     ```
 
-> 注入 IFileAccess 來使用實體檔案存取。
+> 注入 `IFileAccess` 來使用實體檔案存取。
 
-3. Inject IFileAccess to use physical file access.
+3. Inject `IFileAccess` to use physical file access.

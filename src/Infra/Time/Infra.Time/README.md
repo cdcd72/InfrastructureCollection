@@ -13,6 +13,6 @@ Implement time wrapper.
     builder.Services.AddSingleton<ITimeWrapper, TimeWrapper>();
     ```
 
-> 注入 ITimeWrapper 來使用時間包裝器。
+> 注入 `ITimeWrapper` 來使用時間包裝器。
 
-2. Inject ITimeWrapper to use time wrapper.
+2. Inject `ITimeWrapper` to use time wrapper.

@@ -47,4 +47,4 @@ Implement sftp file access mechanism with SSH.NET.
 
 > 注入 `IFileAccess` 來使用 SFTP 檔案存取。
 
-3. Inject IFileAccess to use sftp file access.
+3. Inject `IFileAccess` to use sftp file access.

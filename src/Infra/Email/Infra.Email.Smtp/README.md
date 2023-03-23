@@ -40,6 +40,6 @@ Implement send mail mechanism with MailKit.
     builder.Services.AddSingleton<IMailClient, SmtpClient>();
     ```
 
-> 注入 IMailClient 來送信。
+> 注入 `IMailClient` 來送信。
 
-3. Inject IMailClient to send mail.
+3. Inject `IMailClient` to send mail.

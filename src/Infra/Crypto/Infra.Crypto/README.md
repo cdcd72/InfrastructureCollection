@@ -13,6 +13,6 @@ Implement encryption and decryption mechanism.
     builder.Services.AddSingleton<ICryptoFactory, CryptoFactory>();
     ```
 
-> 注入 ICryptoFactory 並建立 ICryptoAlgorithm 來加解密資料。
+> 注入 `ICryptoFactory` 並建立 `ICryptoAlgorithm` 來加解密資料。
 
-2. Create ICryptoAlgorithm with injected ICryptoFactory to encrypt or decrypt your data.
+2. Create `ICryptoAlgorithm` with injected `ICryptoFactory` to encrypt or decrypt your data.

@@ -38,6 +38,6 @@ Implement file access mechanism with gRPC.
     builder.Services.AddSingleton<IFileAccess, GrpcFileAccess>();
     ```
 
-> 注入 IFileAccess 來使用 gRPC 檔案存取。
+> 注入 `IFileAccess` 來使用 gRPC 檔案存取。
 
-3. Inject IFileAccess to use gRPC file access.
+3. Inject `IFileAccess` to use gRPC file access.

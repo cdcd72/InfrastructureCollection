@@ -35,6 +35,6 @@ Implement distributed cache mechanism with Microsoft.Extensions.Caching.StackExc
     builder.Services.AddSingleton<ICache, RedisCache>();
     ```
 
-> 注入 ICache 來使用分散式快取。
+> 注入 `ICache` 來使用分散式快取。
 
-3. Inject ICache to use distributed cache.
+3. Inject `ICache` to use distributed cache.
