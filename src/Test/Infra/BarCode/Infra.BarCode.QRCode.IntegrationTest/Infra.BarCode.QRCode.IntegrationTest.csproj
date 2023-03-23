@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\Infra\Infra.BarCode.QRCode\Infra.BarCode.QRCode.csproj" />
+      <ProjectReference Include="..\..\..\..\Infra\BarCode\Infra.BarCode.QRCode\Infra.BarCode.QRCode.csproj" />
     </ItemGroup>
 
 </Project>
