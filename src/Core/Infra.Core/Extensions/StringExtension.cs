@@ -18,6 +18,8 @@ public static class StringExtension
 
     public static long ToLong(this string value) => long.TryParse(value, out var result) ? result : 0;
 
+    public static float ToFloat(this string value) => float.TryParse(value, out var result) ? result : 0f;
+
     public static double ToDouble(this string value) => double.TryParse(value, out var result) ? result : 0.0;
 
     public static SecureString ToSecureString(this string rawString)
