@@ -2,9 +2,9 @@
 using Infra.Core.BarCode.Abstractions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using ZXing;
 using ZXing.QrCode;
-using ZXing.QrCode.Internal;
 
 namespace Infra.BarCode.QRCode;
 
@@ -17,17 +17,34 @@ public class QrCodeEncoder : IBarCodeEncoder<QrCodeEncodeParam>
             Format = BarcodeFormat.QR_CODE,
             Options = new QrCodeEncodingOptions
             {
-                ErrorCorrection = ErrorCorrectionLevel.Q,
+                ErrorCorrection = param.ErrorCorrectionLevel,
                 Width = param.Pixels,
-                Height = param.Pixels
+                Height = param.Pixels,
+                Margin = param.Margin
             }
         };
 
+        var image = writer.WriteAsImageSharp<Rgba32>(param.Text);
+
+        if (param.Icon is not null)
+        {
+            await using var iconStream = new MemoryStream(param.Icon.BinaryData);
+
+            var icon = await Image.LoadAsync(iconStream);
+
+            var iconWidth = param.Icon.Width ?? param.Pixels / 5;
+            var iconHeight = param.Icon.Height ?? param.Pixels / 5;
+
+            icon.Mutate(o => o.Resize(iconWidth, iconHeight));
+
+            var iconLocation = param.Icon.Location ?? new Point((param.Pixels / 2) - (iconWidth / 2), (param.Pixels / 2) - (iconHeight / 2));
+
+            image.Mutate(o => o.DrawImage(icon, iconLocation, param.Icon.Opacity));
+        }
+
         await using var imageStream = new MemoryStream();
 
-        await writer
-            .WriteAsImageSharp<Rgba32>(param.Text)
-            .SaveAsPngAsync(imageStream);
+        await image.SaveAsPngAsync(imageStream);
 
         return imageStream.ToArray();
     }
