@@ -1,4 +1,7 @@
-﻿using Infra.Core.Configuration;
+﻿using Infra.Core.Background;
+using Infra.Core.Background.Abstractions;
+using Infra.Core.Background.Models;
+using Infra.Core.Configuration;
 using Infra.Core.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,36 +10,38 @@ namespace Infra.Core.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddSingletonConfig<TConfig>(this IServiceCollection services, IConfiguration section) where TConfig : class
+    #region Config
+
+    public static IServiceCollection AddSingletonConfig<TConfig>(this IServiceCollection services, IConfiguration config) where TConfig : class
     {
-        services.AddSingleton(sp => BindConfigInstance<TConfig>(section));
+        services.AddSingleton(sp => BindConfigInstance<TConfig>(config));
         return services;
     }
 
-    public static IServiceCollection AddScopedConfig<TConfig>(this IServiceCollection services, IConfiguration section) where TConfig : class
+    public static IServiceCollection AddScopedConfig<TConfig>(this IServiceCollection services, IConfiguration config) where TConfig : class
     {
-        services.AddScoped(sp => BindConfigInstance<TConfig>(section));
+        services.AddScoped(sp => BindConfigInstance<TConfig>(config));
         return services;
     }
 
-    public static IServiceCollection AddTransientConfig<TConfig>(this IServiceCollection services, IConfiguration section) where TConfig : class
+    public static IServiceCollection AddTransientConfig<TConfig>(this IServiceCollection services, IConfiguration config) where TConfig : class
     {
-        services.AddTransient(sp => BindConfigInstance<TConfig>(section));
+        services.AddTransient(sp => BindConfigInstance<TConfig>(config));
         return services;
     }
 
-    public static IServiceCollection AddConfig<TConfig>(this IServiceCollection services, IConfiguration section, ServiceLifetime lifetime) where TConfig : class
+    public static IServiceCollection AddConfig<TConfig>(this IServiceCollection services, IConfiguration config, ServiceLifetime lifetime) where TConfig : class
     {
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton(sp => BindConfigInstance<TConfig>(section));
+                services.AddSingleton(sp => BindConfigInstance<TConfig>(config));
                 break;
             case ServiceLifetime.Scoped:
-                services.AddScoped(sp => BindConfigInstance<TConfig>(section));
+                services.AddScoped(sp => BindConfigInstance<TConfig>(config));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient(sp => BindConfigInstance<TConfig>(section));
+                services.AddTransient(sp => BindConfigInstance<TConfig>(config));
                 break;
             default:
                 throw new UnexpectedEnumValueException($"Value of enum {typeof(ServiceLifetime)}: {nameof(ServiceLifetime)} is not supported.");
@@ -45,16 +50,25 @@ public static class ServiceCollectionExtension
         return services;
     }
 
-    public static IServiceCollection AddNamedHttpClient(this IServiceCollection services, IEnumerable<ServiceSettings> serviceSettings)
+    #endregion
+
+    #region HttpClient
+
+    public static IServiceCollection AddNamedHttpClient(this IServiceCollection services, IConfiguration config)
     {
-        foreach (var serviceSetting in serviceSettings)
+        var serviceSettings = config.GetSection(BackgroundTaskQueueOptions.SectionName).Get<ServiceSettings[]>();
+
+        if (serviceSettings is not null)
         {
-            services.AddHttpClient(serviceSetting.Name, client =>
+            foreach (var serviceSetting in serviceSettings)
             {
-                client.BaseAddress = new Uri(serviceSetting.Url);
-                if (serviceSetting.Timeout.HasValue)
-                    client.Timeout = TimeSpan.FromSeconds(serviceSetting.Timeout.Value);
-            });
+                services.AddHttpClient(serviceSetting.Name, client =>
+                {
+                    client.BaseAddress = new Uri(serviceSetting.Url);
+                    if (serviceSetting.Timeout.HasValue)
+                        client.Timeout = TimeSpan.FromSeconds(serviceSetting.Timeout.Value);
+                });
+            }
         }
 
         return services;
@@ -68,6 +82,27 @@ public static class ServiceCollectionExtension
 
         return clientFactory.CreateClient(name);
     }
+
+    #endregion
+
+    #region Background
+
+    public static IServiceCollection AddBackgroundTaskQueues(this IServiceCollection services, IConfiguration config)
+    {
+        var taskQueueOptions = config.GetSection(BackgroundTaskQueueOptions.SectionName).Get<BackgroundTaskQueueOptions[]>();
+
+        if (taskQueueOptions is not null)
+        {
+            foreach (var taskQueueOption in taskQueueOptions)
+            {
+                services.AddSingleton<IBackgroundTaskQueue>(new BackgroundTaskQueue(taskQueueOption));
+            }
+        }
+
+        return services;
+    }
+
+    #endregion
 
     #region Private Method
 
