@@ -44,16 +44,11 @@ namespace Infra.FileAccess.Physical
             directoryPath = GetVerifiedPath(directoryPath);
             zipFilePath = GetVerifiedPath(zipFilePath);
 
-            using var ms = new MemoryStream();
+            using var zip = new Ionic.Zip.ZipFile();
 
-            using (var zip = new Ionic.Zip.ZipFile())
-            {
-                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-                zip.AddDirectory(directoryPath);
-                zip.Save(ms);
-            }
-
-            SaveFile(zipFilePath, ms.ToArray());
+            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+            zip.AddDirectory(directoryPath);
+            zip.Save(zipFilePath);
         }
 
         public string GetParentPath(string directoryPath)
@@ -198,21 +193,18 @@ namespace Infra.FileAccess.Physical
         public Task<string[]> GetSubDirectoriesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
-        public async Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        public Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
         {
             directoryPath = GetVerifiedPath(directoryPath);
             zipFilePath = GetVerifiedPath(zipFilePath);
 
-            await using var ms = new MemoryStream();
+            using var zip = new Ionic.Zip.ZipFile();
 
-            using (var zip = new Ionic.Zip.ZipFile())
-            {
-                zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-                zip.AddDirectory(directoryPath);
-                zip.Save(ms);
-            }
+            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+            zip.AddDirectory(directoryPath);
+            zip.Save(zipFilePath);
 
-            await SaveFileAsync(zipFilePath, ms.ToArray(), progressCallBack, cancellationToken);
+            return Task.CompletedTask;
         }
 
         public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
