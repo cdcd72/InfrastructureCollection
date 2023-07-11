@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Enums;
 using NUnit.Framework;
 
 namespace Infra.FileAccess.Physical.IntegrationTest
@@ -152,6 +153,17 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             fileAccess.DirectoryCompress(directoryPath, zipFilePath);
 
             Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public void DirectorySplitCompressSuccess()
+        {
+            var directoryPath = Path.Combine(RootPath, "TestData", "Files", "SplitCompress");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
+
+            fileAccess.DirectorySplitCompress(directoryPath, zipFilePath, ZipDataUnit.MB, 1);
+
+            Assert.That(fileAccess.GetFiles(TempPath), Has.Length.EqualTo(3));
         }
 
         [Test]
@@ -536,6 +548,17 @@ namespace Infra.FileAccess.Physical.IntegrationTest
             await fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath);
 
             Assert.That(fileAccess.FileExists(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public async Task DirectorySplitCompressSuccessAsync()
+        {
+            var directoryPath = Path.Combine(RootPath, "TestData", "Files", "SplitCompress");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
+
+            await fileAccess.DirectorySplitCompressAsync(directoryPath, zipFilePath, ZipDataUnit.MB, 1);
+
+            Assert.That(fileAccess.GetFiles(TempPath), Has.Length.EqualTo(3));
         }
 
         [Test]

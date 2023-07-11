@@ -1,4 +1,5 @@
 using System.Text;
+using Infra.Core.FileAccess.Enums;
 using Infra.Core.FileAccess.Models;
 
 namespace Infra.Core.FileAccess.Abstractions;
@@ -20,6 +21,8 @@ public interface IFileAccess
     string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default);
 
     void DirectoryCompress(string directoryPath, string zipFilePath, int compressionLevel = 6);
+
+    void DirectorySplitCompress(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6);
 
     string GetParentPath(string directoryPath);
 
@@ -86,6 +89,8 @@ public interface IFileAccess
     Task<string[]> GetSubDirectoriesAsync(string directoryPath, string searchPattern = "", SearchOption searchOption = default, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
+
+    Task DirectorySplitCompressAsync(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 
     Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default);
 

@@ -1,9 +1,11 @@
 using System.Text;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Enums;
 using Infra.Core.FileAccess.Models;
 using Infra.Core.FileAccess.Validators;
 using Infra.FileAccess.Physical.Configuration;
 using Infra.FileAccess.Physical.Configuration.Validators;
+using Ionic.Zip;
 using Ionic.Zlib;
 using Microsoft.Extensions.Options;
 
@@ -44,10 +46,27 @@ namespace Infra.FileAccess.Physical
             directoryPath = GetVerifiedPath(directoryPath);
             zipFilePath = GetVerifiedPath(zipFilePath);
 
-            using var zip = new Ionic.Zip.ZipFile();
+            using var zip = new ZipFile();
 
+            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
             zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
             zip.AddDirectory(directoryPath);
+            zip.Save(zipFilePath);
+        }
+
+        public void DirectorySplitCompress(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6)
+        {
+            directoryPath = GetVerifiedPath(directoryPath);
+            zipFilePath = GetVerifiedPath(zipFilePath);
+
+            using var zip = new ZipFile();
+
+            zip.MaxOutputSegmentSize = segmentSize * (int)zipDataUnit;
+            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
+            zip.BufferSize = 1024;
+            zip.CaseSensitiveRetrieval = true;
+            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+            zip.AddItem(directoryPath, string.Empty);
             zip.Save(zipFilePath);
         }
 
@@ -136,8 +155,9 @@ namespace Infra.FileAccess.Physical
         {
             using var ms = new MemoryStream();
 
-            using (var zip = new Ionic.Zip.ZipFile())
+            using (var zip = new ZipFile())
             {
+                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
                 zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
 
                 foreach (var (compressName, path) in files)
@@ -157,8 +177,9 @@ namespace Infra.FileAccess.Physical
         {
             using var ms = new MemoryStream();
 
-            using (var zip = new Ionic.Zip.ZipFile())
+            using (var zip = new ZipFile())
             {
+                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
                 zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
 
                 foreach (var (compressName, fileBytes) in files)
@@ -198,10 +219,29 @@ namespace Infra.FileAccess.Physical
             directoryPath = GetVerifiedPath(directoryPath);
             zipFilePath = GetVerifiedPath(zipFilePath);
 
-            using var zip = new Ionic.Zip.ZipFile();
+            using var zip = new ZipFile();
 
+            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
             zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
             zip.AddDirectory(directoryPath);
+            zip.Save(zipFilePath);
+
+            return Task.CompletedTask;
+        }
+
+        public Task DirectorySplitCompressAsync(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+        {
+            directoryPath = GetVerifiedPath(directoryPath);
+            zipFilePath = GetVerifiedPath(zipFilePath);
+
+            using var zip = new ZipFile();
+
+            zip.MaxOutputSegmentSize = segmentSize * (int)zipDataUnit;
+            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
+            zip.BufferSize = 1024;
+            zip.CaseSensitiveRetrieval = true;
+            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
+            zip.AddItem(directoryPath, string.Empty);
             zip.Save(zipFilePath);
 
             return Task.CompletedTask;
@@ -292,8 +332,9 @@ namespace Infra.FileAccess.Physical
         {
             await using var ms = new MemoryStream();
 
-            using (var zip = new Ionic.Zip.ZipFile())
+            using (var zip = new ZipFile())
             {
+                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
                 zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
 
                 foreach (var (compressName, path) in files)
@@ -313,8 +354,9 @@ namespace Infra.FileAccess.Physical
         {
             await using var ms = new MemoryStream();
 
-            using (var zip = new Ionic.Zip.ZipFile())
+            using (var zip = new ZipFile())
             {
+                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
                 zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
 
                 foreach (var (compressName, fileBytes) in files)

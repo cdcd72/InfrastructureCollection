@@ -4,6 +4,7 @@ using Grpc.Net.Client;
 using GrpcFileService;
 using Infra.Core.Extensions;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Enums;
 using Infra.Core.FileAccess.Models;
 using Infra.FileAccess.Grpc.Configuration;
 using Infra.FileAccess.Grpc.Configuration.Validators;
@@ -45,6 +46,8 @@ namespace Infra.FileAccess.Grpc
         public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotSupportedException();
 
         public void DirectoryCompress(string directoryPath, string zipFilePath, int compressionLevel = 6) => throw new NotSupportedException();
+
+        public void DirectorySplitCompress(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6) => throw new NotSupportedException();
 
         public string GetParentPath(string directoryPath) => throw new NotSupportedException();
 
@@ -407,6 +410,8 @@ namespace Infra.FileAccess.Grpc
                 await channel?.ShutdownAsync()!;
             }
         }
+
+        public Task DirectorySplitCompressAsync(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
         public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
             // Can't implemented, because of some security issue.

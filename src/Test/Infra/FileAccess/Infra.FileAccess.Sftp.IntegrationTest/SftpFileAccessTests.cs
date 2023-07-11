@@ -1,7 +1,8 @@
 using System.Reflection;
 using System.Text;
 using Infra.Core.FileAccess.Abstractions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Infra.Core.FileAccess.Enums;
+using NUnit.Framework;
 
 namespace Infra.FileAccess.Sftp.IntegrationTest
 {
@@ -12,7 +13,6 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
     /// !!!         There integration test cases for convenient test use.
     /// !!!
     /// </summary>
-    [TestClass]
     public class SftpFileAccessTests
     {
         private readonly IFileAccess fileAccess;
@@ -37,7 +37,7 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        [TestInitialize]
+        [SetUp]
         public async Task SetUp()
         {
             if (!await fileAccess.DirectoryExistsAsync(FtpBasePath))
@@ -48,207 +48,216 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
         #region Directory
 
-        [TestMethod]
+        [Test]
         public void CreateDirectoryNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.CreateDirectory(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CreateDirectory(directoryPath));
         }
 
-        [TestMethod]
+        [Test]
         public void DirectoryExistsNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.DirectoryExists(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DirectoryExists(directoryPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetFilesNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetFiles(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFiles(directoryPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetFilesWithSearchPatternNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetFiles(directoryPath, "*.txt"));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFiles(directoryPath, "*.txt"));
         }
 
-        [TestMethod]
+        [Test]
         public void GetFilesWithSearchPatternAndOptionNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFiles(directoryPath, "*.txt", SearchOption.AllDirectories));
         }
 
-        [TestMethod]
+        [Test]
         public void DeleteDirectoryNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.DeleteDirectory(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DeleteDirectory(directoryPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetSubDirectoriesNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetSubDirectoriesWithSearchPatternNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath, "Another*"));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath, "Another*"));
         }
 
-        [TestMethod]
+        [Test]
         public void GetSubDirectoriesWithSearchPatternAndOptionNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetSubDirectories(directoryPath, "Sub*", SearchOption.AllDirectories));
         }
 
-        [TestMethod]
+        [Test]
         public void DirectoryCompressNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
             var zipFtpPath = Path.Combine(FtpBasePath, "DirectoryCompress.zip");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.DirectoryCompress(directoryPath, zipFtpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DirectoryCompress(directoryPath, zipFtpPath));
         }
 
-        [TestMethod]
+        [Test]
+        public void DirectorySplitCompressNotSupported()
+        {
+            var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
+            var zipFtpPath = Path.Combine(FtpBasePath, "DirectoryCompress.zip");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.DirectorySplitCompress(directoryPath, zipFtpPath, ZipDataUnit.MB, 100));
+        }
+
+        [Test]
         public void GetParentPathNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetParentPath(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetParentPath(directoryPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetCurrentDirectoryNameNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetCurrentDirectoryName(directoryPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetCurrentDirectoryName(directoryPath));
         }
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public void FileExistsNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "test.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.FileExists(ftpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.FileExists(ftpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void SaveFileNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.SaveFile(ftpPath, "資料種類"));
+            Assert.Throws<NotSupportedException>(() => fileAccess.SaveFile(ftpPath, "資料種類"));
         }
 
-        [TestMethod]
+        [Test]
         public void SaveFileWithEncodingNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.SaveFile(ftpPath, "資料種類", Encoding.GetEncoding(950)));
+            Assert.Throws<NotSupportedException>(() => fileAccess.SaveFile(ftpPath, "資料種類", Encoding.GetEncoding(950)));
         }
 
-        [TestMethod]
+        [Test]
         public void SaveFileWithBytesNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "RMA_20190826.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.SaveFile(ftpPath, Array.Empty<byte>()));
+            Assert.Throws<NotSupportedException>(() => fileAccess.SaveFile(ftpPath, Array.Empty<byte>()));
         }
 
-        [TestMethod]
+        [Test]
         public void DeleteFileNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "test.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.DeleteFile(ftpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.DeleteFile(ftpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetFileSizeNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "test.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.GetFileSize(ftpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.GetFileSize(ftpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void ReadUtf8FileNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.ReadTextFile(ftpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadTextFile(ftpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void ReadBig5FileNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.ReadTextFile(ftpPath, encoding));
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadTextFile(ftpPath, encoding));
         }
 
-        [TestMethod]
+        [Test]
         public void ReadFileNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.ReadFile(ftpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadFile(ftpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void MoveFileNotSupported()
         {
             var sourceFtpPath = Path.Combine(FtpBasePath, "test.txt");
             var destFtpPath = Path.Combine(FtpBasePath, "Move", "test.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.MoveFile(sourceFtpPath, destFtpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.MoveFile(sourceFtpPath, destFtpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void CopyFileNotSupported()
         {
             var sourceFtpPath = Path.Combine(FtpBasePath, "test.txt");
             var destFtpPath = Path.Combine(FtpBasePath, "Copy", "test.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.CopyFile(sourceFtpPath, destFtpPath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CopyFile(sourceFtpPath, destFtpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendUtf8AllLinesNotSupported()
         {
             const string content = "資料種類";
 
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.AppendAllLines(ftpPath, new[] {content}));
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllLines(ftpPath, new[] {content}));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendBig5AllLinesNotSupported()
         {
             const string content = "資料種類";
@@ -256,34 +265,31 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.AppendAllLines(ftpPath, new[] {content}, encoding));
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllLines(ftpPath, new[] {content}, encoding));
         }
 
-        [TestMethod]
-        public void ReadUtf8AllLinesNotSupported()
-        {
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(FtpBasePath, "utf8.txt")));
-        }
+        [Test]
+        public void ReadUtf8AllLinesNotSupported() => Assert.Throws<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(FtpBasePath, "utf8.txt")));
 
-        [TestMethod]
+        [Test]
         public void ReadBig5AllLinesNotSupported()
         {
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(FtpBasePath, "big5.txt"), encoding));
+            Assert.Throws<NotSupportedException>(() => fileAccess.ReadAllLines(Path.Combine(FtpBasePath, "big5.txt"), encoding));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendUtf8AllTextNotSupported()
         {
             const string content = "資料種類";
 
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.AppendAllText(ftpPath, content));
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllText(ftpPath, content));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendBig5AllTextNotSupported()
         {
             const string content = "資料種類";
@@ -291,10 +297,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.AppendAllText(ftpPath, content, encoding));
+            Assert.Throws<NotSupportedException>(() => fileAccess.AppendAllText(ftpPath, content, encoding));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesWithFilePathNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -306,10 +312,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             };
             var zipFilePath = Path.Combine(FtpBasePath, "compress.zip");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.CompressFiles(files, zipFilePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files, zipFilePath));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesWithFileBytesNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -321,10 +327,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             };
             var zipFilePath = Path.Combine(FtpBasePath, "compress.zip");
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.CompressFiles(files, zipFilePath));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files, zipFilePath));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesAndReturnBytesWithFilePathNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -335,10 +341,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
                 { Path.GetFileName(ftpPath2), ftpPath2 }
             };
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.CompressFiles(files));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesAndReturnBytesWithFileBytesNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -349,7 +355,7 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
                 { Path.GetFileName(ftpPath2), Array.Empty<byte>() }
             };
 
-            Assert.ThrowsException<NotSupportedException>(() => fileAccess.CompressFiles(files));
+            Assert.Throws<NotSupportedException>(() => fileAccess.CompressFiles(files));
         }
 
         #endregion
@@ -358,25 +364,25 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
         #region Directory
 
-        [TestMethod]
+        [Test]
         public async Task CreateDirectorySuccessAsync()
         {
             var ftpPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
             await fileAccess.CreateDirectoryAsync(ftpPath);
 
-            Assert.IsTrue(await fileAccess.DirectoryExistsAsync(ftpPath));
+            Assert.That(await fileAccess.DirectoryExistsAsync(ftpPath), Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public async Task JudgeDirectoryNotExistsSuccessAsync()
         {
             var ftpPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.IsFalse(await fileAccess.DirectoryExistsAsync(ftpPath));
+            Assert.That(await fileAccess.DirectoryExistsAsync(ftpPath), Is.False);
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetFilesSuccessAsync()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -387,10 +393,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             var files = await fileAccess.GetFilesAsync(directoryPath);
 
-            Assert.AreEqual(2, files.Length);
+            Assert.That(files, Has.Length.EqualTo(2));
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetFilesWithSearchPatternSuccessAsync()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -401,10 +407,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             var files = await fileAccess.GetFilesAsync(directoryPath, @".txt");
 
-            Assert.AreEqual(1, files.Length);
+            Assert.That(files, Has.Length.EqualTo(1));
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetFilesWithSearchPatternAndOptionSuccessAsync()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -418,10 +424,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             var files = await fileAccess.GetFilesAsync(directoryPath, ".txt", SearchOption.AllDirectories);
 
-            Assert.AreEqual(2, files.Length);
+            Assert.That(files, Has.Length.EqualTo(2));
         }
 
-        [TestMethod]
+        [Test]
         public async Task DeleteDirectorySuccessAsync()
         {
             var ftpPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -429,10 +435,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             await fileAccess.CreateDirectoryAsync(ftpPath);
             await fileAccess.DeleteDirectoryAsync(ftpPath);
 
-            Assert.IsFalse(await fileAccess.DirectoryExistsAsync(ftpPath));
+            Assert.That(await fileAccess.DirectoryExistsAsync(ftpPath), Is.False);
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetSubDirectoriesSuccessAsync()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -443,10 +449,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             var subdirectories = await fileAccess.GetSubDirectoriesAsync(directoryPath);
 
-            Assert.AreEqual(2, subdirectories.Length);
+            Assert.That(subdirectories, Has.Length.EqualTo(2));
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetSubDirectoriesWithSearchPatternSuccessAsync()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -457,10 +463,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             var subdirectories = await fileAccess.GetSubDirectoriesAsync(directoryPath, "Another*");
 
-            Assert.AreEqual(1, subdirectories.Length);
+            Assert.That(subdirectories, Has.Length.EqualTo(1));
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetSubDirectoriesWithSearchPatternAndOptionSuccessAsync()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
@@ -473,83 +479,92 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             var subdirectories = await fileAccess.GetSubDirectoriesAsync(directoryPath, "Sub*", SearchOption.AllDirectories);
 
-            Assert.AreEqual(2, subdirectories.Length);
+            Assert.That(subdirectories, Has.Length.EqualTo(2));
         }
 
-        [TestMethod]
+        [Test]
         public void DirectoryCompressAsyncNotSupported()
         {
             var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
             var zipFtpPath = Path.Combine(FtpBasePath, "DirectoryCompress.zip");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.DirectoryCompressAsync(directoryPath, zipFtpPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.DirectoryCompressAsync(directoryPath, zipFtpPath));
         }
 
-        [TestMethod]
+        [Test]
+        public void DirectorySplitCompressAsyncNotSupported()
+        {
+            var directoryPath = Path.Combine(FtpBasePath, "CreatedDirectory");
+            var zipFtpPath = Path.Combine(FtpBasePath, "DirectoryCompress.zip");
+
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.DirectorySplitCompressAsync(directoryPath, zipFtpPath, ZipDataUnit.MB, 100));
+        }
+
+        [Test]
         public void GetParentPathAsyncNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.GetParentPathAsync(ftpPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.GetParentPathAsync(ftpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void GetCurrentDirectoryNameAsyncNotSupported()
         {
             var ftpPath = Path.Combine(FtpBasePath, "CreatedDirectory");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.GetCurrentDirectoryNameAsync(ftpPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.GetCurrentDirectoryNameAsync(ftpPath));
         }
 
         #endregion
 
-        [TestMethod]
+        [Test]
         public async Task JudgeFileExistsSuccessAsync()
         {
             var ftpPath = Path.Combine(FtpBasePath, "RMA_20190826.txt");
 
-            Assert.IsFalse(await fileAccess.FileExistsAsync(ftpPath));
+            Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.False);
         }
 
-        [TestMethod]
+        [Test]
         public async Task SaveFileSuccessAsync()
         {
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
             await fileAccess.SaveFileAsync(ftpPath, "資料種類");
 
-            Assert.IsTrue(await fileAccess.FileExistsAsync(ftpPath));
+            Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public async Task SaveFileWithEncodingSuccessAsync()
         {
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
 
             await fileAccess.SaveFileAsync(ftpPath, "資料種類", Encoding.GetEncoding(950));
 
-            Assert.IsTrue(await fileAccess.FileExistsAsync(ftpPath));
+            Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public async Task SaveFileWithBytesSuccessAsync()
         {
             var ftpPath = await SaveFileAsync(FtpBasePath, "RMA_20190826.txt");
 
-            Assert.IsTrue(await fileAccess.FileExistsAsync(ftpPath));
+            Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.True);
         }
 
-        [TestMethod]
+        [Test]
         public async Task DeleteFileSuccessAsync()
         {
             var ftpPath = await SaveFileAsync(FtpBasePath, "RMA_20190826.txt");
 
             await fileAccess.DeleteFileAsync(ftpPath);
 
-            Assert.IsFalse(await fileAccess.FileExistsAsync(ftpPath));
+            Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.False);
         }
 
-        [TestMethod]
+        [Test]
         public async Task ReadUtf8FileSuccessAsync()
         {
             const string content = "資料種類";
@@ -558,10 +573,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             await fileAccess.SaveFileAsync(ftpPath, content);
 
-            Assert.AreEqual(content, await fileAccess.ReadTextFileAsync(ftpPath));
+            Assert.That(await fileAccess.ReadTextFileAsync(ftpPath), Is.EqualTo(content));
         }
 
-        [TestMethod]
+        [Test]
         public async Task ReadBig5FileSuccessAsync()
         {
             const string content = "資料種類";
@@ -571,20 +586,20 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
 
             await fileAccess.SaveFileAsync(ftpPath, content, encoding);
 
-            Assert.AreEqual(content, await fileAccess.ReadTextFileAsync(ftpPath, encoding));
+            Assert.That(await fileAccess.ReadTextFileAsync(ftpPath, encoding), Is.EqualTo(content));
         }
 
-        [TestMethod]
+        [Test]
         public async Task GetFileSizeSuccessAsync()
         {
             var ftpPath = await SaveFileAsync(FtpBasePath, "RMA_20190826.txt");
 
             var fileSize = await fileAccess.GetFileSizeAsync(ftpPath);
 
-            Assert.IsTrue(fileSize > 0);
+            Assert.That(fileSize, Is.GreaterThan(0));
         }
 
-        [TestMethod]
+        [Test]
         public async Task MoveFileSuccessAsync()
         {
             const string fileName = "RMA_20190826.txt";
@@ -598,11 +613,14 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             await fileAccess.CreateDirectoryAsync(subDirectoryPath);
             await fileAccess.MoveFileAsync(ftpPath, subFtpPath);
 
-            Assert.IsFalse(await fileAccess.FileExistsAsync(ftpPath));
-            Assert.IsTrue(await fileAccess.FileExistsAsync(subFtpPath));
+            Assert.Multiple(async () =>
+            {
+                Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.False);
+                Assert.That(await fileAccess.FileExistsAsync(subFtpPath), Is.True);
+            });
         }
 
-        [TestMethod]
+        [Test]
         public async Task CopyFileSuccessAsync()
         {
             const string fileName = "RMA_20190826.txt";
@@ -616,21 +634,24 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             await fileAccess.CreateDirectoryAsync(subDirectoryPath);
             await fileAccess.CopyFileAsync(ftpPath, subFtpPath);
 
-            Assert.IsTrue(await fileAccess.FileExistsAsync(ftpPath));
-            Assert.IsTrue(await fileAccess.FileExistsAsync(subFtpPath));
+            Assert.Multiple(async () =>
+            {
+                Assert.That(await fileAccess.FileExistsAsync(ftpPath), Is.True);
+                Assert.That(await fileAccess.FileExistsAsync(subFtpPath), Is.True);
+            });
         }
 
-        [TestMethod]
+        [Test]
         public void AppendUtf8AllLinesAsyncNotSupported()
         {
             const string content = "資料種類";
 
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.AppendAllLinesAsync(ftpPath, new[] {content}));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllLinesAsync(ftpPath, new[] {content}));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendBig5AllLinesAsyncNotSupported()
         {
             const string content = "資料種類";
@@ -638,34 +659,31 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.AppendAllLinesAsync(ftpPath, new[] {content}, encoding));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllLinesAsync(ftpPath, new[] {content}, encoding));
         }
 
-        [TestMethod]
-        public void ReadUtf8AllLinesAsyncNotSupported()
-        {
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(FtpBasePath, "utf8.txt")));
-        }
+        [Test]
+        public void ReadUtf8AllLinesAsyncNotSupported() => Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(FtpBasePath, "utf8.txt")));
 
-        [TestMethod]
+        [Test]
         public void ReadBig5AllLinesAsyncNotSupported()
         {
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(FtpBasePath, "big5.txt"), encoding));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.ReadAllLinesAsync(Path.Combine(FtpBasePath, "big5.txt"), encoding));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendUtf8AllTextAsyncNotSupported()
         {
             const string content = "資料種類";
 
             var ftpPath = Path.Combine(FtpBasePath, "utf8.txt");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(ftpPath, content));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(ftpPath, content));
         }
 
-        [TestMethod]
+        [Test]
         public void AppendBig5AllTextAsyncNotSupported()
         {
             const string content = "資料種類";
@@ -673,10 +691,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             var ftpPath = Path.Combine(FtpBasePath, "big5.txt");
             var encoding = Encoding.GetEncoding(950);
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(ftpPath, content, encoding));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.AppendAllTextAsync(ftpPath, content, encoding));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesWithFilePathAsyncNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -688,10 +706,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             };
             var zipFtpPath = Path.Combine(FtpBasePath, "compress.zip");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files, zipFtpPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files, zipFtpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesWithFileBytesAsyncNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -703,10 +721,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
             };
             var zipFtpPath = Path.Combine(FtpBasePath, "compress.zip");
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files, zipFtpPath));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files, zipFtpPath));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesAndReturnBytesWithFilePathAsyncNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -717,10 +735,10 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
                 { Path.GetFileName(ftpPath2), ftpPath2 }
             };
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files));
         }
 
-        [TestMethod]
+        [Test]
         public void CompressFilesAndReturnBytesWithFileBytesAsyncNotSupported()
         {
             var ftpPath1 = Path.Combine(FtpBasePath, "utf8.txt");
@@ -731,12 +749,12 @@ namespace Infra.FileAccess.Sftp.IntegrationTest
                 { Path.GetFileName(ftpPath2), Array.Empty<byte>() }
             };
 
-            Assert.ThrowsExceptionAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files));
+            Assert.ThrowsAsync<NotSupportedException>(() => fileAccess.CompressFilesAsync(files));
         }
 
         #endregion
 
-        [TestCleanup]
+        [TearDown]
         public async Task TearDown()
         {
             if (await fileAccess.DirectoryExistsAsync(FtpBasePath))

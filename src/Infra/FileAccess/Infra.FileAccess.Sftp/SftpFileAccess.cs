@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Infra.Core.Extensions;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Enums;
 using Infra.Core.FileAccess.Models;
 using Infra.FileAccess.Sftp.Configuration;
 using Infra.FileAccess.Sftp.Configuration.Validators;
@@ -38,6 +39,8 @@ namespace Infra.FileAccess.Sftp
         public string[] GetSubDirectories(string directoryPath, string searchPattern = "", SearchOption searchOption = default) => throw new NotSupportedException();
 
         public void DirectoryCompress(string directoryPath, string zipFilePath, int compressionLevel = 6) => throw new NotSupportedException();
+
+        public void DirectorySplitCompress(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6) => throw new NotSupportedException();
 
         public string GetParentPath(string directoryPath) => throw new NotSupportedException();
 
@@ -188,6 +191,8 @@ namespace Infra.FileAccess.Sftp
         }
 
         public Task DirectoryCompressAsync(string directoryPath, string zipFilePath, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+
+        public Task DirectorySplitCompressAsync(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
         public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 

@@ -1,5 +1,6 @@
 using System.Text;
 using Infra.Core.FileAccess.Abstractions;
+using Infra.Core.FileAccess.Enums;
 using NUnit.Framework;
 
 namespace Infra.FileAccess.Grpc.IntegrationTest
@@ -116,6 +117,15 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
 
             Assert.Throws<NotSupportedException>(() => fileAccess.DirectoryCompress(directoryPath, zipFilePath));
+        }
+
+        [Test]
+        public void DirectorySplitCompressNotSupported()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
+
+            Assert.Throws<NotSupportedException>(() => fileAccess.DirectorySplitCompress(directoryPath, zipFilePath, ZipDataUnit.MB, 100));
         }
 
         [Test]
@@ -491,6 +501,15 @@ namespace Infra.FileAccess.Grpc.IntegrationTest
             await fileAccess.DirectoryCompressAsync(directoryPath, zipFilePath);
 
             Assert.That(await fileAccess.FileExistsAsync(zipFilePath), Is.True);
+        }
+
+        [Test]
+        public void DirectorySplitCompressAsyncNotImplemented()
+        {
+            var directoryPath = Path.Combine(TempPath, "CreatedDirectory");
+            var zipFilePath = Path.Combine(TempPath, "DirectoryCompress.zip");
+
+            Assert.Throws<NotImplementedException>(() => fileAccess.DirectorySplitCompressAsync(directoryPath, zipFilePath, ZipDataUnit.MB, 100));
         }
 
         [Test]
