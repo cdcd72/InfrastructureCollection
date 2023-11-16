@@ -17,4 +17,16 @@ public static class StreamExtension
 
         return ms.ToArray();
     }
+
+    public static async Task<byte[]> ToBytesAsync(this Stream stream)
+    {
+        if (stream is MemoryStream ms)
+            return ms.ToArray();
+
+        using var outputStream = new MemoryStream();
+
+        await stream.CopyToAsync(outputStream);
+
+        return outputStream.ToArray();
+    }
 }
