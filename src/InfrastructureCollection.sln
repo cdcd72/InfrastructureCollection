@@ -112,6 +112,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.BarCode.QRCode.Integr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.BarCode.QRCode", "Infra\BarCode\Infra.BarCode.QRCode\Infra.BarCode.QRCode.csproj", "{6D1ECE7B-BDC5-4801-BAB7-6764CFF7CC26}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Time", "Time", "{A35CDCCF-05DA-4098-ADD7-D9298BF226D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Time.IntegrationTest", "Test\Infra\Time\Infra.Time.IntegrationTest\Infra.Time.IntegrationTest.csproj", "{32E7EA68-3EEB-4074-B547-0D184F118137}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -234,6 +238,10 @@ Global
 		{6D1ECE7B-BDC5-4801-BAB7-6764CFF7CC26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D1ECE7B-BDC5-4801-BAB7-6764CFF7CC26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D1ECE7B-BDC5-4801-BAB7-6764CFF7CC26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E7EA68-3EEB-4074-B547-0D184F118137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E7EA68-3EEB-4074-B547-0D184F118137}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E7EA68-3EEB-4074-B547-0D184F118137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E7EA68-3EEB-4074-B547-0D184F118137}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,6 +295,8 @@ Global
 		{0C07DD57-1FDD-4445-83AC-5F3D7ABDF985} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
 		{2C38B0DE-24C2-420F-A76B-D2EA65439BBB} = {0C07DD57-1FDD-4445-83AC-5F3D7ABDF985}
 		{6D1ECE7B-BDC5-4801-BAB7-6764CFF7CC26} = {697BE340-E08E-4B7B-A0D6-BF8CA3BBC3B7}
+		{A35CDCCF-05DA-4098-ADD7-D9298BF226D0} = {8FDC0C09-6ABC-4F38-8197-B9045D7A2B0E}
+		{32E7EA68-3EEB-4074-B547-0D184F118137} = {A35CDCCF-05DA-4098-ADD7-D9298BF226D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89635059-8C4D-4BBA-A465-9F18B51AA3CD}
