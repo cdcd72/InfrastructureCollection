@@ -6,16 +6,14 @@ public static class RandomNumberGenerator
 
     public static int Next(int min, int max)
     {
-        if (min > max)
-            throw new ArgumentOutOfRangeException(nameof(min));
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(min, max);
 
         return Next(max - min) + min;
     }
 
     public static int Next(int max)
     {
-        if (max < 0)
-            throw new ArgumentOutOfRangeException(nameof(max));
+        ArgumentOutOfRangeException.ThrowIfNegative(max);
 
         using var rng = System.Security.Cryptography.RandomNumberGenerator.Create();
 
