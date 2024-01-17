@@ -1,8 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
+#pragma warning disable CA1711
 
 namespace Infra.Core.EventBus.Abstractions;
 
-[SuppressMessage("Naming", "CA1711", Justification = "<Suspended>")]
 public interface IDynamicIntegrationEventHandler
 {
     Task HandleAsync(dynamic eventData);

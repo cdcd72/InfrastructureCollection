@@ -2,24 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Infra.Core.EventBus.Events;
 
-public record IntegrationEvent
+[method: JsonConstructor]
+public record IntegrationEvent(Guid Id, DateTime CreationDate)
 {
-    public IntegrationEvent()
-    {
-        Id = Guid.NewGuid();
-        CreationDate = DateTime.UtcNow;
-    }
-
-    [JsonConstructor]
-    public IntegrationEvent(Guid id, DateTime createDate)
-    {
-        Id = id;
-        CreationDate = createDate;
-    }
+    public IntegrationEvent() : this(Guid.NewGuid(), DateTime.UtcNow) { }
 
     [JsonInclude]
-    public Guid Id { get; private init; }
+    public Guid Id { get; private init; } = Id;
 
     [JsonInclude]
-    public DateTime CreationDate { get; private init; }
+    public DateTime CreationDate { get; private init; } = CreationDate;
 }
