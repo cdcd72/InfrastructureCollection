@@ -5,12 +5,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace Infra.Caching.Redis;
 
-public class RedisCache : ICache
+public class RedisCache(IDistributedCache cache) : ICache
 {
-    private readonly IDistributedCache cache;
-
-    public RedisCache(IDistributedCache cache) => this.cache = cache;
-
     #region Sync Method
 
     public void Set(string key, byte[] value, CacheOptions cacheOptions)
