@@ -952,15 +952,18 @@ public class GrpcFileAccess : IFileAccess
         var maximumBufferSize = 16 * largeBufferMultiple; // 16 MB
         var maximumFreeSmallPoolBytes = 100 * blockSize;
         var maximumFreeLargePoolBytes = maximumBufferSize * 4;
-        var recyclableMemoryStreamManager =
-            new RecyclableMemoryStreamManager(blockSize, largeBufferMultiple, maximumBufferSize)
+        var recyclableMemoryStreamManager = new RecyclableMemoryStreamManager(
+            new RecyclableMemoryStreamManager.Options
             {
+                BlockSize = blockSize,
+                LargeBufferMultiple = largeBufferMultiple,
+                MaximumBufferSize = maximumBufferSize,
                 AggressiveBufferReturn = true,
                 GenerateCallStacks = false,
-                MaximumFreeSmallPoolBytes = maximumFreeSmallPoolBytes,
-                MaximumFreeLargePoolBytes = maximumFreeLargePoolBytes,
+                MaximumSmallPoolFreeBytes = maximumFreeSmallPoolBytes,
+                MaximumLargePoolFreeBytes = maximumFreeLargePoolBytes,
                 ThrowExceptionOnToArray = true
-            };
+            });
         recyclableMemoryStreamManager.StreamDisposed += RecyclableMemoryStreamManager_StreamDisposed;
         return recyclableMemoryStreamManager;
     }

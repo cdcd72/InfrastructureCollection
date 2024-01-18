@@ -403,9 +403,9 @@ public class SftpFileAccess : IFileAccess
     /// <param name="searchPattern">搜尋 Pattern</param>
     /// <param name="searchOption">搜尋選項</param>
     /// <returns></returns>
-    private IEnumerable<SftpFile> GetSftpFiles(string path, string searchPattern, SearchOption searchOption)
+    private IEnumerable<ISftpFile> GetSftpFiles(string path, string searchPattern, SearchOption searchOption)
     {
-        var sftpFiles = new List<SftpFile>();
+        var sftpFiles = new List<ISftpFile>();
 
         using var sftp = GetSftpClient();
 
