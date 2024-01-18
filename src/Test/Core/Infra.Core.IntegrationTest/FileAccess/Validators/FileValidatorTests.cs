@@ -18,13 +18,13 @@ public class FileValidatorTests
     public void FileExtensionsNotAssigned() => Assert.Throws<ArgumentException>(() => FileValidator.IsValidFileExtensions("1.txt", null));
 
     [Test]
-    public void InvalidFileExtensions() => Assert.That(FileValidator.IsValidFileExtensions("1.txt", new[] { "jpg" }), Is.False);
+    public void InvalidFileExtensions() => Assert.That(FileValidator.IsValidFileExtensions("1.txt", ["jpg"]), Is.False);
 
     [Test]
-    public void ValidFileExtensions() => Assert.That(FileValidator.IsValidFileExtensions("1.jpg", new[] { "jpg" }), Is.True);
+    public void ValidFileExtensions() => Assert.That(FileValidator.IsValidFileExtensions("1.jpg", ["jpg"]), Is.True);
 
     [Test]
-    public void ValidFileExtensionsWithUpperCase() => Assert.That(FileValidator.IsValidFileExtensions("1.JPG", new[] { "JPG" }), Is.True);
+    public void ValidFileExtensionsWithUpperCase() => Assert.That(FileValidator.IsValidFileExtensions("1.JPG", ["JPG"]), Is.True);
 
     [Test]
     public void FileNameLengthNotAssigned() => Assert.Throws<ArgumentException>(() => FileValidator.IsValidFileNameLength("1.txt", 0));
@@ -48,10 +48,10 @@ public class FileValidatorTests
     public void FileNameSpecialSymbolsNotAssigned() => Assert.Throws<ArgumentException>(() => FileValidator.IsValidFileNameSpecialSymbols("1.txt", null));
 
     [Test]
-    public void InvalidFileNameSpecialSymbols() => Assert.That(FileValidator.IsValidFileNameSpecialSymbols("1#.txt", new[] { "#" }), Is.False);
+    public void InvalidFileNameSpecialSymbols() => Assert.That(FileValidator.IsValidFileNameSpecialSymbols("1#.txt", ["#"]), Is.False);
 
     [Test]
-    public void ValidFileNameSpecialSymbols() => Assert.That(FileValidator.IsValidFileNameSpecialSymbols("1.jpg", new[] { "#" }), Is.True);
+    public void ValidFileNameSpecialSymbols() => Assert.That(FileValidator.IsValidFileNameSpecialSymbols("1.jpg", ["#"]), Is.True);
 
     [Test]
     public void InvalidFileExtensionWithStream()
@@ -84,22 +84,4 @@ public class FileValidatorTests
         var fileBytes = File.ReadAllBytes(Path.Combine(RootPath, fileName));
         Assert.That(FileValidator.IsValidFileExtension(fileName, fileBytes), Is.True);
     }
-
-    #region Private Method
-
-    private static bool IsValidFileExtensionByBytes(string fileName)
-    {
-        var filePath = Path.Combine(RootPath, fileName);
-        var fileData = File.ReadAllBytes(filePath);
-        return FileExtensionValidator.IsValidFileExtension(fileName, fileData, null);
-    }
-
-    private static bool IsValidFileExtensionByFileStream(string fileName)
-    {
-        var filePath = Path.Combine(RootPath, fileName);
-        using var fs = File.OpenRead(filePath);
-        return FileExtensionValidator.IsValidFileExtension(fileName, fs, null);
-    }
-
-    #endregion
 }
