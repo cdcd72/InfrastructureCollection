@@ -6,6 +6,8 @@ namespace Infra.Core.Extensions;
 
 public static class ObjectExtension
 {
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new();
+
     public static string ToJson(this object obj, TextEncoderSettings encoderSettings = null, bool writeIndented = false)
     {
         if (encoderSettings is null)
@@ -16,10 +18,9 @@ public static class ObjectExtension
             encoderSettings.AllowRange(UnicodeRanges.All);
         }
 
-        return JsonSerializer.Serialize(obj, new JsonSerializerOptions
-        {
-            Encoder = JavaScriptEncoder.Create(encoderSettings),
-            WriteIndented = writeIndented
-        });
+        JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(encoderSettings);
+        JsonSerializerOptions.WriteIndented = writeIndented;
+
+        return JsonSerializer.Serialize(obj, JsonSerializerOptions);
     }
 }
