@@ -3,17 +3,8 @@ using Infra.Core.Crypto.Abstractions;
 
 namespace Infra.Crypto.Algorithm;
 
-public class Aes : CipherBase, ICryptoAlgorithm
+public class Aes(byte[] key, byte[] iv) : CipherBase, ICryptoAlgorithm
 {
-    private readonly byte[] key;
-    private readonly byte[] iv;
-
-    public Aes(byte[] key, byte[] iv)
-    {
-        this.key = key;
-        this.iv = iv;
-    }
-
     public string Encrypt(string text)
     {
         using var aes = System.Security.Cryptography.Aes.Create();
