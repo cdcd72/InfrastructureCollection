@@ -5,12 +5,8 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Infra.Caching.Memory;
 
-public class MemoryCache : ICache
+public class MemoryCache(IMemoryCache cache) : ICache
 {
-    private readonly IMemoryCache cache;
-
-    public MemoryCache(IMemoryCache cache) => this.cache = cache;
-
     #region Sync Method
 
     public void Set(string key, byte[] value, CacheOptions cacheOptions)

@@ -1,13 +1,12 @@
 using RabbitMQ.Client;
 
-namespace Infra.EventBus.RabbitMQ.Abstractions
+namespace Infra.EventBus.RabbitMQ.Abstractions;
+
+public interface IRabbitMqConnection : IDisposable
 {
-    public interface IRabbitMqConnection : IDisposable
-    {
-        bool IsConnected { get; }
+    bool IsConnected { get; }
 
-        IModel CreateChannel();
+    IModel CreateChannel();
 
-        bool TryConnect();
-    }
+    bool TryConnect();
 }

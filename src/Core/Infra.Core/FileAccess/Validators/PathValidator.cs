@@ -1,11 +1,8 @@
 namespace Infra.Core.FileAccess.Validators;
 
-public class PathValidator
+public class PathValidator(params string[] rootPaths)
 {
-    private readonly string[] rootPaths;
     private readonly string[] violationPathPatterns = { $"..{Path.AltDirectorySeparatorChar}", $"..{Path.DirectorySeparatorChar}" };
-
-    public PathValidator(params string[] rootPaths) => this.rootPaths = rootPaths;
 
     public bool IsValidPath(string path)
     {

@@ -10,8 +10,7 @@ public class SecureStringModelBinder : BaseModelBinder
 {
     public override async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        if (bindingContext == null)
-            throw new ArgumentNullException(nameof(bindingContext));
+        ArgumentNullException.ThrowIfNull(bindingContext);
 
         var modelType = bindingContext.ModelMetadata.ModelType;
         var model = Activator.CreateInstance(modelType);

@@ -1,22 +1,21 @@
-﻿namespace GrpcFileServer.Configuration
+﻿namespace GrpcFileServer.Configuration;
+
+public class Settings
 {
-    public class Settings
-    {
-        public const string SectionName = "File:Grpc:Server";
+    public const string SectionName = "File:Grpc:Server";
 
-        /// <summary>
-        /// Files saved directory
-        /// </summary>
-        public string Root { get; set; }
+    /// <summary>
+    /// Files saved directory
+    /// </summary>
+    public string Root { get; set; }
 
-        /// <summary>
-        /// File chunk size
-        /// </summary>
-        public int ChunkSize { get; set; }
+    /// <summary>
+    /// File chunk size
+    /// </summary>
+    public int ChunkSize { get; set; }
 
-        /// <summary>
-        /// File chunk buffer
-        /// </summary>
-        public int ChunkBufferCount { get; set; }
-    }
+    /// <summary>
+    /// File chunk buffer
+    /// </summary>
+    public int ChunkBufferCount { get; set; }
 }

@@ -10,7 +10,8 @@ namespace Infra.Core.Extensions;
 
 public static class StringExtension
 {
-    private static string[] DefaultExcludeStringsForLogForging => new[] { "%0a", "%0d", "%0A", "%0D", "\r", "\n" };
+    private static string[] DefaultExcludeStringsForLogForging => ["%0a", "%0d", "%0A", "%0D", "\r", "\n"];
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new();
 
     public static bool ToBoolean(this string value) => bool.TryParse(value, out var result) && result;
 
@@ -78,10 +79,9 @@ public static class StringExtension
             encoderSettings.AllowRange(UnicodeRanges.All);
         }
 
-        return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
-        {
-            Encoder = JavaScriptEncoder.Create(encoderSettings)
-        });
+        JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(encoderSettings);
+
+        return JsonSerializer.Deserialize<T>(json, JsonSerializerOptions);
     }
 
     public static string AddNewLine(this string value) => $"{value}{Environment.NewLine}";

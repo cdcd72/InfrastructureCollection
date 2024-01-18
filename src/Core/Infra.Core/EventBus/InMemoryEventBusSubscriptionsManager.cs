@@ -6,24 +6,14 @@ namespace Infra.Core.EventBus;
 
 public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManager
 {
-    private readonly List<Type> _eventTypes;
-    private readonly Dictionary<string, List<SubscriptionInfo>> _handlers;
+    private readonly List<Type> eventTypes = [];
+    private readonly Dictionary<string, List<SubscriptionInfo>> handlers = new();
 
     #region Properties
 
-    public bool IsEmpty => !_handlers.Keys.Any();
+    public bool IsEmpty => handlers.Keys.Count == 0;
 
     public event EventHandler<string> OnEventRemoved;
-
-    #endregion
-
-    #region Constructor
-
-    public InMemoryEventBusSubscriptionsManager()
-    {
-        _eventTypes = new List<Type>();
-        _handlers = new Dictionary<string, List<SubscriptionInfo>>();
-    }
 
     #endregion
 
@@ -35,8 +25,8 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
 
         AddSubscription(typeof(TIntegrationEventHandler), eventName, isDynamic: false);
 
-        if (!_eventTypes.Contains(typeof(TIntegrationEvent)))
-            _eventTypes.Add(typeof(TIntegrationEvent));
+        if (!eventTypes.Contains(typeof(TIntegrationEvent)))
+            eventTypes.Add(typeof(TIntegrationEvent));
     }
 
     public void AddDynamicSubscription<TDynamicIntegrationEventHandler>(string eventName) where TDynamicIntegrationEventHandler : IDynamicIntegrationEventHandler
@@ -63,37 +53,37 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
         => HasSubscriptionsForEvent(GetEventName<TIntegrationEvent>());
 
     public bool HasSubscriptionsForEvent(string eventName)
-        => _handlers.ContainsKey(eventName);
+        => handlers.ContainsKey(eventName);
 
     public IEnumerable<SubscriptionInfo> GetHandlersForEvent<TIntegrationEvent>() where TIntegrationEvent : IntegrationEvent
         => GetHandlersForEvent(GetEventName<TIntegrationEvent>());
 
     public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName)
-        => _handlers[eventName];
+        => handlers[eventName];
 
     public string GetEventName<TIntegrationEvent>()
         => typeof(TIntegrationEvent).Name;
 
     public Type GetEventTypeByName(string eventName)
-        => _eventTypes.SingleOrDefault(type => type.Name == eventName);
+        => eventTypes.SingleOrDefault(type => type.Name == eventName);
 
     public void Clear()
-        => _handlers.Clear();
+        => handlers.Clear();
 
     #region Private Method
 
     private void AddSubscription(Type handlerType, string eventName, bool isDynamic)
     {
         if (!HasSubscriptionsForEvent(eventName))
-            _handlers.Add(eventName, new List<SubscriptionInfo>());
+            handlers.Add(eventName, new List<SubscriptionInfo>());
 
-        if (_handlers[eventName].Any(sub => sub.HandlerType == handlerType))
+        if (handlers[eventName].Any(sub => sub.HandlerType == handlerType))
             throw new ArgumentException($"Handler Type {handlerType.Name} already registered for '{eventName}'", nameof(handlerType));
 
         var subscription =
             isDynamic ? SubscriptionInfo.Dynamic(handlerType) : SubscriptionInfo.Typed(handlerType);
 
-        _handlers[eventName].Add(subscription);
+        handlers[eventName].Add(subscription);
     }
 
     private SubscriptionInfo FindDynamicSubscription<TDynamicIntegrationEventHandler>(string eventName)
@@ -114,27 +104,26 @@ public class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManage
         if (!HasSubscriptionsForEvent(eventName))
             return null;
 
-        return _handlers[eventName].SingleOrDefault(sub => sub.HandlerType == handlerType);
+        return handlers[eventName].SingleOrDefault(sub => sub.HandlerType == handlerType);
     }
 
     private void RemoveHandler(string eventName, SubscriptionInfo subscription)
     {
-        if (subscription != null)
+        if (subscription == null) return;
+
+        handlers[eventName].Remove(subscription);
+
+        // None subscriptions situation...
+        if (handlers[eventName].Count == 0)
         {
-            _handlers[eventName].Remove(subscription);
+            handlers.Remove(eventName);
 
-            // None subscriptions situation...
-            if (!_handlers[eventName].Any())
-            {
-                _handlers.Remove(eventName);
+            var eventType = eventTypes.SingleOrDefault(type => type.Name == eventName);
 
-                var eventType = _eventTypes.SingleOrDefault(type => type.Name == eventName);
+            if (eventType != null)
+                eventTypes.Remove(eventType);
 
-                if (eventType != null)
-                    _eventTypes.Remove(eventType);
-
-                RaiseOnEventRemoved(eventName);
-            }
+            RaiseOnEventRemoved(eventName);
         }
     }
 

@@ -8,101 +8,100 @@ using Infra.Email.Mailgun.Configuration.Validators;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Infra.Email.Mailgun
+namespace Infra.Email.Mailgun;
+
+public class MailgunClient : IMailClient
 {
-    public class MailgunClient : IMailClient
+    private readonly ILogger<MailgunClient> logger;
+    private readonly Settings settings;
+    private readonly IHttpClientFactory httpClientFactory;
+
+    public MailgunClient(
+        ILogger<MailgunClient> logger,
+        IHttpClientFactory httpClientFactory,
+        IOptions<Settings> settings)
     {
-        private readonly ILogger<MailgunClient> logger;
-        private readonly Settings settings;
-        private readonly IHttpClientFactory httpClientFactory;
+        this.logger = logger;
+        this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
+        this.httpClientFactory = httpClientFactory;
+    }
 
-        public MailgunClient(
-            ILogger<MailgunClient> logger,
-            IHttpClientFactory httpClientFactory,
-            IOptions<Settings> settings)
+    public async Task SendAsync(MailParam mailParam)
+    {
+        var apiBaseUrl = settings.ApiBaseUrl.EndsWith('/') ? settings.ApiBaseUrl : $"{settings.ApiBaseUrl}/";
+
+        try
         {
-            this.logger = logger;
-            this.settings = SettingsValidator.TryValidate(settings.Value, out var validationException) ? settings.Value : throw validationException;
-            this.httpClientFactory = httpClientFactory;
+            var client = httpClientFactory.CreateClient();
+
+            client.BaseAddress = new Uri(apiBaseUrl);
+
+            var byteArray = Encoding.UTF8.GetBytes($"api:{settings.ApiKey}");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+            var content = GetMailContent(mailParam);
+
+            await client.PostAsync("messages", content);
+        }
+        catch (Exception ex)
+        {
+            logger.Error($"Send mail error: {ex.Message}");
+            throw;
+        }
+    }
+
+    private static MultipartFormDataContent GetMailContent(MailParam mailParams)
+    {
+        var content = new MultipartFormDataContent
+        {
+            { new StringContent(mailParams.SenderAddress), "from" },
+            { new StringContent(mailParams.Subject), "subject" }
+        };
+
+        // Set body content
+        content.Add(new StringContent(mailParams.Message), mailParams.IsHtml ? "html" : "text");
+
+        // Set receivers
+        if (mailParams.Mailto?.Count > 0)
+        {
+            foreach (var to in mailParams.Mailto)
+            {
+                content.Add(new StringContent(to), "to");
+            }
         }
 
-        public async Task SendAsync(MailParam mailParam)
+        // Set cc
+        if (mailParams.Cc?.Count > 0)
         {
-            var apiBaseUrl = settings.ApiBaseUrl.EndsWith("/", StringComparison.Ordinal) ? settings.ApiBaseUrl : $"{settings.ApiBaseUrl}/";
-
-            try
+            foreach (var cc in mailParams.Cc)
             {
-                var client = httpClientFactory.CreateClient();
-
-                client.BaseAddress = new Uri(apiBaseUrl);
-
-                var byteArray = Encoding.UTF8.GetBytes($"api:{settings.ApiKey}");
-
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
-                var content = GetMailContent(mailParam);
-
-                await client.PostAsync("messages", content);
-            }
-            catch (Exception ex)
-            {
-                logger.Error($"Send mail error: {ex.Message}");
-                throw;
+                content.Add(new StringContent(cc), "cc");
             }
         }
 
-        private static MultipartFormDataContent GetMailContent(MailParam mailParams)
+        // Set bcc
+        if (mailParams.Bcc?.Count > 0)
         {
-            var content = new MultipartFormDataContent
+            foreach (var bcc in mailParams.Bcc)
             {
-                { new StringContent(mailParams.SenderAddress), "from" },
-                { new StringContent(mailParams.Subject), "subject" }
-            };
-
-            // Set body content
-            content.Add(new StringContent(mailParams.Message), mailParams.IsHtml ? "html" : "text");
-
-            // Set receivers
-            if (mailParams.Mailto?.Count > 0)
-            {
-                foreach (var to in mailParams.Mailto)
-                {
-                    content.Add(new StringContent(to), "to");
-                }
+                content.Add(new StringContent(bcc), "bcc");
             }
-
-            // Set cc
-            if (mailParams.Cc?.Count > 0)
-            {
-                foreach (var cc in mailParams.Cc)
-                {
-                    content.Add(new StringContent(cc), "cc");
-                }
-            }
-
-            // Set bcc
-            if (mailParams.Bcc?.Count > 0)
-            {
-                foreach (var bcc in mailParams.Bcc)
-                {
-                    content.Add(new StringContent(bcc), "bcc");
-                }
-            }
-
-            // Set attachment
-            if (mailParams.Attachment?.Count > 0)
-            {
-                foreach (var attachmentName in mailParams.Attachment.Keys)
-                {
-                    var attachmentBytes = mailParams.Attachment[attachmentName];
-
-                    var fileContent = new ByteArrayContent(attachmentBytes);
-
-                    content.Add(fileContent, "attachment", attachmentName);
-                }
-            }
-
-            return content;
         }
+
+        // Set attachment
+        if (mailParams.Attachment?.Count > 0)
+        {
+            foreach (var attachmentName in mailParams.Attachment.Keys)
+            {
+                var attachmentBytes = mailParams.Attachment[attachmentName];
+
+                var fileContent = new ByteArrayContent(attachmentBytes);
+
+                content.Add(fileContent, "attachment", attachmentName);
+            }
+        }
+
+        return content;
     }
 }

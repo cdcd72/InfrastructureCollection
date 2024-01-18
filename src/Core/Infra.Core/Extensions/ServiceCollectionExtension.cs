@@ -14,19 +14,19 @@ public static class ServiceCollectionExtension
 
     public static IServiceCollection AddSingletonConfig<TConfig>(this IServiceCollection services, IConfiguration config) where TConfig : class
     {
-        services.AddSingleton(sp => BindConfigInstance<TConfig>(config));
+        services.AddSingleton(_ => BindConfigInstance<TConfig>(config));
         return services;
     }
 
     public static IServiceCollection AddScopedConfig<TConfig>(this IServiceCollection services, IConfiguration config) where TConfig : class
     {
-        services.AddScoped(sp => BindConfigInstance<TConfig>(config));
+        services.AddScoped(_ => BindConfigInstance<TConfig>(config));
         return services;
     }
 
     public static IServiceCollection AddTransientConfig<TConfig>(this IServiceCollection services, IConfiguration config) where TConfig : class
     {
-        services.AddTransient(sp => BindConfigInstance<TConfig>(config));
+        services.AddTransient(_ => BindConfigInstance<TConfig>(config));
         return services;
     }
 
@@ -35,13 +35,13 @@ public static class ServiceCollectionExtension
         switch (lifetime)
         {
             case ServiceLifetime.Singleton:
-                services.AddSingleton(sp => BindConfigInstance<TConfig>(config));
+                services.AddSingleton(_ => BindConfigInstance<TConfig>(config));
                 break;
             case ServiceLifetime.Scoped:
-                services.AddScoped(sp => BindConfigInstance<TConfig>(config));
+                services.AddScoped(_ => BindConfigInstance<TConfig>(config));
                 break;
             case ServiceLifetime.Transient:
-                services.AddTransient(sp => BindConfigInstance<TConfig>(config));
+                services.AddTransient(_ => BindConfigInstance<TConfig>(config));
                 break;
             default:
                 throw new UnexpectedEnumValueException($"Value of enum {typeof(ServiceLifetime)}: {nameof(ServiceLifetime)} is not supported.");

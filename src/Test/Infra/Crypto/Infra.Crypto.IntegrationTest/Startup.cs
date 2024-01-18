@@ -22,7 +22,7 @@ public class Startup
 
     #region Private Method
 
-    private static IServiceProvider ConfigureServices(IServiceCollection services)
+    private static ServiceProvider ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<ICryptoFactory, CryptoFactory>();
 

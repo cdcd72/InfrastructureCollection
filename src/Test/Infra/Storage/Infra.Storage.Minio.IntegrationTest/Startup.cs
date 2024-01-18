@@ -23,7 +23,7 @@ public class Startup
 
     #region Private Method
 
-    private IServiceProvider ConfigureServices(IServiceCollection services)
+    private ServiceProvider ConfigureServices(IServiceCollection services)
     {
         services.Configure<Settings>(settings => Configuration.GetSection(Settings.SectionName).Bind(settings));
 

@@ -6,35 +6,29 @@ using Infra.Core.Background.Models;
 
 namespace Infra.Core.Background;
 
-public class BackgroundTaskQueue : IBackgroundTaskQueue
+public class BackgroundTaskQueue(BackgroundTaskQueueOptions backgroundTaskQueueOptions) : IBackgroundTaskQueue
 {
-    private readonly Channel<Func<CancellationToken, ValueTask>> _queue;
+    private readonly Channel<Func<CancellationToken, ValueTask>> queue =
+        Channel.CreateBounded<Func<CancellationToken, ValueTask>>(
+            new BoundedChannelOptions(backgroundTaskQueueOptions.Capacity)
+            {
+                FullMode = backgroundTaskQueueOptions.FullMode
+            });
 
     #region Properties
 
-    public string Name { get; }
+    public string Name { get; } = backgroundTaskQueueOptions.Name;
 
-    public int QueuedCount => _queue.Reader.Count;
+    public int QueuedCount => queue.Reader.Count;
 
     #endregion
 
-    public BackgroundTaskQueue(BackgroundTaskQueueOptions backgroundTaskQueueOptions)
-    {
-        Name = backgroundTaskQueueOptions.Name;
-
-        _queue = Channel.CreateBounded<Func<CancellationToken, ValueTask>>(new BoundedChannelOptions(backgroundTaskQueueOptions.Capacity)
-        {
-            FullMode = backgroundTaskQueueOptions.FullMode
-        });
-    }
-
     public async ValueTask EnqueueAsync(Func<CancellationToken, ValueTask> workItem)
     {
-        if (workItem is null)
-            throw new ArgumentNullException(nameof(workItem));
+        ArgumentNullException.ThrowIfNull(workItem);
 
-        await _queue.Writer.WriteAsync(workItem);
+        await queue.Writer.WriteAsync(workItem);
     }
 
-    public async ValueTask<Func<CancellationToken, ValueTask>> DequeueAsync(CancellationToken cancellationToken) => await _queue.Reader.ReadAsync(cancellationToken);
+    public async ValueTask<Func<CancellationToken, ValueTask>> DequeueAsync(CancellationToken cancellationToken) => await queue.Reader.ReadAsync(cancellationToken);
 }

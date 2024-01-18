@@ -1,8 +1,6 @@
 ﻿namespace Infra.Core.Binders.Models;
 
-public class SeqNo
+public class SeqNo(string seqNo)
 {
-    public string Value { get; }
-
-    public SeqNo(string seqNo) => Value = seqNo;
+    public string Value { get; } = seqNo;
 }

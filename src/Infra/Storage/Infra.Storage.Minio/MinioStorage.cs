@@ -4,13 +4,14 @@ using Infra.Storage.Minio.Configuration;
 using Infra.Storage.Minio.Configuration.Validators;
 using Microsoft.Extensions.Options;
 using Minio;
+using Minio.DataModel.Args;
 
 namespace Infra.Storage.Minio;
 
 public class MinioStorage : IObjectStorage
 {
     private readonly Settings settings;
-    private readonly MinioClient minioClient;
+    private readonly IMinioClient minioClient;
 
     public MinioStorage(IOptions<Settings> settings)
     {
@@ -48,19 +49,12 @@ public class MinioStorage : IObjectStorage
 
     public async Task<bool> ObjectExistsAsync(string bucketName, string objectName)
     {
-        try
-        {
-            await minioClient.StatObjectAsync(
-                new StatObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(objectName));
+        var stat = await minioClient.StatObjectAsync(
+            new StatObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(objectName));
 
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        return stat.ContentType is not null;
     }
 
     public async Task PutObjectAsync(string bucketName, string objectName, Stream data, long size)
@@ -111,7 +105,7 @@ public class MinioStorage : IObjectStorage
 
     #region Private Method
 
-    private static MinioClient GetMinioClient(Settings settings)
+    private static IMinioClient GetMinioClient(Settings settings)
     {
         var minioClient = new MinioClient()
             .WithEndpoint(settings.Endpoint)
