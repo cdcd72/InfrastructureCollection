@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Infra.Core.Storage.Abstractions;
+using Minio.Exceptions;
 using NUnit.Framework;
 
 namespace Infra.Storage.Minio.IntegrationTest;
@@ -85,7 +86,12 @@ public class MinioStorageTests
         const string bucketName = "temp";
         const string objectName = "object";
 
-        Assert.That(await storage.ObjectExistsAsync(bucketName, objectName), Is.False);
+        await storage.MakeBucketAsync(bucketName);
+
+        Assert.ThrowsAsync<ObjectNotFoundException>(() => storage.ObjectExistsAsync(bucketName, objectName));
+
+        // Recovery
+        await storage.RemoveBucketAsync(bucketName);
     }
 
     [Test]
@@ -123,7 +129,7 @@ public class MinioStorageTests
 
         await storage.RemoveObjectAsync(bucketName, objectName);
 
-        Assert.That(await storage.ObjectExistsAsync(bucketName, objectName), Is.False);
+        Assert.ThrowsAsync<ObjectNotFoundException>(() => storage.ObjectExistsAsync(bucketName, objectName));
 
         // Recovery
         await storage.RemoveBucketAsync(bucketName);
