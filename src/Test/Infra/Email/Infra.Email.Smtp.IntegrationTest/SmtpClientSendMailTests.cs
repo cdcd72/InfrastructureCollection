@@ -25,7 +25,7 @@ public class SmtpClientSendMailTests
 
     private static string SenderName => "TestUser";
 
-    private static List<string> Mailto => new();
+    private static List<string> Mailto => ["test@test.com"];
 
     private static List<string> CcTo => new();
 

@@ -170,7 +170,7 @@ public class MinioStorageTests
 
         await storage.PutObjectAsync(bucketName, objectName, new MemoryStream(bytes), bytes.Length);
 
-        Assert.That(storage.ListObjects(bucketName), Has.Count.EqualTo(1));
+        Assert.That(await storage.ListObjects(bucketName), Has.Count.EqualTo(1));
 
         // Recovery
         await storage.RemoveObjectAsync(bucketName, objectName);

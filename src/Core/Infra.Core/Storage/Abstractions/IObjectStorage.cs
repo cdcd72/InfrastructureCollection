@@ -24,7 +24,7 @@ public interface IObjectStorage
 
     Task<Stream> GetObjectAsync(string bucketName, string objectName);
 
-    List<string> ListObjects(string bucketName, string prefix = null, bool recursive = true);
+    Task<List<string>> ListObjects(string bucketName, string prefix = null, bool recursive = true);
 
     #endregion
 }

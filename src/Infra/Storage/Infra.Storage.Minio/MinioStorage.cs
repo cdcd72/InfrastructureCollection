@@ -84,19 +84,20 @@ public class MinioStorage : IObjectStorage
         return ms;
     }
 
-    public List<string> ListObjects(string bucketName, string prefix = null, bool recursive = true)
+    public async Task<List<string>> ListObjects(string bucketName, string prefix = null, bool recursive = true)
     {
         var result = new List<string>();
 
-        var observable = minioClient.ListObjectsAsync(
+        var objects = minioClient.ListObjectsEnumAsync(
             new ListObjectsArgs()
                 .WithBucket(bucketName)
                 .WithPrefix(prefix)
                 .WithRecursive(recursive));
 
-        observable.Subscribe(item => result.Add(item.Key));
-
-        observable.DefaultIfEmpty().Wait();
+        await foreach (var item in objects)
+        {
+            result.Add(item.Key);
+        }
 
         return result;
     }
