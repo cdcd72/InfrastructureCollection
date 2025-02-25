@@ -10,6 +10,9 @@ The practice may not be the best, but I hope to get better and better!
 
 > All infrastructure are base on **[Infra.Core](src/Core/Infra.Core)**.
 
+- Auth
+  - [Infra.Auth.Jwt](src/Infra/Auth/Infra.Auth.Jwt)
+    - Implement with [Microsoft.AspNetCore.Authentication.JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer) 
 - BarCode
   - [Infra.BarCode.QRCode](src/Infra/BarCode/Infra.BarCode.QRCode)
     - Implement with [ZXing.Net](https://github.com/micjahn/ZXing.Net)
