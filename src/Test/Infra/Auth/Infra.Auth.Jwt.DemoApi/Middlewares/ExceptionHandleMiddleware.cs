@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Infra.Core.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +31,7 @@ public class ExceptionHandleMiddleware
 
     private async Task ProcessExceptionAsync(HttpContext context, Exception exception)
     {
-        _logger.LogError($"Api unexpected error occurred! message:{exception.Message}");
+        _logger.Error($"Api unexpected error occurred! message:{exception.Message}");
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 

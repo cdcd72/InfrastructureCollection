@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using Infra.Core.Storage.Abstractions;
+﻿using Infra.Core.Storage.Abstractions;
 using Infra.Storage.Minio.Configuration;
 using Infra.Storage.Minio.Configuration.Validators;
 using Microsoft.Extensions.Options;

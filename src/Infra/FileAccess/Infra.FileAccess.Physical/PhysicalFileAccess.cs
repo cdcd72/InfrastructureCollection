@@ -1,12 +1,12 @@
+using System.IO.Compression;
 using System.Text;
+using Infra.Core.Extensions;
 using Infra.Core.FileAccess.Abstractions;
 using Infra.Core.FileAccess.Enums;
 using Infra.Core.FileAccess.Models;
 using Infra.Core.FileAccess.Validators;
 using Infra.FileAccess.Physical.Configuration;
 using Infra.FileAccess.Physical.Configuration.Validators;
-using Ionic.Zip;
-using Ionic.Zlib;
 using Microsoft.Extensions.Options;
 
 namespace Infra.FileAccess.Physical;
@@ -46,12 +46,7 @@ public class PhysicalFileAccess : IFileAccess
         directoryPath = GetVerifiedPath(directoryPath);
         zipFilePath = GetVerifiedPath(zipFilePath);
 
-        using var zip = new ZipFile();
-
-        zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-        zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-        zip.AddDirectory(directoryPath);
-        zip.Save(zipFilePath);
+        ZipFile.CreateFromDirectory(directoryPath, zipFilePath, compressionLevel.ToCompressionLevel(), false);
     }
 
     public void DirectorySplitCompress(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6)
@@ -59,15 +54,35 @@ public class PhysicalFileAccess : IFileAccess
         directoryPath = GetVerifiedPath(directoryPath);
         zipFilePath = GetVerifiedPath(zipFilePath);
 
-        using var zip = new ZipFile();
+        var tempZip = Path.Combine(Path.GetDirectoryName(zipFilePath), "temp.zip");
 
-        zip.MaxOutputSegmentSize = segmentSize * (int)zipDataUnit;
-        zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-        zip.BufferSize = 1024;
-        zip.CaseSensitiveRetrieval = true;
-        zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-        zip.AddItem(directoryPath, string.Empty);
-        zip.Save(zipFilePath);
+        ZipFile.CreateFromDirectory(directoryPath, tempZip);
+
+        using (var zipToSplit = new FileStream(tempZip, FileMode.Open, System.IO.FileAccess.Read))
+        {
+            var buffer = new byte[8192];
+            var partNumber = 1;
+            var bytesRemaining = zipToSplit.Length;
+
+            while (bytesRemaining > 0)
+            {
+                var partFileName = $"{zipFilePath}.{partNumber:D3}";
+                using (var partFile = new FileStream(partFileName, FileMode.Create, System.IO.FileAccess.Write))
+                {
+                    var bytesToWrite = Math.Min(segmentSize * (int)zipDataUnit, bytesRemaining);
+                    while (bytesToWrite > 0)
+                    {
+                        var bytesRead = zipToSplit.Read(buffer, 0, (int)Math.Min(buffer.Length, bytesToWrite));
+                        partFile.Write(buffer, 0, bytesRead);
+                        bytesToWrite -= bytesRead;
+                        bytesRemaining -= bytesRead;
+                    }
+                }
+                partNumber++;
+            }
+        }
+
+        DeleteFile(tempZip);
     }
 
     public string GetParentPath(string directoryPath)
@@ -155,42 +170,50 @@ public class PhysicalFileAccess : IFileAccess
     {
         using var ms = new MemoryStream();
 
-        using (var zip = new ZipFile())
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Update, true))
         {
-            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-
             foreach (var (compressName, path) in files)
             {
-                var fileBytes = ReadFile(path);
-
-                zip.AddEntry(compressName, fileBytes);
+                zip.CreateEntryFromFile(GetVerifiedPath(path), compressName, compressionLevel.ToCompressionLevel());
             }
-
-            zip.Save(ms);
         }
 
-        return ms.ToArray();
+        byte[] compressedFileBytes;
+
+        using (var binaryReader = new BinaryReader(ms))
+        {
+            ms.Position = 0;
+            compressedFileBytes = binaryReader.ReadBytes((int)ms.Length);
+        }
+
+        return compressedFileBytes;
     }
 
     public byte[] CompressFiles(Dictionary<string, byte[]> files, int compressionLevel = 6)
     {
         using var ms = new MemoryStream();
 
-        using (var zip = new ZipFile())
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Update, true))
         {
-            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-
             foreach (var (compressName, fileBytes) in files)
             {
-                zip.AddEntry(compressName, fileBytes);
-            }
+                var entry = zip.CreateEntry(compressName, compressionLevel.ToCompressionLevel());
 
-            zip.Save(ms);
+                using var entryStream = entry.Open();
+
+                entryStream.Write(fileBytes, 0, fileBytes.Length);
+            }
         }
 
-        return ms.ToArray();
+        byte[] compressedFileBytes;
+
+        using (var binaryReader = new BinaryReader(ms))
+        {
+            ms.Position = 0;
+            compressedFileBytes = binaryReader.ReadBytes((int)ms.Length);
+        }
+
+        return compressedFileBytes;
     }
 
     #endregion
@@ -219,32 +242,45 @@ public class PhysicalFileAccess : IFileAccess
         directoryPath = GetVerifiedPath(directoryPath);
         zipFilePath = GetVerifiedPath(zipFilePath);
 
-        using var zip = new ZipFile();
-
-        zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-        zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-        zip.AddDirectory(directoryPath);
-        zip.Save(zipFilePath);
+        ZipFile.CreateFromDirectory(directoryPath, zipFilePath, compressionLevel.ToCompressionLevel(), false);
 
         return Task.CompletedTask;
     }
 
-    public Task DirectorySplitCompressAsync(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
+    public async Task DirectorySplitCompressAsync(string directoryPath, string zipFilePath, ZipDataUnit zipDataUnit, int segmentSize, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
     {
         directoryPath = GetVerifiedPath(directoryPath);
         zipFilePath = GetVerifiedPath(zipFilePath);
 
-        using var zip = new ZipFile();
+        var tempZip = Path.Combine(Path.GetDirectoryName(zipFilePath), "temp.zip");
 
-        zip.MaxOutputSegmentSize = segmentSize * (int)zipDataUnit;
-        zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-        zip.BufferSize = 1024;
-        zip.CaseSensitiveRetrieval = true;
-        zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-        zip.AddItem(directoryPath, string.Empty);
-        zip.Save(zipFilePath);
+        ZipFile.CreateFromDirectory(directoryPath, tempZip);
 
-        return Task.CompletedTask;
+        await using (var zipToSplit = new FileStream(tempZip, FileMode.Open, System.IO.FileAccess.Read))
+        {
+            var buffer = new byte[8192];
+            var partNumber = 1;
+            var bytesRemaining = zipToSplit.Length;
+
+            while (bytesRemaining > 0)
+            {
+                var partFileName = $"{zipFilePath}.{partNumber:D3}";
+                await using (var partFile = new FileStream(partFileName, FileMode.Create, System.IO.FileAccess.Write))
+                {
+                    var bytesToWrite = Math.Min(segmentSize * (int)zipDataUnit, bytesRemaining);
+                    while (bytesToWrite > 0)
+                    {
+                        var bytesRead = await zipToSplit.ReadAsync(buffer.AsMemory(0, (int)Math.Min(buffer.Length, bytesToWrite)), cancellationToken);
+                        await partFile.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                        bytesToWrite -= bytesRead;
+                        bytesRemaining -= bytesRead;
+                    }
+                }
+                partNumber++;
+            }
+        }
+
+        await DeleteFileAsync(tempZip, progressCallBack, cancellationToken);
     }
 
     public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
@@ -332,42 +368,50 @@ public class PhysicalFileAccess : IFileAccess
     {
         await using var ms = new MemoryStream();
 
-        using (var zip = new ZipFile())
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Update, true))
         {
-            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-
             foreach (var (compressName, path) in files)
             {
-                var fileBytes = await ReadFileAsync(path, progressCallBack, cancellationToken);
-
-                zip.AddEntry(compressName, fileBytes);
+                zip.CreateEntryFromFile(GetVerifiedPath(path), compressName, compressionLevel.ToCompressionLevel());
             }
-
-            zip.Save(ms);
         }
 
-        return ms.ToArray();
+        byte[] compressedFileBytes;
+
+        using (var binaryReader = new BinaryReader(ms))
+        {
+            ms.Position = 0;
+            compressedFileBytes = binaryReader.ReadBytes((int)ms.Length);
+        }
+
+        return compressedFileBytes;
     }
 
     public async Task<byte[]> CompressFilesAsync(Dictionary<string, byte[]> files, int compressionLevel = 6, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
     {
         await using var ms = new MemoryStream();
 
-        using (var zip = new ZipFile())
+        using (var zip = new ZipArchive(ms, ZipArchiveMode.Update, true))
         {
-            zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-            zip.CompressionLevel = Enum.Parse<CompressionLevel>($"{compressionLevel}");
-
             foreach (var (compressName, fileBytes) in files)
             {
-                zip.AddEntry(compressName, fileBytes);
-            }
+                var entry = zip.CreateEntry(compressName, compressionLevel.ToCompressionLevel());
 
-            zip.Save(ms);
+                await using var entryStream = entry.Open();
+
+                await entryStream.WriteAsync(fileBytes, cancellationToken);
+            }
         }
 
-        return ms.ToArray();
+        byte[] compressedFileBytes;
+
+        using (var binaryReader = new BinaryReader(ms))
+        {
+            ms.Position = 0;
+            compressedFileBytes = binaryReader.ReadBytes((int)ms.Length);
+        }
+
+        return compressedFileBytes;
     }
 
     #endregion

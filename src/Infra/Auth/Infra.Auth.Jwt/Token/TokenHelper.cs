@@ -3,6 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
+#pragma warning disable CA1822
+
 namespace Infra.Auth.Jwt.Token;
 
 public class TokenHelper

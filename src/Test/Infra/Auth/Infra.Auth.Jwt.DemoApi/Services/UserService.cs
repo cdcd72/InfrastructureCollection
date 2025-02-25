@@ -9,7 +9,7 @@ namespace Infra.Auth.Jwt.DemoApi.Services;
 
 public class UserService : IUserService
 {
-    private readonly IDictionary<string, User> _users = new Dictionary<string, User>
+    private readonly Dictionary<string, User> users = new()
     {
         {
             "test@example.com",
@@ -45,7 +45,7 @@ public class UserService : IUserService
     {
         userDto = null;
 
-        if (!_users.TryGetValue(userEmail, out var user))
+        if (!users.TryGetValue(userEmail, out var user))
             return false;
 
         var isValidUser = user.Password == password;
@@ -59,7 +59,7 @@ public class UserService : IUserService
 
     private UserDto GetUser(string userEmail)
     {
-        if (_users.TryGetValue(userEmail, out var user))
+        if (users.TryGetValue(userEmail, out var user))
         {
             return new UserDto
             {

@@ -6,49 +6,47 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Infra.Auth.Jwt.DemoApi.DTOs.Account;
 using Infra.Core.Auth.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+
+#pragma warning disable NUnit1032
 
 namespace Infra.Auth.Jwt.IntegrationTest.Controllers;
 
-[TestClass]
 public class DemoControllerTests
 {
-    private readonly HttpClient _client;
+    private readonly HttpClient client;
 
-    public DemoControllerTests()
-    {
-        _client = new Api().CreateClient();
-    }
+    public DemoControllerTests() => client = new Api().CreateClient();
 
     #region 情境 1：Action 沒有掛 [Authorize] 屬性，故有無驗證授權都可以打
 
-    [TestMethod]
+    [Test]
     public async Task GetNotLimitedSuccess()
     {
-        var response = await _client.GetAsync("v1/api/Demo/situation/1");
+        var response = await client.GetAsync("v1/api/Demo/situation/1");
 
         // 200
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Assert.AreEqual("Not Authorize", responseString);
+        Assert.That(responseString, Is.EqualTo("Not Authorize"));
     }
 
     #endregion
 
     #region 情境 2：Action 有掛 [Authorize] 屬性，有驗證授權才可以打
 
-    [TestMethod]
+    [Test]
     public async Task GetLimitedFail()
     {
-        var response = await _client.GetAsync("/v1/api/Demo/situation/2");
+        var response = await client.GetAsync("/v1/api/Demo/situation/2");
 
         // 401
-        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
 
-    [TestMethod]
+    [Test]
     public async Task GetLimitedSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -60,21 +58,21 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "v1/api/Demo/situation/2");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto?.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 200
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Assert.AreEqual("Authorized", responseString);
+        Assert.That(responseString, Is.EqualTo("Authorized"));
     }
 
     #endregion
 
     #region 情境 3：Action 有掛 [Authorize(Roles = AuthConstant.Admin)] 屬性，有驗證授權才可以打
 
-    [TestMethod]
+    [Test]
     public async Task GetLimitedWithAdminRoleFail()
     {
         var accessDto = await Login(new LoginDto
@@ -86,13 +84,13 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "/v1/api/Demo/situation/3");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto?.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 403
-        Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
     }
 
-    [TestMethod]
+    [Test]
     public async Task GetLimitedWithAdminRoleSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -104,21 +102,21 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "/v1/api/Demo/situation/3");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto?.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 200
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Assert.AreEqual("Authorized With Role = Admin", responseString);
+        Assert.That(responseString, Is.EqualTo("Authorized With Role = Admin"));
     }
 
     #endregion
 
     #region 情境 4：Action 有掛 [Authorize(Roles = $"{AuthConstant.Admin},{AuthConstant.User}")] 屬性，有驗證授權才可以打
 
-    [TestMethod]
+    [Test]
     public async Task GetLimitedWithAdminOrUserRoleWithAdminRoleSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -130,17 +128,17 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "/v1/api/Demo/situation/4");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto?.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 200
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Assert.AreEqual("Authorized With Role = Admin or User", responseString);
+        Assert.That(responseString, Is.EqualTo("Authorized With Role = Admin or User"));
     }
 
-    [TestMethod]
+    [Test]
     public async Task GetLimitedWithAdminOrUserRoleWithUserRoleSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -152,31 +150,29 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "/v1/api/Demo/situation/4");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto?.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 200
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Assert.AreEqual("Authorized With Role = Admin or User", responseString);
+        Assert.That(responseString, Is.EqualTo("Authorized With Role = Admin or User"));
     }
 
     #endregion
 
     #region 其它應用情境
 
-    [TestMethod]
-    public async Task LoginFail()
-    {
-        await Assert.ThrowsExceptionAsync<HttpRequestException>(() => Login(new LoginDto
+    [Test]
+    public void LoginFail() =>
+        Assert.ThrowsAsync<HttpRequestException>(() => Login(new LoginDto
         {
             Email = "test@example.com",
             Password = "???"
         }));
-    }
 
-    [TestMethod]
+    [Test]
     public async Task LoginSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -185,11 +181,14 @@ public class DemoControllerTests
             Password = "test"
         });
 
-        Assert.IsNotNull(accessDto.AccessToken);
-        Assert.IsNotNull(accessDto.RefreshToken);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(accessDto.AccessToken, Is.Not.Null);
+            Assert.That(accessDto.RefreshToken, Is.Not.Null);
+        }
     }
 
-    [TestMethod]
+    [Test]
     public async Task OldAccessTokenForbiddenToAccessApiSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -204,13 +203,13 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "v1/api/Demo/situation/2");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 401
-        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
 
-    [TestMethod]
+    [Test]
     public async Task NewAccessTokenCanAccessApiSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -225,17 +224,17 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "v1/api/Demo/situation/2");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenInfo.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 200
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         var responseString = await response.Content.ReadAsStringAsync();
 
-        Assert.AreEqual("Authorized", responseString);
+        Assert.That(responseString, Is.EqualTo("Authorized"));
     }
 
-    [TestMethod]
+    [Test]
     public async Task LogoutSuccess()
     {
         var accessDto = await Login(new LoginDto
@@ -250,10 +249,10 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Get, "v1/api/Demo/situation/2");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessDto.AccessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         // 401
-        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
     }
 
     #endregion
@@ -263,7 +262,7 @@ public class DemoControllerTests
     private async Task<AccessDto> Login(LoginDto loginDto)
     {
         var response =
-            await _client.PostAsync("/v1/api/Account/login",
+            await client.PostAsync("/v1/api/Account/login",
                 new StringContent(JsonSerializer.Serialize(loginDto), Encoding.UTF8, "application/json"));
 
         response.EnsureSuccessStatusCode();
@@ -277,7 +276,7 @@ public class DemoControllerTests
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         request.Content = new StringContent(JsonSerializer.Serialize(refreshDto), Encoding.UTF8, "application/json");
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
 
@@ -289,7 +288,7 @@ public class DemoControllerTests
         var request = new HttpRequestMessage(HttpMethod.Delete, "v1/api/Account/Logout");
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
-        var response = await _client.SendAsync(request);
+        var response = await client.SendAsync(request);
 
         response.EnsureSuccessStatusCode();
     }

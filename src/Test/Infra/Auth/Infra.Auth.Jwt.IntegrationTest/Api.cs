@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
 
+#pragma warning disable CA1852
+
 namespace Infra.Auth.Jwt.IntegrationTest;
 
 internal class Api : WebApplicationFactory<Program>
