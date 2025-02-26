@@ -14,9 +14,10 @@ namespace Infra.Auth.Jwt.IntegrationTest.Controllers;
 
 public class DemoControllerTests
 {
-    private readonly HttpClient client;
+    private HttpClient client;
 
-    public DemoControllerTests() => client = new Api().CreateClient();
+    [SetUp]
+    public void Setup() => client = new Api().CreateClient();
 
     #region 情境 1：Action 沒有掛 [Authorize] 屬性，故有無驗證授權都可以打
 
@@ -256,6 +257,9 @@ public class DemoControllerTests
     }
 
     #endregion
+
+    [TearDown]
+    public void TearDown() => client.Dispose();
 
     #region Private Method
 

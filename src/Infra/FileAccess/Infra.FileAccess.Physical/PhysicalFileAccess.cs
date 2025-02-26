@@ -280,7 +280,7 @@ public class PhysicalFileAccess : IFileAccess
             }
         }
 
-        await DeleteFileAsync(tempZip, progressCallBack, cancellationToken);
+        DeleteFile(tempZip);
     }
 
     public Task<string> GetParentPathAsync(string directoryPath, Action<ProgressInfo> progressCallBack = null, CancellationToken cancellationToken = default)
