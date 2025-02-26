@@ -44,11 +44,7 @@ Implement JWT authorization mechanism through Microsoft.AspNetCore.Authenticatio
 
    builder.Services.Configure<AuthJwtConfig.Settings>(settings => builder.Configuration.GetSection(AuthJwtConfig.Settings.SectionName).Bind(settings));
 
-   builder.Services.AddMemoryCache();
-
-   builder.Services.AddSingleton<AccessTokenHelper>();
-   builder.Services.AddSingleton<RefreshTokenHelper>();
-   builder.Services.AddScoped<IAuthenticator, JwtAuthenticator>();
+   builder.Services.AddJwtAuthenticator();
    ```
 
 > 注入 `IAuthenticator` 來使用相關方法（ex. 產生權杖）。

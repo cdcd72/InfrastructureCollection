@@ -48,7 +48,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-builder.Services.AddMemoryCache();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -63,9 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 #region Service
 
-builder.Services.AddSingleton<AccessTokenHelper>();
-builder.Services.AddSingleton<RefreshTokenHelper>();
-builder.Services.AddScoped<IAuthenticator, JwtAuthenticator>();
+builder.Services.AddJwtAuthenticator();
 builder.Services.AddScoped<IUserService, UserService>();
 
 #endregion
