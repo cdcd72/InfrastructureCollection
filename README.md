@@ -8,9 +8,11 @@ The practice may not be the best, but I hope to get better and better!
 
 ## Implemented infrastructure list
 
+> 🚧 meaning wip.
+
 > All infrastructure are base on **[Infra.Core](src/Core/Infra.Core)**.
 
-- Auth
+- 🚧 Auth
   - [Infra.Auth.Jwt](src/Infra/Auth/Infra.Auth.Jwt)
     - Implement with [Microsoft.AspNetCore.Authentication.JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer) 
 - BarCode
