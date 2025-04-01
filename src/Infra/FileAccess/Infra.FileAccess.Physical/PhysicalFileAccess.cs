@@ -56,6 +56,9 @@ public class PhysicalFileAccess : IFileAccess
 
         var tempZip = Path.Combine(Path.GetDirectoryName(zipFilePath), "temp.zip");
 
+        if (FileExists(tempZip))
+            DeleteFile(tempZip);
+
         ZipFile.CreateFromDirectory(directoryPath, tempZip);
 
         using (var zipToSplit = new FileStream(tempZip, FileMode.Open, System.IO.FileAccess.Read))
@@ -253,6 +256,9 @@ public class PhysicalFileAccess : IFileAccess
         zipFilePath = GetVerifiedPath(zipFilePath);
 
         var tempZip = Path.Combine(Path.GetDirectoryName(zipFilePath), "temp.zip");
+
+        if (FileExists(tempZip))
+            DeleteFile(tempZip);
 
         ZipFile.CreateFromDirectory(directoryPath, tempZip);
 
